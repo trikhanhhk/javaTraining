@@ -15,9 +15,4 @@ public class WebController {
     public String hello() {
         return "hello";
     }
-
-    @RequestMapping("/register")
-    public String register() {
-        return "register";
-    }
 }

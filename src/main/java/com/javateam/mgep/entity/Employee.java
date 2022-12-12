@@ -1,8 +1,8 @@
 package com.javateam.mgep.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.javateam.mgep.entity.dto.EmployeeData;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,7 +10,7 @@ import java.util.Set;
 @Table(name = "employee")
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "sequenceGenerator")
     private Long id;
 
     @Column(name = "first_name", length = 200)
@@ -20,7 +20,7 @@ public class Employee {
     private String lastName;
 
     @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
 
     @Column(name = "phone_number", length = 10)
     private String phoneNumber;
@@ -100,11 +100,11 @@ public class Employee {
         this.lastName = lastName;
     }
 
-    public LocalDate getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

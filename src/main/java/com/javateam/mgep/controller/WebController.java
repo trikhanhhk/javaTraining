@@ -13,6 +13,6 @@ public class WebController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "hello";
+        return "home";
     }
 }

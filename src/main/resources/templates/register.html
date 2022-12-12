@@ -126,7 +126,7 @@
                         <div class="value">
                             <div class="input-group">
                                 <div class="rs-select2 js-select-simple select--no-search">
-                                    <select name="department" th:object="${departments}">
+                                    <select name="deptId" th:object="${departments}">
                                         <option disabled="disabled" selected="selected">Choose option</option>
                                         <option th:each="dept : ${departments}"
                                                 th:value="${dept.getId()}" th:text="${dept.getName()}"></option>

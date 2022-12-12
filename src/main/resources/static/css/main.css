@@ -321,10 +321,6 @@ h6 {
   padding-top: 45px;
 }
 
-.p-t-20 {
-  padding-top: 20px;
-}
-
 .p-t-15 {
   padding-top: 15px;
 }
@@ -446,10 +442,6 @@ h6 {
    ========================================================================== */
 td.active {
   background-color: #2c6ed5;
-}
-
-input[type="date" i] {
-  padding: 14px;
 }
 
 .table-condensed td, .table-condensed th {

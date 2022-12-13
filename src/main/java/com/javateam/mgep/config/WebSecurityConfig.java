@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/home", "/register",
-                        "/css/**", "/js/**", "/addEmployee").permitAll() // Cho phép tất cả mọi người truy cập vào 2 địa chỉ này
+                        "/css/**", "/js/**", "/addEmployee", "/confirm-account").permitAll() // Cho phép tất cả mọi người truy cập vào các địa chỉ này
                 .anyRequest().authenticated() // Tất cả các request khác đều cần phải xác thực mới được truy cập
                 .and()
                 .formLogin()
@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/hello")
                 .permitAll() // Tất cả đều được truy cập vào địa chỉ này
                 .and()
-                .logout().logoutUrl("/login") // Cho phép logout
+                .logout().logoutUrl("/logout")
                 .permitAll();
     }
 

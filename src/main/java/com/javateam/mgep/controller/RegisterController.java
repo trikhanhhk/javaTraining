@@ -34,7 +34,11 @@ public class RegisterController {
     @PostMapping("/addEmployee")
     public String doRegister(@ModelAttribute("employee") EmployeeData employee, ModelMap modelMap) {
         Employee newEmployee = employeeService.addEmployee(employee);
-        return "login";
+        if(newEmployee != null) {
+            return "login";
+        } else {
+            return "error";
+        }
     }
 
 }

@@ -107,7 +107,7 @@
                         <div class="name">Mật khẩu</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="password" th:field="*{password}"
+                                <input class="input--style-5" id="password" type="password" th:field="*{password}"
                                        name="password">
                             </div>
                         </div>
@@ -116,7 +116,7 @@
                         <div class="name">Nhập lại mật khẩu</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="password" th:field="*{repeatPassword}"
+                                <input class="input--style-5" id="repeatPassword" type="password" th:field="*{repeatPassword}"
                                        name="password">
                             </div>
                         </div>
@@ -154,6 +154,29 @@
 
 <!-- Main JS-->
 <script src="js/global.js"></script>
+
+<!-- Vaidate password -->
+<script>
+    function validatePassword(pw) {
+
+        return /[A-Z]/       .test(pw) &&
+            /[a-z]/       .test(pw) &&
+            /[0-9]/       .test(pw) &&
+            /[^A-Za-z0-9]/.test(pw) &&
+            pw.length >= 8;
+
+    }
+
+    function validate() {
+        var password = $("#password").val();
+        var repeatPassword = $("#repeatPassword").val();
+        var checkPassword = validatePassword(password);
+        if(!checkPassword) {
+
+
+        }
+    }
+</script>
 
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 

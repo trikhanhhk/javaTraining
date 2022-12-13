@@ -2,15 +2,18 @@ package com.javateam.mgep.service.impl;
 
 import com.javateam.mgep.constants.AuthoritiesConstants;
 import com.javateam.mgep.entity.Authoritty;
+import com.javateam.mgep.entity.ConfirmationToken;
 import com.javateam.mgep.entity.Department;
 import com.javateam.mgep.entity.Employee;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.exception.EmailAlreadyUsedException;
 import com.javateam.mgep.exception.PasswordNotMatchException;
 import com.javateam.mgep.repositories.AuthorityRepository;
+import com.javateam.mgep.repositories.ConfirmationTokenRepository;
 import com.javateam.mgep.repositories.DepartmentRepository;
 import com.javateam.mgep.repositories.EmployeeRepository;
 import com.javateam.mgep.service.EmployeeService;
+import com.javateam.mgep.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,14 +24,16 @@ import java.util.Set;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-
     @Autowired
     EmployeeRepository employeeRepository;
-
     @Autowired DepartmentRepository departmentRepository;
-
     @Autowired
     AuthorityRepository authorityRepository;
+    @Autowired
+    ConfirmationTokenRepository confirmationTokenRepository;
+
+    @Autowired
+    MailService mailService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -62,7 +67,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         Set<Authoritty> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newEmployee.setAuthorities(authorities);
-        employeeRepository.save(newEmployee);
-        return newEmployee;
+        Employee employeeSaved = employeeRepository.save(newEmployee);
+        if(employeeSaved!=null) {
+            ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved);
+            confirmationTokenRepository.save(confirmationToken);
+            mailService.sendActiveMail(employeeSaved, confirmationToken.getConfirmationToken());
+            return newEmployee;
+        }
+        return null;
     }
 }

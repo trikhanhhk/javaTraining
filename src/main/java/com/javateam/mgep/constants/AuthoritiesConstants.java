@@ -1,9 +1,9 @@
 package com.javateam.mgep.constants;
 
 public class AuthoritiesConstants {
-    public static final Long ADMIN = 1L /*"ROLE_ADMIN"*/;
+    public static final String ADMIN = "ROLE_ADMIN";
 
-    public static final Long USER = 2L /*"ROLE_USER"*/;
+    public static final String USER = "ROLE_USER";
 
-    public static final Long MANAGER = 3L /*"ROLE_MANAGER"*/;
+    public static final String MANAGER = "ROLE_MANAGER";
 }

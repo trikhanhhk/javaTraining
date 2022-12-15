@@ -28,6 +28,11 @@
 </head>
 
 <body>
+<style>
+    .err {
+        display: none;
+    }
+</style>
 <div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
     <div class="wrapper wrapper--w790">
         <div class="card card-5">
@@ -36,6 +41,13 @@
             </div>
             <div class="card-body">
                 <form method="POST" th:action="@{/addEmployee}" th:object="${employee}">
+                    <div th:if="${param.error}" class="alert alert-danger">
+                        <ul>
+                            <li class="err" id="lengthPassword">Mật khẩu phải có độ dài tối thiểu 8 ký tự</li>
+                            <li class="err" id="passwordNotMatch">Mật khẩu và nhập lại mật khẩu không khớp</li>
+                            <li class="err" id="checkpass">Mật khẩu phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt</li>
+                        </ul>
+                    </div>
                     <div class="form-row m-b-55">
                         <div class="name">Họ và tên</div>
                         <div class="value">
@@ -168,12 +180,11 @@
     }
 
     function validate() {
-        var password = $("#password").val();
-        var repeatPassword = $("#repeatPassword").val();
+        var password = $("#password").value;
+        var repeatPassword = $("#repeatPassword").value;
         var checkPassword = validatePassword(password);
         if(!checkPassword) {
-
-
+            $("#checkpass").css("display", "block")
         }
     }
 </script>

@@ -1,6 +1,8 @@
 package com.javateam.mgep.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javateam.mgep.entity.dto.EmployeeData;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -61,6 +63,8 @@ public class Employee {
 
     @JsonIgnore
     @ManyToMany
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JoinTable(
             name = "authority_employee",
             joinColumns = { @JoinColumn(name = "employee_id", referencedColumnName = "id") },
@@ -154,5 +158,21 @@ public class Employee {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", gender='" + gender + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
+                ", status='" + status +
+                '}';
     }
 }

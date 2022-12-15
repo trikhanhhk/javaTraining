@@ -11,15 +11,14 @@ public class Authoritty {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "authorities")
-    private Set<Employee> employees;
+
 
     public Authoritty() {
     }
 
-    public Authoritty(String name, Set<Employee> employees) {
+    public Authoritty(String name) {
         this.name = name;
-        this.employees = employees;
+//        this.employees = employees;
     }
 
     public String getName() {
@@ -30,11 +29,18 @@ public class Authoritty {
         this.name = name;
     }
 
-    public Set<Employee> getEmployees() {
-        return employees;
-    }
+//    public Set<Employee> getEmployees() {
+//        return employees;
+//    }
+//
+//    public void setEmployees(Set<Employee> employees) {
+//        this.employees = employees;
+//    }
 
-    public void setEmployees(Set<Employee> employees) {
-        this.employees = employees;
+    @Override
+    public String toString() {
+        return "Authoritty{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

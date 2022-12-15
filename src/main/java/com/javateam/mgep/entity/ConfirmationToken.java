@@ -19,7 +19,7 @@ public class ConfirmationToken {
     private Date createdDate;
 
     @OneToOne(targetEntity = Employee.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "user_id")
+    @JoinColumn(nullable = false, name = "employee_id")
     private Employee userEntity;
 
     public ConfirmationToken() {}

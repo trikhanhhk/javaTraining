@@ -62,7 +62,7 @@ public class Employee {
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "jhi_user_authority",
+            name = "authority_employee",
             joinColumns = { @JoinColumn(name = "employee_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "authority_name", referencedColumnName = "name") }
     )

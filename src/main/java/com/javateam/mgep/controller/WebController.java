@@ -26,9 +26,4 @@ public class WebController {
         model.addAttribute("employee",userDetails.getEmployee());
         return "home";
     }
-
-    @GetMapping("/email")
-    public String senEmail(){
-        return "/password/quenmatkhau";
-    }
 }

@@ -19,12 +19,19 @@
           <div class="card-body p-5 text-center">
             <h3 class="mb-5">Tìm Email của bạn</h3>
             <p>Vui lòng nhập email để khôi phục mật khẩu?</p>
-            <div class="form-outline mb-4">
-              <label class="form-label" for="typeEmailX-2">Email</label>
-              <input type="email" id="typeEmailX-2" class="form-control form-control-lg" />
-            </div>
-            <button class="btn btn-primary btn-lg btn-block" type="submit">XÁC NHẬN</button>
-
+            <form form method="POST" th:action="@{/forgotPassword}">
+              <div th:if="${error}" class="alert alert-danger">
+                <span th:text="${error}"></span>
+              </div>
+              <div th:if="${message}" class="alert alert-success">
+                <span th:text="${message}"></span>
+              </div>
+              <div class="form-outline mb-4">
+                <label class="form-label" for="typeEmailX-2">Email</label>
+                <input type="email" name="email" id="typeEmailX-2" class="form-control form-control-lg" />
+              </div>
+              <button class="btn btn-primary btn-lg btn-block" type="submit">XÁC NHẬN</button>
+            </form>
             <hr class="my-4">
 
 

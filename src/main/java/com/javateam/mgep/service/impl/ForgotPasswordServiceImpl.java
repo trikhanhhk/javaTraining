@@ -22,7 +22,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     MailService mailService;
 
     @Override
-    public String sendEmailForgotPassword(String email) throws Exception {
+    public String sendEmailForgotPassword(String email) throws RuntimeException {
         Optional<Employee> employeeExist = employeeRepository.findOneByEmailIgnoreCase(email);
         if(employeeExist.isPresent()) {
             ResetPasswordToken resetPasswordToken = new ResetPasswordToken(employeeExist.get());
@@ -30,7 +30,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             mailService.sendPasswordResetMail(employeeExist.get(), resetPasswordToken.getResetPasswordToken());
             return email;
         } else {
-            throw new Exception("Không tồn tại email trong hệ thống");
+            throw new RuntimeException("Không tồn tại email trong hệ thống");
         }
     }
 

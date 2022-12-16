@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/home", "/register",
                         "/static/**", "/css/**", "/js/**", "/addEmployee",
                         "/confirm-account","/email").permitAll()// Cho phép tất cả mọi người truy cập vào các địa chỉ này
-                .antMatchers("/admin/**").hasAnyAuthority("ADMIN","MANAGER")
+                .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
                 .anyRequest().authenticated() // Tất cả các request khác đều cần phải xác thực mới được truy cập
                 .and()
                 .formLogin()

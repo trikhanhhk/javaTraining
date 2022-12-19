@@ -51,23 +51,32 @@
                         <div th:if="${param.logout}" class="alert alert-success">
                             Bạn đã đăng xuất
                         </div>
+                        <div th:if="${param.message}" class="alert alert-success" th:text="${param.message}">
+                        </div>
                         <div class="form-group row">
                             <label for="email_address" class="col-md-4 col-form-label text-md-right">Email: </label>
                             <div class="col-md-6">
-                                <input type="email" id="email_address" class="form-control" name="email"
-                                       required autofocus>
+                                <div th:switch="${param}">
+                                    <input th:case="${param.data}" type="email" id="email_address" class="form-control" name="email" th:value="${param.data.get('email')}"
+                                           required autofocus>
+                                    <input th:case="*" type="email" id="email_address" class="form-control" name="email"
+                                           required autofocus>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
                             <div class="col-md-6">
-                                <input type="password" id="password" class="form-control" name="password" required>
+                                <div th:switch="${param}">
+                                    <input th:case="${param.data}" type="password" id="password" class="form-control" name="password" required th:value="${param.data.get('password')}">
+                                    <input th:case="*" type="password" id="password" class="form-control" name="password" required>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="password" class="col-md-5 col-form-label text-md-right">Nhớ mật khẩu</label>
-                            <input type="checkbox" >
-                            <a th:href="@{/email}" class="col-md-5 col-form-label text-md-right">Quên mật khẩu?</a>
+                            <input type="checkbox" name="remember-me"  >
+                            <a th:href="@{/forgotPassword}" class="col-md-5 col-form-label text-md-right">Quên mật khẩu?</a>
                         </div>
                         <div class="form-group" style="margin-left: 145px;">
                             <button class="btn btn-primary" style="width: 200px;">LOGIN</button>

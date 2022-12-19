@@ -16,5 +16,5 @@ public interface ForgotPasswordService {
      * @param token
      * @return
      */
-    public Employee resetPasswordByToken(String token);
+    public Employee resetPasswordByToken(String newPassword, String repeatPassword, String token);
 }

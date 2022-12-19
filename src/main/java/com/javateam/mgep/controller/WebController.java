@@ -4,6 +4,7 @@ import com.javateam.mgep.entity.CustomUserDetails;
 import com.javateam.mgep.entity.Employee;
 import com.javateam.mgep.service.ChangePasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -32,10 +33,13 @@ public class WebController {
         return "home";
     }
 
-    @GetMapping("/email")
-    public String senEmail() {
-        return "/password/quenmatkhau";
+    @GetMapping("/update")
+    public String getUpdateUser(Model model){
+        String flags = "update";
+        model.addAttribute("flags",flags);
+        return "redirect:hello";
     }
+
 
     @GetMapping("/hello/new-password")
     public String newPassword() {

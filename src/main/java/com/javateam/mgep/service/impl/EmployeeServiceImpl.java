@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -51,10 +54,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(!employeeData.getPassword().equals(employeeData.getRepeatPassword())) {
             throw new PasswordNotMatchException();
         }
+        DateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+        Date dateOfBirth = null;
+        try {
+            dateOfBirth = date.parse(employeeData.getDateOfBirth());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         Employee newEmployee = new Employee();
         newEmployee.setFirstName(employeeData.getFirstName());
         newEmployee.setLastName(employeeData.getLastName());
-        newEmployee.setDateOfBirth(employeeData.getDateOfBirth());
+        newEmployee.setDateOfBirth(dateOfBirth);
         newEmployee.setPhoneNumber(employeeData.getPhoneNumber());
         newEmployee.setEmail(employeeData.getEmail().toLowerCase());
         Optional<Department> findDept = departmentRepository.findById(employeeData.getDeptId());
@@ -63,7 +73,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
         newEmployee.setGender(employeeData.getGender());
-        newEmployee.setStatus("0");
+        newEmployee.setStatus(0);
+        newEmployee.setAddress(employeeData.getAddress());
         Set<Authoritty> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newEmployee.setAuthorities(authorities);

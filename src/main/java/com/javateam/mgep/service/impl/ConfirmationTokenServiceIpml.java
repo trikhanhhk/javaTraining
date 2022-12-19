@@ -20,7 +20,7 @@ public class ConfirmationTokenServiceIpml implements ConfirmationTokenService {
         ConfirmationToken token  = confirmationTokenRepository.findByConfirmationToken(tokenId);
         if(token != null) {
             Employee employee = employeeRepository.findOneByEmailIgnoreCase(token.getUserEntity().getEmail()).get();
-            employee.setStatus("1");
+            employee.setStatus(1);
             employeeRepository.save(employee);
             return employee;
         } else {

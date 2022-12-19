@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -48,6 +50,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().logoutUrl("/logout")
                 .permitAll();
+
+        http.authorizeRequests().and() //
+                .rememberMe().tokenRepository(this.persistentTokenRepository()) //
+                .tokenValiditySeconds(1 * 60); // 24h
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        InMemoryTokenRepositoryImpl memory = new InMemoryTokenRepositoryImpl(); // Ta lưu tạm remember me trong memory (RAM). Nếu cần mình có thể lưu trong database
+        return memory;
     }
 
 }

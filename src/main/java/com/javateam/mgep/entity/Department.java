@@ -1,6 +1,7 @@
 package com.javateam.mgep.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,12 +19,12 @@ public class Department {
     @OneToMany(mappedBy = "department")
     private Set<Employee> employees = new HashSet<>();
 
+    private Date createDate;
+
+    private Date updateDate;
+
     public Department() {
 
-    }
-
-    public Department(Long id) {
-        this.id = id;
     }
 
     public Long getId() {
@@ -50,11 +51,21 @@ public class Department {
         this.employees = employees;
     }
 
-    @Override
-    public String toString() {
-        return "Department{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    public Date getCreateDate() {
+        return createDate;
     }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+
 }

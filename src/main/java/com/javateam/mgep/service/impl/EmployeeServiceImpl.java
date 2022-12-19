@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -42,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee addEmployee(EmployeeData employeeData) {
+    public Employee addEmployee(EmployeeData employeeData) throws ParseException {
         Optional<Employee> findEmployee = employeeRepository.findOneByEmailIgnoreCase(employeeData.getEmail());
         if(findEmployee.isPresent()) {
             throw new EmailAlreadyUsedException();
@@ -54,7 +57,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee newEmployee = new Employee();
         newEmployee.setFirstName(employeeData.getFirstName());
         newEmployee.setLastName(employeeData.getLastName());
-        newEmployee.setDateOfBirth(employeeData.getDateOfBirth());
+        Date date1 =new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());
+        newEmployee.setDateOfBirth(date1);
         newEmployee.setPhoneNumber(employeeData.getPhoneNumber());
         newEmployee.setEmail(employeeData.getEmail().toLowerCase());
         Optional<Department> findDept = departmentRepository.findById(employeeData.getDeptId());
@@ -67,6 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Set<Authoritty> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newEmployee.setAuthorities(authorities);
+        newEmployee.setCreateDate(new Date());
         Employee employeeSaved = employeeRepository.save(newEmployee);
         if(employeeSaved!=null) {
             ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved);

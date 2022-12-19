@@ -1,10 +1,10 @@
 package com.javateam.mgep.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.javateam.mgep.entity.dto.EmployeeData;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +22,7 @@ public class Employee {
     private String lastName;
 
     @Column(name = "date_of_birth")
-    private String dateOfBirth;
+    private Date dateOfBirth;
 
     @Column(name = "phone_number", length = 10)
     private String phoneNumber;
@@ -72,6 +72,10 @@ public class Employee {
     )
     private Set<Authoritty> authorities = new HashSet<>();
 
+    private Date createDate;
+
+    private Date updateDate;
+
     public Employee(Long id) {
         this.id = id;
     }
@@ -104,11 +108,11 @@ public class Employee {
         this.lastName = lastName;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -158,6 +162,22 @@ public class Employee {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override

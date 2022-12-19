@@ -1,5 +1,11 @@
 package com.javateam.mgep.entity.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
+
 public class EmployeeData {
     private  String firstName;
 

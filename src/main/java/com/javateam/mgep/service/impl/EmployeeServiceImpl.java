@@ -87,4 +87,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return null;
     }
+
+    @Override
+    public Employee updateEmployee(String address, String phone,String email) {
+        Employee employee = employeeRepository.findByEmail(email);
+        if (employee != null){
+            employee.setAddress(address);
+            employee.setPhoneNumber(phone);
+            employeeRepository.save(employee);
+            System.out.println("update thành công!");
+            return employee;
+        }
+        System.out.println("update thất bại");
+        return null;
+    }
 }

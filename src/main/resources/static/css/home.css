@@ -10,3 +10,7 @@
 .p-2 label{
     line-height: 50px;
 }
+.flags{
+    background-color: #3CBC8D;
+    color: white;
+}

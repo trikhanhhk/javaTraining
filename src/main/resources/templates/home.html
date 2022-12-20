@@ -48,7 +48,9 @@
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li><a th:href="@{/hello/new-password}">Đổi mật khẩu</a></li>
-                            <li><a href="#">Đăng xuất</a></li>
+                            <li><form th:action="@{/logout}" method="post">
+                            <button type="submit">Đăng xuất</button>
+                            </form></li>
                         </ul>
                         &ensp;
                         <i class="fa fa-bell" style="font-size:27px;color: gray"></i>

@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee addEmployee(EmployeeData employeeData) {
+    public Employee addEmployee(EmployeeData employeeData) throws ParseException {
         Optional<Employee> findEmployee = employeeRepository.findOneByEmailIgnoreCase(employeeData.getEmail());
         if(findEmployee.isPresent()) {
             throw new EmailAlreadyUsedException();
@@ -54,17 +54,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(!employeeData.getPassword().equals(employeeData.getRepeatPassword())) {
             throw new PasswordNotMatchException();
         }
-        DateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-        Date dateOfBirth = null;
-        try {
-            dateOfBirth = date.parse(employeeData.getDateOfBirth());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
         Employee newEmployee = new Employee();
         newEmployee.setFirstName(employeeData.getFirstName());
         newEmployee.setLastName(employeeData.getLastName());
-        newEmployee.setDateOfBirth(dateOfBirth);
+        Date date1 =new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());
+        newEmployee.setDateOfBirth(date1);
         newEmployee.setPhoneNumber(employeeData.getPhoneNumber());
         newEmployee.setEmail(employeeData.getEmail().toLowerCase());
         Optional<Department> findDept = departmentRepository.findById(employeeData.getDeptId());
@@ -73,11 +67,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
         newEmployee.setGender(employeeData.getGender());
-        newEmployee.setStatus(0);
-        newEmployee.setAddress(employeeData.getAddress());
+        newEmployee.setStatus("0");
         Set<Authoritty> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newEmployee.setAuthorities(authorities);
+        newEmployee.setCreateDate(new Date());
         Employee employeeSaved = employeeRepository.save(newEmployee);
         if(employeeSaved!=null) {
             ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved);

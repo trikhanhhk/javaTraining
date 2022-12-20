@@ -55,9 +55,9 @@ public class LoginController {
             data.put("password", newPassword);
             modelData.setData(data);
             model.addAttribute("param", modelData);
-            return "login";
+            return "redirect:/login";
         } catch (RuntimeException e) {
-            model.addAttribute("err", e.getMessage());
+            model.addAttribute("error", e.getMessage());
             return "resetPassword";
         }
     }

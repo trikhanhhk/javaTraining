@@ -1,6 +1,5 @@
 package com.javateam.mgep.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.javateam.mgep.entity.dto.EmployeeData;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -41,7 +40,7 @@ public class Employee {
     private String passwordHash;
 
     @Column(name = "status", length = 1)
-    private int status;
+    private String status;
 
     @ManyToOne
     private Department department;
@@ -73,6 +72,10 @@ public class Employee {
     )
     private Set<Authoritty> authorities = new HashSet<>();
 
+    private Date createDate;
+
+    private Date updateDate;
+
     public Employee(Long id) {
         this.id = id;
     }
@@ -103,6 +106,14 @@ public class Employee {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getPhoneNumber() {
@@ -145,20 +156,28 @@ public class Employee {
         this.passwordHash = passwordHash;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override

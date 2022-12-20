@@ -8,14 +8,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
     Employee employee;
+
+    List<GrantedAuthority> authorities;
+
+    public CustomUserDetails(Employee employee, List<GrantedAuthority> authorities) {
+        this.employee = employee;
+        this.authorities = authorities;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        return authorities;
     }
 
     @Override

@@ -1,12 +1,16 @@
-/*.p-2 input{*/
-/*    width: 280px;*/
-/*    height: 50px;*/
-/*    border: none;*/
-/*}*/
-/*.conten{*/
-/*    margin: 60px auto;*/
-/*}*/
+.p-2 input{
+    width: 280px;
+    height: 50px;
+    border: none;
+}
+.conten{
+    margin: 60px auto;
+}
 
-/*.p-2 label{*/
-/*    line-height: 50px;*/
-/*}*/
+.p-2 label{
+    line-height: 50px;
+}
+.flags{
+    background-color: #3CBC8D;
+    color: white;
+}

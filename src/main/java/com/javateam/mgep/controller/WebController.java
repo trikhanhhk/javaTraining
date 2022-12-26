@@ -35,8 +35,14 @@ public class WebController {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
         String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
-        model.addAttribute("fullName", fullName);
-        model.addAttribute("employee", userDetails.getEmployee());
+        Object employee = session.getAttribute("employee");
+        if (employee == null){
+            model.addAttribute("fullName", fullName);
+            model.addAttribute("employee", userDetails.getEmployee());
+        }else{
+            model.addAttribute("fullName", fullName);
+            model.addAttribute("employee", employee);
+        }
         Object update = session.getAttribute("flags");
         Object failedUpdate = session.getAttribute("updateFailed");
         if (update != null){
@@ -60,9 +66,11 @@ public class WebController {
                                @RequestParam("email") String email, HttpSession session){
         Employee employee = employeeService.updateEmployee(address,phone,email);
         if (employee != null){
+            session.setAttribute("flags",null);
+            session.setAttribute("employee",employee);
             return "redirect:/hello";
         }
-        session.setAttribute("updateFailed","updateFailed");
+        session.setAttribute("flags","updateFailed");
         return "redirect:update";
     }
 

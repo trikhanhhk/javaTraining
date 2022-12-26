@@ -21,7 +21,7 @@ public class LoginController {
 
     @GetMapping("/forgotPassword")
     public String senEmail(){
-        return "/password/quenmatkhau";
+        return "forgotPassword";
     }
 
     @PostMapping("/forgotPassword")
@@ -32,7 +32,7 @@ public class LoginController {
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
         }
-        return "/password/quenmatkhau";
+        return "forgotPassword";
     }
 
     @GetMapping("/resetPassword")

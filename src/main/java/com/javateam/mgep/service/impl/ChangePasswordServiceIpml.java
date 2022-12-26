@@ -19,17 +19,17 @@ public class ChangePasswordServiceIpml implements ChangePasswordService {
     EmployeeRepository employeeRepository;
 
     @Override
-    public Employee changePassword(String oldPassword, String newPassword, String newPassword1) {
+    public Employee changePassword(String oldPassword, String beforeNewPassword, String afterNewPassword) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
         if (!encoder.matches(oldPassword,userDetails.getEmployee().getPasswordHash())){
             return null;
         }
-        if (!newPassword.equals(newPassword1)){
+        if (!beforeNewPassword.equals(afterNewPassword)){
             return null;
         }
         Employee employee = employeeRepository.findByEmail(userDetails.getUsername());
-        String passwordNew = encoder.encode(newPassword);
+        String passwordNew = encoder.encode(beforeNewPassword);
         employee.setPasswordHash(passwordNew);
         employeeRepository.save(employee);
         return employee;

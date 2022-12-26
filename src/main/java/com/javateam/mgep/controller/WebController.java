@@ -30,7 +30,7 @@ public class WebController {
     }
 
     @GetMapping("/hello")
-    public String hello(Model model, HttpSession session) {
+    public String getHome(Model model, HttpSession session) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
         String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
@@ -82,14 +82,14 @@ public class WebController {
 
     @GetMapping("/hello/new-password")
     public String newPassword() {
-        return "password/change_Password_User";
+        return "password/changePasswordUser";
     }
 
     @PostMapping("/hello/submit-new-password")
     public String submitNewPassword(@RequestParam("oldPassword") String oldPassword,
-                                    @RequestParam("newPassword") String newPassword,
-                                    @RequestParam("newPassword1") String newPassword1,Model model) {
-        Employee employee = changePasswordService.changePassword(oldPassword,newPassword,newPassword1);
+                                    @RequestParam("beforeNewPassword") String beforeNewPassword,
+                                    @RequestParam("afterNewPassword") String afterNewPassword,Model model) {
+        Employee employee = changePasswordService.changePassword(oldPassword,beforeNewPassword,afterNewPassword);
         if (employee != null){
             model.addAttribute("results","Đổi mật khẩu thành công");
             return "redirect:new-password?results=true";

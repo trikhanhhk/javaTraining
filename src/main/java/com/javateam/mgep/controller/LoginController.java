@@ -21,7 +21,7 @@ public class LoginController {
 
     @GetMapping("/forgotPassword")
     public String senEmail(){
-        return "forgotPassword";
+        return "password/forgotPassword";
     }
 
     @PostMapping("/forgotPassword")
@@ -32,13 +32,13 @@ public class LoginController {
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
         }
-        return "forgotPassword";
+        return "password/forgotPassword";
     }
 
     @GetMapping("/resetPassword")
     public String resetPassword(Model model, @RequestParam("key") String token) {
         model.addAttribute("token", token);
-        return "/password/resetPassword";
+        return "password/resetPassword";
     }
 
     @PostMapping("/resetPassword")
@@ -58,7 +58,7 @@ public class LoginController {
             return "redirect:/login";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "resetPassword";
+            return "password/resetPassword";
         }
     }
 }

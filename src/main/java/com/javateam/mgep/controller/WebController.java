@@ -82,18 +82,21 @@ public class WebController {
 
     @GetMapping("/hello/new-password")
     public String newPassword() {
-        return "changePassword";
+        return "password/change_Password_User";
     }
 
     @PostMapping("/hello/submit-new-password")
     public String submitNewPassword(@RequestParam("oldPassword") String oldPassword,
                                     @RequestParam("newPassword") String newPassword,
-                                    @RequestParam("newPassword1") String newPassword1) {
+                                    @RequestParam("newPassword1") String newPassword1,Model model) {
         Employee employee = changePasswordService.changePassword(oldPassword,newPassword,newPassword1);
         if (employee != null){
-            return "successful";
+            model.addAttribute("results","Đổi mật khẩu thành công");
+            return "redirect:new-password?results=true";
+        }else {
+            model.addAttribute("results","Đổi mật thất bại");
+            return "redirect:new-password?error=false";
         }
-        return "failed";
     }
 
 }

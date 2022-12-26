@@ -18,7 +18,6 @@ public class Authoritty {
 
     public Authoritty(String name) {
         this.name = name;
-//        this.employees = employees;
     }
 
     public String getName() {
@@ -28,14 +27,6 @@ public class Authoritty {
     public void setName(String name) {
         this.name = name;
     }
-
-//    public Set<Employee> getEmployees() {
-//        return employees;
-//    }
-//
-//    public void setEmployees(Set<Employee> employees) {
-//        this.employees = employees;
-//    }
 
     @Override
     public String toString() {

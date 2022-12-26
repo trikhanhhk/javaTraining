@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>Simple Sidebar - Start Bootstrap Template</title>
+    <title>Trang chủ</title>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
     <!-- Core theme CSS (includes Bootstrap)-->
@@ -24,7 +24,7 @@
         <div class="sidebar-heading border-bottom bg-light" style="height: 76px;">LOGO</div>
         <div class="list-group list-group-flush">
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!"><i
-                    class="fa fa-home" style="font-size:22px;"></i>&ensp;HOME</a>
+                    class="fa fa-home" style="font-size:22px;"></i>&ensp;TRANG CHỦ</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!"><i
                     class="fa fa-flag" style="font-size:22px;"></i>&ensp; THÔNG BÁO</a>
             <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!"><i
@@ -48,9 +48,11 @@
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li><a th:href="@{/hello/new-password}">Đổi mật khẩu</a></li>
-                            <li><form th:action="@{/logout}" method="post">
-                            <button type="submit">Đăng xuất</button>
-                            </form></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post">
+                                    <button type="submit">Đăng xuất</button>
+                                </form>
+                            </li>
                         </ul>
                         &ensp;
                         <i class="fa fa-bell" style="font-size:27px;color: gray"></i>
@@ -91,7 +93,8 @@
                                             <label>Ngày Sinh: </label>
                                         </div>
                                         <div class="p-2">
-                                            <input type="text" disabled th:value="${#dates.format(employee.getDateOfBirth(), 'dd-MM-yyyy')}">
+                                            <input type="text" disabled
+                                                   th:value="${#dates.format(employee.getDateOfBirth(), 'dd-MM-yyyy')}">
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between">
@@ -120,7 +123,8 @@
                                                 <input type="text" disabled th:value="${employee.getPhoneNumber()}">
                                             </th:block>
                                             <th:block th:if="${flags} != null">
-                                                <input class="flags" type="text" name="phoneNumber" th:value="${employee.getPhoneNumber()}">
+                                                <input class="flags" type="text" name="phoneNumber"
+                                                       th:value="${employee.getPhoneNumber()}">
                                             </th:block>
                                         </div>
                                     </div>
@@ -133,7 +137,8 @@
                                                 <input type="text" disabled th:value="${employee.getAddress()}">
                                             </th:block>
                                             <th:block th:if="${flags != null}">
-                                                <input class="flags" type="text" name="address"  th:value="${employee.getAddress()}">
+                                                <input class="flags" type="text" name="address"
+                                                       th:value="${employee.getAddress()}">
                                             </th:block>
                                         </div>
                                     </div>
@@ -156,11 +161,14 @@
                                         <th:block th:if="${flags}">
                                             <button type="submit" style="width: 250px; height: 50px;"
                                                     class="btn btn-success">Cập Nhập
-                                            </button> <br>
+                                            </button>
                                             <br>
-                                            <a th:href="@{/cancel}"><button type="button" style="width: 250px; height: 50px;"
-                                                    class="btn btn-secondary">Hủy bỏ
-                                            </button></a>
+                                            <br>
+                                            <a th:href="@{/cancel}">
+                                                <button type="button" style="width: 250px; height: 50px;"
+                                                        class="btn btn-secondary">Hủy bỏ
+                                                </button>
+                                            </a>
                                         </th:block>
                                     </div>
                                 </div>

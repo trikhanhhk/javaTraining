@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Đăng nhập</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
@@ -44,7 +44,7 @@
             <div id="login-column" class="col-md-6">
                 <div id="login-box" class="col-md-12">
                     <form id="login-form" class="form" th:action="@{/login}" method="post">
-                        <h1 class="text-center text-info" style="margin-bottom: 60px;">Login</h1>
+                        <h1 class="text-center text-info" style="margin-bottom: 60px;">Đăng nhập</h1>
                         <div th:if="${param.error}" class="alert alert-danger">
                             Tài khoản hoặc mật khẩu không đúng?
                         </div>
@@ -57,7 +57,8 @@
                             <label for="email_address" class="col-md-4 col-form-label text-md-right">Email: </label>
                             <div class="col-md-6">
                                 <div th:switch="${param}">
-                                    <input th:case="${param.data}" type="email" id="email_address" class="form-control" name="email" th:value="${param.data.get('email')}"
+                                    <input th:case="${param.data}" type="email" id="email_address" class="form-control"
+                                           name="email" th:value="${param.data.get('email')}"
                                            required autofocus>
                                     <input th:case="*" type="email" id="email_address" class="form-control" name="email"
                                            required autofocus>
@@ -65,21 +66,24 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                            <label for="password" class="col-md-4 col-form-label text-md-right">Mật khẩu:</label>
                             <div class="col-md-6">
                                 <div th:switch="${param}">
-                                    <input th:case="${param.data}" type="password" id="password" class="form-control" name="password" required th:value="${param.data.get('password')}">
-                                    <input th:case="*" type="password" id="password" class="form-control" name="password" required>
+                                    <input th:case="${param.data}" type="password" id="password" class="form-control"
+                                           name="password" required th:value="${param.data.get('password')}">
+                                    <input th:case="*" type="password" id="password" class="form-control"
+                                           name="password" required>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="password" class="col-md-5 col-form-label text-md-right">Nhớ mật khẩu</label>
-                            <input type="checkbox" >
-                            <a th:href="@{/forgotPassword}" class="col-md-5 col-form-label text-md-right">Quên mật khẩu?</a>
+                            <input type="checkbox" name="remember-me">
+                            <a th:href="@{/forgotPassword}" class="col-md-5 col-form-label text-md-right">Quên mật
+                                khẩu?</a>
                         </div>
                         <div class="form-group" style="margin-left: 145px;">
-                            <button class="btn btn-primary" style="width: 200px;">LOGIN</button>
+                            <button class="btn btn-primary" style="width: 200px;">ĐĂNG NHẬP</button>
                             <br><br>
                             <a href="/register">Chưa có tài khoản? Đăng kí</a>
                         </div>

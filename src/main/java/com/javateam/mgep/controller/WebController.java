@@ -83,7 +83,7 @@ public class WebController {
 
     @GetMapping("/hello/new-password")
     public String newPassword() {
-        return "password/doimatkhau";
+        return "changePassword";
     }
 
     @PostMapping("/hello/submit-new-password")

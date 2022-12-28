@@ -760,3 +760,17 @@ input {
     padding-bottom: 50px;
   }
 }
+
+.input-group.error small{
+  color: red;
+}
+.input-group.error input{
+  border: 1px solid red;
+}
+.input-group-desc.error small{
+  color: red;
+}
+.input-group-desc.error input{
+  border: 1px solid red;
+}
+

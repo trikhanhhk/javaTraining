@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.javateam.mgep.entity.CustomUserDetails;
 import com.javateam.mgep.entity.Employee;
@@ -33,6 +34,23 @@ public class AdminController {
     		model.addAttribute("list",list);
     	}
         return "/admin/home";
+    }
+    
+    @GetMapping("/admin/mail")
+    public String EmailAdmin(Model model, HttpSession session){
+
+        return "/admin/mail";
+    }
+    
+    @PostMapping("/admin/mail-sent")
+    public String EmailAdminSent(Model model, HttpSession session, String email, String title, String content, boolean interval, String value){
+    	System.out.println(email);
+    	System.out.println(title);
+    	System.out.println(content);
+    	System.out.println(interval);
+    	System.out.println(value);
+    	adminService.sendEmail(email, title, content, interval, value);
+        return "redirect:mail";
     }
     
     

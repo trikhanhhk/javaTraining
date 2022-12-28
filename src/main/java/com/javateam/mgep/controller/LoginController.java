@@ -19,7 +19,7 @@ public class LoginController {
     @Autowired
     ForgotPasswordService forgotPasswordService;
     @GetMapping("/login")
-    public String Login(){
+    public String login(){
         return "login";
     }
 
@@ -31,7 +31,7 @@ public class LoginController {
     @PostMapping("/forgotPassword")
     public String sendMail(Model model, @RequestParam("email")String email) throws Exception {
         try {
-            String result = forgotPasswordService.sendEmailForgotPassword(email);
+            forgotPasswordService.sendEmailForgotPassword(email);
             model.addAttribute("message", "Bạn vui lòng check email để lấy lấy lại mật khẩu");
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());

@@ -14,8 +14,6 @@
     <link th:href="@{css/vendor/mdi-font/css/material-design-iconic-font.min.css}" rel="stylesheet" media="all">
     <link th:href="@{css/vendor/font-awesome-4.7/css/font-awesome.min.css}" rel="stylesheet" media="all">
     <!-- Font special for pages-->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
-          rel="stylesheet">
 
     <!-- Vendor CSS-->
     <link th:href="@{css/vendor/select2/select2.min.css}" rel="stylesheet" media="all">
@@ -24,21 +22,15 @@
     <!-- Main CSS-->
     <link th:href="@{css/main.css}" rel="stylesheet" media="all">
 </head>
-
 <body>
-<style>
-    .err {
-        display: none;
-    }
-</style>
-<div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
+<div class="page-wrapper">
     <div class="wrapper wrapper--w790">
         <div class="card card-5">
             <div class="card-heading">
                 <h2 class="title">Đăng ký nhân viên mới</h2>
             </div>
             <div class="card-body">
-                <form method="POST" th:action="@{/addEmployee}" th:object="${employee}">
+                <form id="theForm" method="POST" th:action="@{/addEmployee}" th:object="${employee}">
                     <div th:if="${param.error}" class="alert alert-danger">
                         <ul>
                             <li class="err" id="lengthPassword">Mật khẩu phải có độ dài tối thiểu 8 ký tự</li>
@@ -52,16 +44,16 @@
                             <div class="row row-space">
                                 <div class="col-2">
                                     <div class="input-group-desc">
-                                        <input class="input--style-5" th:field="*{firstName}" type="text"
-                                               name="firstName">
-                                        <label class="label--desc">Họ</label>
+                                        <input id="firstName" class="input--style-5" th:field="*{firstName}" type="text"
+                                               name="firstName" placeholder="Họ">
+                                       <small></small>
                                     </div>
                                 </div>
                                 <div class="col-2">
                                     <div class="input-group-desc">
-                                        <input class="input--style-5" type="text" th:field="*{lastName}"
-                                               name="lastName">
-                                        <label class="label--desc">Tên</label>
+                                        <input id="lastName" class="input--style-5" type="text" th:field="*{lastName}"
+                                               name="lastName" placeholder="Tên">
+                                        <small></small>
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +63,8 @@
                         <div class="name">Điện thoại</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="text" th:field="*{phoneNumber}" name="phoneNumber">
+                                <input id="phoneNumber" class="input--style-5" type="text" th:field="*{phoneNumber}" name="phoneNumber">
+                                <small></small>
                             </div>
                         </div>
                     </div>
@@ -79,7 +72,8 @@
                         <div class="name">Địa chỉ</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="text" th:field="*{address}" name="address">
+                                <input id="address" class="input--style-5" type="text" th:field="*{address}" name="address">
+                                <small></small>
                             </div>
                         </div>
                     </div>
@@ -87,7 +81,7 @@
                         <div class="name">Giới tính</div>
                         <div class="p-t-15">
                             <label class="radio-container m-r-55" for="male">Nam
-                                <input type="radio" checked="checked" id="male" th:field="*{gender}" name="gender"
+                                <input type="radio" th:selected="true" id="male" th:field="*{gender}" name="gender"
                                        th:value="1">
                                 <span class="checkmark"></span>
                             </label>
@@ -101,7 +95,8 @@
                         <div class="name">Ngày sinh</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
+                                <input id="dateOfBirth" class="input--style-5" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
+                                <small></small>
                             </div>
                         </div>
                     </div>
@@ -109,7 +104,8 @@
                         <div class="name">Email</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="email" th:field="*{email}" name="email">
+                                <input id="email" class="input--style-5" type="email" th:field="*{email}" name="email">
+                                <small></small>
                             </div>
                         </div>
                     </div>
@@ -119,6 +115,7 @@
                             <div class="input-group">
                                 <input class="input--style-5" id="password" type="password" th:field="*{password}"
                                        name="password">
+                                <small></small>
                             </div>
                         </div>
                     </div>
@@ -126,8 +123,9 @@
                         <div class="name">Nhập lại mật khẩu</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" id="repeatPassword" type="password" th:field="*{repeatPassword}"
+                                <input  class="input--style-5" id="repeatPassword" type="password" th:field="*{repeatPassword}"
                                        name="password">
+                                <small>error</small>
                             </div>
                         </div>
                     </div>
@@ -147,45 +145,23 @@
                         </div>
                     </div>
                     <div>
-                        <button class="btn btn--radius-2 btn--red" type="submit">ĐĂNG KÝ</button>
+                        <button class="btn btn--radius-2 btn--red" type="submit" id="register"  >ĐĂNG KÝ</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
+<script th:src="@{https://code.jquery.com/jquery-3.1.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/validate.js}"></script>
 <!-- Jquery JS-->
-<script src="vendor/jquery/jquery.min.js"></script>
 <!-- Vendor JS-->
-<script src="vendor/select2/select2.min.js"></script>
-<script src="vendor/datepicker/moment.min.js"></script>
-<script src="vendor/datepicker/daterangepicker.js"></script>
+<script th:src="@{vendor/select2/select2.min.js}"></script>
+<script th:src="@{vendor/datepicker/moment.min.js}"></script>
+<script th:src="@{vendor/datepicker/daterangepicker.js}"></script>
 
 <!-- Main JS-->
-<script src="js/global.js"></script>
-
-<!-- Vaidate password -->
-<script>
-    function validatePassword(pw) {
-
-        return /[A-Z]/       .test(pw) &&
-            /[a-z]/       .test(pw) &&
-            /[0-9]/       .test(pw) &&
-            /[^A-Za-z0-9]/.test(pw) &&
-            pw.length >= 8;
-
-    }
-
-    function validate() {
-        var password = $("#password").value;
-        var repeatPassword = $("#repeatPassword").value;
-        var checkPassword = validatePassword(password);
-        if(!checkPassword) {
-            $("#checkpass").css("display", "block")
-        }
-    }
-</script>
+<script th:src="@{/js/global.js}"></script>
 
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 

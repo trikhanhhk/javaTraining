@@ -40,6 +40,7 @@ public class RegisterController {
         model.addAttribute("employee", new EmployeeData());
         List<Department> departments = departmentService.getListDept();
         model.addAttribute("departments", departments);
+        model.addAttribute("radio","true");
         return "register";
     }
 

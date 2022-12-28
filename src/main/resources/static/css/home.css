@@ -14,3 +14,9 @@
     background-color: #3CBC8D;
     color: white;
 }
+.col.error small{
+    color: red;
+}
+.col.error input{
+    border: 1px solid red;
+}

@@ -30,6 +30,19 @@ public class EmployeeData {
     public EmployeeData() {
     }
 
+    public EmployeeData(String firstName, String lastName, String dateOfBirth, String phoneNumber, String gender, String address, String email, String password, String repeatPassword, Long deptId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.address = address;
+        this.email = email;
+        this.password = password;
+        this.repeatPassword = repeatPassword;
+        this.deptId = deptId;
+    }
+
     public String getFirstName() {
         return firstName;
     }

@@ -25,17 +25,17 @@ function showSuccess(input){
 }
 
 function checkEmptyError(listInput){
+    let isEmptyError = false;
  listInput.forEach(input => {
-     let isEmptyError = false;
       input.value = input.value.trim();
       if (!input.value){
           isEmptyError = true;
           showError(input,textError);
-      }else{
+      }else {
           showSuccess(input);
       }
-      return isEmptyError;
  });
+    return isEmptyError;
 }
 
 function checkEmailError(input){
@@ -54,10 +54,10 @@ function checkLengthError(input,max,min){
      input.value = input.value.trim();
      if (input.value.length > max){
          showError(input,'Không được lớn hơn '+max+ ' kí tự')
-         return true
+         return true;
      }if (input.value.length < min){
         showError(input,'Không được nhỏ hơn ' + min +' kí tự')
-        return true
+        return true;
     }
      return false
 }
@@ -86,17 +86,29 @@ function checkMatches(passwordInput, repeatPassword){
 }
 form.addEventListener('submit', function (e) {
     e.preventDefault();
-    let isEmptyError = checkEmptyError([firstName,lastName,phoneNumber,address,dateOfBirth,email,password]);
+    let isEmptyError = checkEmptyError([firstName,lastName,phoneNumber,address,dateOfBirth,email,password,repeatPassword]);
     let isCheckLengthFirstName = checkLengthError(firstName,100,2);
     let isCheckLengthLastName = checkLengthError(lastName,100,2);
-    let isCheckLengthPhone = checkLengthError(phoneNumber,11,9);
+    let isCheckLengthPhone = checkLengthError(phoneNumber,10,9);
     let isEmailError = checkEmailError(email);
     let isPassword = checkPasswordError(password);
     let isCheckMatchesPassword = checkMatches(password,repeatPassword);
-    if (isEmptyError || isEmailError || isPassword || isCheckMatchesPassword || isCheckLengthPhone || isCheckLengthLastName || isCheckLengthFirstName){
+    if (isEmptyError){
         console.log('Bạn không đăng kí được đâu')
         return;
-    }else{
+    }if (isCheckLengthFirstName || isCheckLengthLastName || isCheckLengthPhone) {
+        console.log('Lỗi length');
+        return;;
+    }if (isEmailError){
+        console.log('Lỗi email');
+        return;
+    }if (isPassword){
+        console.log('Lỗi password');
+        return;
+    }if (isCheckMatchesPassword){
+        console.log('Lỗi checkpassword');
+        return;
+    } else{
         $(this).submit();
     }
 });

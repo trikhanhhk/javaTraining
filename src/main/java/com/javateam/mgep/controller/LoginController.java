@@ -56,11 +56,8 @@ public class LoginController {
             data.put("email", employee.getEmail());
             data.put("password", dataPassword.getNewPassword());
             modelData.setData(data);
-//            model.addAttribute("param", modelData);
-//            return "login";
             return ResponseEntity.ok(modelData);
         } catch (RuntimeException e) {
-//            return "password/resetPassword";
             modelData.setError(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(modelData);
         }

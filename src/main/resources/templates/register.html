@@ -29,6 +29,9 @@
             <div class="card-heading">
                 <h2 class="title">Đăng ký nhân viên mới</h2>
             </div>
+            <div th:if="${param.error}" class="alert alert-danger">
+                Email đã được sử dụng vui lòng thử lại!!!!
+            </div>
             <div class="card-body">
                 <form id="theForm" method="POST" th:action="@{/addEmployee}" th:object="${employee}">
                     <div class="form-row m-b-55">

@@ -13,7 +13,7 @@ $(document).ready(function () {
         let isEmptyError = checkEmptyError([password]);
         let isPassword = checkPasswordError(password);
         let isCheckMatchesPassword = checkMatches(password, repeatPassword);
-        if (isEmptyError || isPassword || isCheckMatchesPassword || checkLengthError) {
+        if (isEmptyError || isPassword || isCheckMatchesPassword) {
             console.log('Bạn không đăng kí được đâu')
             return;
         } else {

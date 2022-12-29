@@ -20,3 +20,11 @@
 .col.error input{
     border: 1px solid red;
 }
+
+.thebtn{
+    border: none;
+    background-color: white;
+}
+.thebtn:hover{
+    color: green;
+}

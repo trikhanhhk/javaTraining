@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/confirm-account","/forgotPassword",
                         "/resetPassword").permitAll()// Cho phép tất cả mọi người truy cập vào các địa chỉ này
 //                .anyRequest().authenticated() // Tất cả các request khác đều cần phải xác thực mới được truy cập
-                .antMatchers("/admin/**").hasAnyAuthority("ADMIN","MANAGER")
+                .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

@@ -18,6 +18,12 @@ public class ChangePasswordServiceIpml implements ChangePasswordService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+
+    public ChangePasswordServiceIpml(PasswordEncoder encoder, EmployeeRepository employeeRepository) {
+        this.encoder = encoder;
+        this.employeeRepository = employeeRepository;
+    }
+
     @Override
     public Employee changePassword(String oldPassword, String beforeNewPassword, String afterNewPassword) {
         SecurityContext securityContext = SecurityContextHolder.getContext();

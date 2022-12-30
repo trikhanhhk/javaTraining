@@ -12,8 +12,13 @@ public class DepartmentService implements com.javateam.mgep.service.DepartmentSe
     @Autowired
     DepartmentRepository departmentRepository;
 
+    public DepartmentService(DepartmentRepository departmentRepository) {
+        this.departmentRepository = departmentRepository;
+    }
+
     @Override
     public List<Department> getListDept() {
+
         return departmentRepository.findAll();
     }
 }

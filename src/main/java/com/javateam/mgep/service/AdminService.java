@@ -1,5 +1,6 @@
 package com.javateam.mgep.service;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.text.ParseException;
 import java.util.List;
@@ -16,5 +17,7 @@ public interface AdminService {
 	public void updateAdmin(Long id, String email, String firstName, String lastName, String dateOfBirth, String phoneNumber, String address) throws ParseException;
 	
 	public void exportAdmin(Writer writer);
+	
+	public void importAdmin() throws IOException, ParseException;
 
 }

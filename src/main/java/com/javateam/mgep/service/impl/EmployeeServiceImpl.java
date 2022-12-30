@@ -67,7 +67,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
         newEmployee.setGender(employeeData.getGender());
-        newEmployee.setAddress(employeeData.getAddress()); //Bổ dung thêm địa chỉ khi user đăng kí tài khoản.
         newEmployee.setStatus("0");
         Set<Authoritty> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);

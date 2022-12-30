@@ -2,14 +2,10 @@ package com.javateam.mgep.controller;
 
 import com.javateam.mgep.entity.Employee;
 import com.javateam.mgep.entity.ModelData;
-import com.javateam.mgep.entity.dto.PasswordResetData;
 import com.javateam.mgep.service.ForgotPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -19,7 +15,7 @@ public class LoginController {
     @Autowired
     ForgotPasswordService forgotPasswordService;
     @GetMapping("/login")
-    public String login(){
+    public String Login(){
         return "login";
     }
 
@@ -31,7 +27,7 @@ public class LoginController {
     @PostMapping("/forgotPassword")
     public String sendMail(Model model, @RequestParam("email")String email) throws Exception {
         try {
-            forgotPasswordService.sendEmailForgotPassword(email);
+            String result = forgotPasswordService.sendEmailForgotPassword(email);
             model.addAttribute("message", "Bạn vui lòng check email để lấy lấy lại mật khẩu");
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
@@ -46,20 +42,23 @@ public class LoginController {
     }
 
     @PostMapping("/resetPassword")
-    @ResponseBody
-    public ResponseEntity<ModelData> handleResetPassword(@Validated @ModelAttribute("dataPassword")PasswordResetData dataPassword) throws Exception{
-        ModelData modelData = new ModelData();
+    public String handleResetPassword(Model model,
+                                      @RequestParam("newPassword") String newPassword,
+                                      @RequestParam("repeatPassword") String repeatPassword,
+                                      @RequestParam("token") String token) throws Exception{
         try {
-            Employee employee = forgotPasswordService.resetPasswordByToken(dataPassword.getNewPassword(), dataPassword.getRepeatPassword(), dataPassword.getToken());
-            modelData.setMessage("Mật khẩu đã được thay đổi, vui lòng đăng lại với mật khẩu mới");
+            Employee employee = forgotPasswordService.resetPasswordByToken(newPassword, repeatPassword, token);
+            ModelData modelData = new ModelData();
+            modelData.setMessage("Mật khẩu đã được thay đổi, vui lòng đăng nhập lại với mật khẩu mới");
             HashMap<String, String> data = new HashMap<>();
             data.put("email", employee.getEmail());
-            data.put("password", dataPassword.getNewPassword());
+            data.put("password", newPassword);
             modelData.setData(data);
-            return ResponseEntity.ok(modelData);
+            model.addAttribute("param", modelData);
+            return "redirect:/login";
         } catch (RuntimeException e) {
-            modelData.setError(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(modelData);
+            model.addAttribute("error", e.getMessage());
+            return "password/resetPassword";
         }
     }
 }

@@ -40,22 +40,17 @@ public class RegisterController {
         model.addAttribute("employee", new EmployeeData());
         List<Department> departments = departmentService.getListDept();
         model.addAttribute("departments", departments);
-        model.addAttribute("radio","true");
         return "register";
     }
 
     @PostMapping("/addEmployee")
-    public String doRegister(@ModelAttribute("employee") EmployeeData employee, Model model) throws Exception {
-        try {
-            Employee newEmployee = employeeService.addEmployee(employee);
-            if(newEmployee != null) {
-                return "login";
-            } else {
-                return "redirect:register?error=?";
-            }
-        }catch (RuntimeException exception){
-            model.addAttribute("error", exception.getMessage());
-            return "redirect:register?error=?";
+    public String doRegister(@ModelAttribute("employee") EmployeeData employee) throws ParseException {
+        Employee newEmployee = employeeService.addEmployee(employee);
+        if(newEmployee != null) {
+            return "login";
+        } else {
+            return "error";
         }
     }
+
 }

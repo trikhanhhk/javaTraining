@@ -114,8 +114,9 @@ public class AdminController {
     }
     
     @RequestMapping(value="/admin/import",method = RequestMethod.POST)
-    public String ImportAdmin(InputStream body) throws IOException{
+    public String ImportAdmin(InputStream body) throws IOException, ParseException{
     	System.out.println("");
+    	adminService.importAdmin();
 
 
         return "redirect:home";

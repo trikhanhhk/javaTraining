@@ -40,8 +40,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public EmployeeServiceImpl(PasswordEncoder passwordEncoder) {
+    public EmployeeServiceImpl(PasswordEncoder passwordEncoder, EmployeeRepository employeeRepository,
+                               DepartmentRepository departmentRepository,AuthorityRepository authorityRepository) {
         this.passwordEncoder = passwordEncoder;
+        this.employeeRepository =employeeRepository;
+        this.departmentRepository = departmentRepository;
+        this.authorityRepository = authorityRepository;
     }
 
     @Override
@@ -66,6 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             newEmployee.setDepartment(findDept.get());
         }
         newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
+        System.out.println(newEmployee.getPasswordHash());
         newEmployee.setGender(employeeData.getGender());
         newEmployee.setAddress(employeeData.getAddress()); //Bổ dung thêm địa chỉ khi user đăng kí tài khoản.
         newEmployee.setStatus("0");

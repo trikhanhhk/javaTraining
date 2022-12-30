@@ -1,5 +1,6 @@
 package com.javateam.mgep.service.impl;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -29,10 +30,13 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.javateam.mgep.constants.MailConstaints;
 import com.javateam.mgep.entity.Employee;
+import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.repositories.AdminRepository;
 import com.javateam.mgep.repositories.EmployeeRepository;
 import com.javateam.mgep.service.AdminService;
+import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.MailService;
+import com.opencsv.CSVReader;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -52,6 +56,8 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	AdminRepository adminRepository;
+	@Autowired
+	EmployeeService employeeService;
 	
 	@Autowired
 	EmployeeRepository employeeRepository;
@@ -124,6 +130,39 @@ public class AdminServiceImpl implements AdminService {
         } catch (IOException e) {
             log.error("Error While writing CSV ", e);
         }
+		
+	}
+
+	@Override
+	public void importAdmin() throws IOException, ParseException {
+		CSVReader reader = new CSVReader(new FileReader("D:\\emps.csv"), ',');
+
+		List<EmployeeData> emps = new ArrayList<EmployeeData>();
+
+		// read line by line
+		String[] record = null;
+
+		while ((record = reader.readNext()) != null) {
+			EmployeeData emp = new EmployeeData();
+			emp.setFirstName(record[0]);
+			emp.setLastName(record[1]);
+			emp.setDateOfBirth(record[2]);
+			emp.setPhoneNumber(record[3]);
+			emp.setGender(record[4]);
+			emp.setAddress(record[5]);
+			emp.setEmail(record[6]);
+			emp.setPassword(record[7]);
+			emp.setRepeatPassword(record[8]);
+			emp.setDeptId((long) 1);
+			System.out.println(emp.getGender());
+			employeeService.addEmployee(emp);
+			
+
+		}
+
+		System.out.println(emps);
+		
+		reader.close();
 		
 	}
 

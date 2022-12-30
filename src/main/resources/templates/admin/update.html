@@ -30,10 +30,10 @@
 			<div class="list-group list-group-flush">
 				<a
 					class="list-group-item list-group-item-action list-group-item-light p-3"
-					th:href="@{/admin/home}"><i class="fa fa-home" style="font-size: 22px;"></i>&ensp;TRANG
-					CHỦ</a> <a
+					th:href="@{/admin/home}"><i class="fa fa-home"
+					style="font-size: 22px;"></i>&ensp;TRANG CHỦ</a> <a
 					class="list-group-item list-group-item-action list-group-item-light p-3"
-					href="#!"><i class="fa fa-envelope-o fa-fw"
+					th:href="@{/admin/mail}"><i class="fa fa-envelope-o fa-fw"
 					style="font-size: 22px;"></i>&ensp;GỬI EMAIL</a>
 			</div>
 		</div>
@@ -70,17 +70,20 @@
 			</nav>
 			<!-- Page content-->
 			<div class="container-fluid">
-				<h2 class="mt-4" style="text-align: center;">Gửi Email</h2>
+				<h2 class="mt-4" style="text-align: center;">Update User</h2>
 				<div class="conten">
-					<form method="POST" th:action="@{/admin/mail-sent}">
+					<form method="POST" th:action="@{/admin/submit-update}">
 						<div class="row">
 
 
-							<div class="col-sm-1"></div>
-							<div class="col-sm-2">Gửi tới</div>
+							<div class="col-sm-1"><input class="form-control" type="text" hidden=true
+									name="id" required th:value="${employee.id}"
+									size="50"></div>
+							<div class="col-sm-2">Họ</div>
 							<div class="col-sm-5">
-								<input class="form-control width100" type="text" name="email" required
-									th:value="${email}" size="50">
+								<input class="form-control width100" type="text"
+									name="firstName" required th:value="${employee.firstName}"
+									size="50">
 							</div>
 
 						</div>
@@ -88,10 +91,10 @@
 
 
 							<div class="col-sm-1"></div>
-							<div class="col-sm-2">Tiêu đề email</div>
+							<div class="col-sm-2">Tên</div>
 							<div class="col-sm-5">
-								<input class="form-control width100" type="text" name="title" required
-									th:value="${title}" size="500">
+								<input class="form-control width100" type="text" name="lastName"
+									required th:value="${employee.lastName}" size="50">
 							</div>
 
 						</div>
@@ -99,28 +102,64 @@
 
 
 							<div class="col-sm-1"></div>
-							<div class="col-sm-2">Nội dung email</div>
+							<div class="col-sm-2">Team</div>
 							<div class="col-sm-5">
-								<textarea class="form-control width100" name="content" required
-									th:value="${content}" size="2000"></textarea>
+								<input class="form-control width100" type="text" name="department"
+									required th:value="${employee.getDepartment().getName()}"
+									size="50">
 							</div>
 
 						</div>
 						<div class="row">
 
 
-							<div class="col-sm-1">
-								
+							<div class="col-sm-1"></div>
+							<div class="col-sm-2">Ngày sinh</div>
+							<div class="col-sm-5">
+								<div class="input-group">
+									<input class="input--style-5" type="date" required
+										th:value="${employee.dateOfBirth}" name="dateOfBirth">
+								</div>
 							</div>
-							<div class="col-sm-2"><input type="checkbox" name="interval" th:value="${interval}"> Định kì</div>
-							<div class="col-sm-1">
-								<input class="form-control width20" name="value" type="number"
-									th:value="${value}">
-							</div>
-							<div class="col-sm-0.5">Ngày</div>
-							<div class="col-sm-3"></div>
-							<div class="col-sm-3"><button type="submit" class="btn btn-info">Gửi</button></div>
 
+						</div>
+						<div class="row">
+
+
+							<div class="col-sm-1"></div>
+							<div class="col-sm-2">Email</div>
+							<div class="col-sm-5">
+								<input class="form-control width100" type="text" name="email"
+									required th:value="${employee.email}" size="200">
+							</div>
+
+						</div>
+						<div class="row">
+
+
+							<div class="col-sm-1"></div>
+							<div class="col-sm-2">Điện thoại</div>
+							<div class="col-sm-5">
+								<input class="form-control width100" type="text"
+									name="phoneNumber" required th:value="${employee.phoneNumber}"
+									size="50">
+							</div>
+
+						</div>
+						<div class="row">
+
+
+							<div class="col-sm-1"></div>
+							<div class="col-sm-2">Địa chỉ</div>
+							<div class="col-sm-5">
+								<input class="form-control width100" type="text" name="address"
+									required th:value="${employee.address}" size="500">
+							</div>
+
+						</div>
+						<div class="row">
+						<div class="col-sm-5"></div>
+						<div class="col-sm-6"><button type="submit" class="btn btn-info">Gửi</button></div>
 						</div>
 					</form>
 				</div>

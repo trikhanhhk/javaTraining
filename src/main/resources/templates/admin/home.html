@@ -33,7 +33,7 @@
 					href="#!"><i class="fa fa-home" style="font-size: 22px;"></i>&ensp;TRANG
 					CHỦ</a> <a
 					class="list-group-item list-group-item-action list-group-item-light p-3"
-					href="#!"><i class="fa fa-envelope-o fa-fw" style="font-size: 22px;"></i>&ensp;GỬI EMAIL</a>
+					th:href="@{/admin/mail}"><i class="fa fa-envelope-o fa-fw" style="font-size: 22px;"></i>&ensp;GỬI EMAIL</a>
 			</div>
 		</div>
 		<!-- Page content wrapper-->
@@ -74,7 +74,7 @@
 				<div class="conten">
 					<div class="row">
 						<div class="col-2"></div>
-						<div class="col-7">
+						<div class="col-3">
 							<div class="input-group">
 								<form th:action="@{/admin/home}" method="get">
 									<input class="form-control width100" type="text" name="keyword"
@@ -85,6 +85,20 @@
 								</form>
 							</div>
 						</div>
+						<div class="col-3">
+							
+						</div>
+						<div class="col-4">
+						<div class="input-group">
+								<form th:action="@{/admin/import}" method="POST">
+								<button class="btn btn-info">Import</button>
+								</form> &nbsp &nbsp &nbsp
+								<form th:action="@{/admin/export}" method="POST" th:object="${list}">
+								<button class="btn btn-info">Export</button>
+								</form>
+							</div>
+						</div>
+						
 					</div>
 					<div class="row">
 						<div class="col-2"></div>
@@ -102,7 +116,12 @@
 									<td th:text="${employee.lastName + ' ' + employee.firstName}"></td>
 									<td th:text="${employee.phoneNumber}"></td>
 									<td th:text="${employee.email}"></td>
-									<td></td>
+									<td>
+									<a
+					class="list-group-item list-group-item-action list-group-item-light p-3"
+					th:href="@{/admin/update/{id}(id=${employee.id})}"><i class="fa fa-pencil"
+					style="font-size: 15px;"></i></a>
+									</td>
 								</tr>
 							</table>
 						</div>

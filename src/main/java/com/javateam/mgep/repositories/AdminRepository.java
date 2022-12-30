@@ -12,5 +12,8 @@ import com.javateam.mgep.entity.Employee;
 public interface AdminRepository extends JpaRepository<Employee, Long> {
 	@Query(value="Select * from employee t where t.email LIKE " + "%"+":email"+"%", nativeQuery=true)
     List<Employee> findByEmail(@Param("email") String email);
+	
+	@Query(value="Select * from employee t where t.id=:id", nativeQuery=true)
+	Employee findOneById(@Param("id") Long id);
 
 }

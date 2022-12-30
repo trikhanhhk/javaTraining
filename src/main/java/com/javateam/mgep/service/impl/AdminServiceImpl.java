@@ -1,7 +1,12 @@
 package com.javateam.mgep.service.impl;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -9,6 +14,8 @@ import java.util.Optional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +64,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public void sendEmail(String email, String title, String content, boolean interval, String value) {
+	public void sendEmail(String email, String title, String content, String interval, String value) {
 		Optional<Employee> employee = employeeRepository.findOneByEmailIgnoreCase(email);
 		if(employee.isPresent()) {
 			Locale locale = new Locale("vi", "VN");
@@ -84,6 +91,40 @@ public class AdminServiceImpl implements AdminService {
 		}
 
 
+	}
+
+	@Override
+	public void updateAdmin(Long id, String email, String firstName, String lastName, String dateOfBirth,
+			String phoneNumber, String address) throws ParseException {
+		Employee employee = adminRepository.findOneById(id);
+		if (employee != null) {
+			employee.setEmail(email);
+			employee.setFirstName(firstName);
+			employee.setLastName(lastName);
+			Date date1 =new SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth);
+			employee.setDateOfBirth(date1);
+			employee.setPhoneNumber(phoneNumber);
+			employee.setAddress(address);
+			employeeRepository.save(employee);
+			System.out.println("update thành công!");
+		}
+		else {
+			System.out.println("update thất bại");
+		}
+		
+	}
+
+	@Override
+	public void exportAdmin(Writer writer) {
+		List<Employee> employees = employeeRepository.findAll();
+        try (CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
+            for (Employee employee : employees) {
+                csvPrinter.printRecord(employee.getId(), employee.getFirstName(), employee.getLastName(),employee.getGender(),employee.getDateOfBirth().toString(), employee.getEmail(), employee.getAddress(), employee.getPhoneNumber(), employee.getDepartment().getName());
+            }
+        } catch (IOException e) {
+            log.error("Error While writing CSV ", e);
+        }
+		
 	}
 
 }

@@ -2,17 +2,19 @@ package com.javateam.mgep.controller;
 
 import com.javateam.mgep.entity.CustomUserDetails;
 import com.javateam.mgep.entity.Employee;
+import com.javateam.mgep.entity.ModelData;
+import com.javateam.mgep.entity.dto.PasswordResetData;
 import com.javateam.mgep.service.ChangePasswordService;
 import com.javateam.mgep.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -87,16 +89,16 @@ public class WebController {
     }
 
     @PostMapping("/hello/submit-new-password")
-    public String submitNewPassword(@RequestParam("oldPassword") String oldPassword,
-                                    @RequestParam("beforeNewPassword") String beforeNewPassword,
-                                    @RequestParam("afterNewPassword") String afterNewPassword,Model model) {
-        Employee employee = changePasswordService.changePassword(oldPassword,beforeNewPassword,afterNewPassword);
+    @ResponseBody
+    public ResponseEntity<ModelData> submitNewPassword(@Validated @ModelAttribute("dataPassword") PasswordResetData dataPassword) {
+        Employee employee = changePasswordService.changePassword(dataPassword.getOldPassword(),dataPassword.getNewPassword(), dataPassword.getRepeatPassword());
+        ModelData modelData = new ModelData();
         if (employee != null){
-            model.addAttribute("results","Đổi mật khẩu thành công");
-            return "redirect:new-password?results=true";
+            modelData.setMessage("Đổi mật khẩu thành công");
+            return ResponseEntity.ok(modelData);
         }else {
-            model.addAttribute("results","Đổi mật thất bại");
-            return "redirect:new-password?error=false";
+            modelData.setError("Đổi mật thất bại");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(modelData);
         }
     }
 

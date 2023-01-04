@@ -99,8 +99,8 @@ function checkMatches(passwordInput, repeatPassword) {
         showError(repeatPassword, 'Mật khẩu đang không trùng khớp!!!!')
         return true
     } else {
-        console.log(passwordInput.value);
-        console.log(repeatPassword.value);
+        // console.log(passwordInput.value);
+        // console.log(repeatPassword.value);
         showSuccess(passwordInput);
         return false;
     }

@@ -7,7 +7,6 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 public class EmployeeData {
-    private Long id;
     private  String firstName;
 
     private String lastName;
@@ -31,8 +30,7 @@ public class EmployeeData {
     public EmployeeData() {
     }
 
-    public EmployeeData(Long id, String firstName, String lastName, String dateOfBirth, String phoneNumber, String gender, String address, String email, String password, String repeatPassword, Long deptId) {
-        this.id = id;
+    public EmployeeData( String firstName, String lastName, String dateOfBirth, String phoneNumber, String gender, String address, String email, String password, String repeatPassword, Long deptId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -44,15 +42,6 @@ public class EmployeeData {
         this.repeatPassword = repeatPassword;
         this.deptId = deptId;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getFirstName() {
         return firstName;
     }

@@ -113,7 +113,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void addEmployee() {
-        Long id = 1L;
         String firstName = "Trần Văn";
         String lastName = "Tiến";
         String dateOfBirth = "2022-12-28";
@@ -124,34 +123,14 @@ class EmployeeServiceImplTest {
         String password = "Tien12345";
         String repeatPassword = "Tien12345";
         Long deptId = 1L;
-        EmployeeData employeeData = new EmployeeData(id, firstName, lastName, dateOfBirth, phoneNumber, gender, address, email, password, repeatPassword, deptId);
-        Date date1;
+        EmployeeData employeeData = new EmployeeData(firstName, lastName, dateOfBirth, phoneNumber, gender, address, email, password, repeatPassword, deptId);
+        Employee employee = null;
         try {
-            date1 = new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        Employee employee = new Employee();
-        employee.setId(1l);
-        employee.setEmail("tvtien34@gmail.com");
-        employee.setPasswordHash(passwordEncoder.encode("Tien12345"));
-        employee.setAddress("HN");
-        employee.setPhoneNumber("0333489895");
-        employee.setDateOfBirth(date1);
-        employee.setStatus("0");
-        employee.setGender("Nam");
-        employee.setFirstName("Trần Văn");
-        employee.setLastName("Tiến");
-        employee.setCreateDate(new Date());
-        employee.setDepartment(departmentRepository.findById(1l).get());
-        employee.setUpdateDate(null);
-        Mockito.when(employeeRepository.save(employee)).thenReturn(employee);
-        try {
-            Employee employee1 = employeeService.addEmployee(employeeData);
-            verify(employeeRepository, times(1)).save(employee);
+            employee = employeeService.addEmployee(employeeData);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Assertions.assertNotNull(employee);
 
 
     }

@@ -5,6 +5,7 @@ import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.excel.ExcelGeneratorListEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +19,14 @@ import java.util.List;
 public class AdminController {
     @Autowired
     EmployeeService employeeService;
-    @GetMapping("/admin/home")
-    public String homeAdmin(){
+    @GetMapping({"/admin/home", "/admin/", "/admin"})
+    public String homeAdmin(Model model){
+        List<Employee> employeeList = employeeService.getListAll();
+        model.addAttribute("employeeList", employeeList);
         return "/admin/home";
     }
 
-    @GetMapping("/export-to-excel")
+    @GetMapping("/admin/export-to-excel")
     public void exportIntoExcelFile(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");

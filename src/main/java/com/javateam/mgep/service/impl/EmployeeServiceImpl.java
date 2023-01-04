@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -95,5 +92,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         System.out.println("update thất bại");
         return null;
+    }
+
+    @Override
+    public List<Employee> getListAll() {
+        return employeeRepository.findAll();
     }
 }

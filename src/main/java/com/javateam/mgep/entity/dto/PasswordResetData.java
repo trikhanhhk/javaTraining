@@ -10,7 +10,7 @@ public class PasswordResetData {
     public PasswordResetData() {
     }
 
-    public PasswordResetData(String oldPassword, String newPassword, String repeatPassword, String token) {
+    public PasswordResetData(String oldPassword, String newPassword, String repeatPassword, String beforePassword, String token) {
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
         this.repeatPassword = repeatPassword;

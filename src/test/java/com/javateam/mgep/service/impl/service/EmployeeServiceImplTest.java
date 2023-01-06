@@ -180,7 +180,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("changePassword successful")
+    @DisplayName("GetEmployeeByToken successful")
     void whenGetEmployeeByTokenSuccessful() {
          Employee employee = confirmationTokenServiceIpml.getEmployeeByToken("1abc");
          Assertions.assertNotNull(employee, "changePassword successful");

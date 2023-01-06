@@ -1,14 +1,13 @@
 package com.javateam.mgep.service.impl.service;
 
-import com.javateam.mgep.entity.Authoritty;
-import com.javateam.mgep.entity.CustomUserDetails;
-import com.javateam.mgep.entity.Department;
-import com.javateam.mgep.entity.Employee;
+import com.javateam.mgep.entity.*;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.repositories.AuthorityRepository;
+import com.javateam.mgep.repositories.ConfirmationTokenRepository;
 import com.javateam.mgep.repositories.DepartmentRepository;
 import com.javateam.mgep.repositories.EmployeeRepository;
 import com.javateam.mgep.service.impl.ChangePasswordServiceIpml;
+import com.javateam.mgep.service.impl.ConfirmationTokenServiceIpml;
 import com.javateam.mgep.service.impl.DepartmentService;
 import com.javateam.mgep.service.impl.EmployeeServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -58,7 +57,11 @@ class EmployeeServiceImplTest {
     private Authentication authentication = Mockito.mock(Authentication.class);
     private SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
+    private ConfirmationTokenRepository confirmationTokenRepository = Mockito.mock(ConfirmationTokenRepository.class);
+
     private EmployeeServiceImpl employeeService = new EmployeeServiceImpl(passwordEncoder, employeeRepository, departmentRepository, authorityRepository);
+
+    private ConfirmationTokenServiceIpml confirmationTokenServiceIpml = new ConfirmationTokenServiceIpml(confirmationTokenRepository,employeeRepository);
 
     private DepartmentService departmentServices = new DepartmentService(departmentRepository);
 
@@ -92,23 +95,36 @@ class EmployeeServiceImplTest {
         employee.setLastName("Tiến");
         employee.setCreateDate(new Date());
         employee.setUpdateDate(null);
-        doReturn(Optional.of(employee)).when(employeeRepository).findById(1L);
+
+        ConfirmationToken confirmationToken = new ConfirmationToken();
+        confirmationToken.setTokenid(1);
+        confirmationToken.setConfirmationToken("1abc");
+        confirmationToken.setCreatedDate(new Date());
+        confirmationToken.setUserEntity(employee);
+
+
+
         List<Employee> employeeList = Arrays.asList(employee);
 
         List<Department> departmentList = Arrays.asList(department);
-
+        doReturn(Optional.of(employee)).when(employeeRepository).findById(1L);
         doReturn(employeeList).when(employeeRepository).findAll();
         doReturn(employee).when(employeeRepository).save(employee);
         doReturn(employee).when(employeeRepository).findByEmail("tvtien34@gmail.com");
         doReturn(Optional.of(department)).when(departmentRepository).findById(1l);
         doReturn(Optional.of(department)).when(departmentRepository).findById(1l);
         doReturn(departmentList).when(departmentRepository).findAll();
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-        GrantedAuthority authority = new SimpleGrantedAuthority(authoritty.getName());
-        List<GrantedAuthority> authorities = Arrays.asList(authority);
-        CustomUserDetails customUserDetails = new CustomUserDetails(employee, authorities);
-        doReturn(customUserDetails).when(securityContext.getAuthentication().getPrincipal());
+        doReturn(confirmationToken).when(confirmationTokenRepository).findByConfirmationToken("1abc");
+        doReturn(Optional.of(employee)).when(employeeRepository).findOneByEmailIgnoreCase("tvtien34@gmail.com");
+
+
+
+//        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+//        SecurityContextHolder.setContext(securityContext);
+//        GrantedAuthority authority = new SimpleGrantedAuthority(authoritty.getName());
+//        List<GrantedAuthority> authorities = Arrays.asList(authority);
+//        CustomUserDetails customUserDetails = new CustomUserDetails(employee, authorities);
+//        doReturn(customUserDetails).when(securityContext.getAuthentication().getPrincipal());
     }
 
     @Test
@@ -161,5 +177,12 @@ class EmployeeServiceImplTest {
         String afterNewPassword = "Khanh321";
         Employee employee = changePasswordServiceIpml.changePassword(oldPassword, beforeNewPassword, afterNewPassword);
         Assertions.assertNotNull(employee, "changePassword successful");
+    }
+
+    @Test
+    @DisplayName("changePassword successful")
+    void whenGetEmployeeByTokenSuccessful() {
+         Employee employee = confirmationTokenServiceIpml.getEmployeeByToken("1abc");
+         Assertions.assertNotNull(employee, "changePassword successful");
     }
 }

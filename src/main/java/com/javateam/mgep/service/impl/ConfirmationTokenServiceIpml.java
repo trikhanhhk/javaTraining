@@ -15,6 +15,11 @@ public class ConfirmationTokenServiceIpml implements ConfirmationTokenService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    public ConfirmationTokenServiceIpml(ConfirmationTokenRepository confirmationTokenRepository, EmployeeRepository employeeRepository) {
+        this.confirmationTokenRepository = confirmationTokenRepository;
+        this.employeeRepository = employeeRepository;
+    }
+
     @Override
     public Employee getEmployeeByToken(String tokenId) {
         ConfirmationToken token  = confirmationTokenRepository.findByConfirmationToken(tokenId);

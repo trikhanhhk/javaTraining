@@ -3,6 +3,7 @@ package com.javateam.mgep.service;
 
 import com.javateam.mgep.entity.Employee;
 import com.javateam.mgep.entity.dto.EmployeeData;
+import com.javateam.mgep.entity.dto.SearchCriteria;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
@@ -14,6 +15,8 @@ public interface EmployeeService {
 
     public Employee updateEmployeeAdmin(EmployeeData employeeData);
     public List<Employee> getListAll();
+
+    public List<Employee> searchByData(SearchCriteria searchCriteria);
 
     public String importFileEx(MultipartFile file);
 }

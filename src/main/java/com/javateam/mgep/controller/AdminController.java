@@ -4,16 +4,24 @@ import com.javateam.mgep.entity.*;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.repositories.*;
 import com.javateam.mgep.service.DepartmentService;
+import com.javateam.mgep.entity.Employee;
+import com.javateam.mgep.entity.dto.PasswordResetData;
+import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.excel.ExcelGeneratorListEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -73,6 +81,18 @@ public class AdminController {
     public String importExcelFile(@RequestParam("file") MultipartFile files) throws IOException {
 
         return null;
+    }
+
+    @GetMapping("/admin/searchEmployee")
+    public String searchEmployee(@Validated @ModelAttribute("searchCriteria") SearchCriteria search, Model model, HttpSession session) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
+        String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
+        model.addAttribute("fullName", fullName);
+        session.setAttribute("fullName", fullName);
+        List<Employee> employeeList = employeeService.searchByData(search);
+        model.addAttribute("employeeList", employeeList);
+        return "/homeAdmin/home";
     }
 
     @GetMapping("/{id}")

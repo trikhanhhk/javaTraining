@@ -6,6 +6,7 @@ import com.javateam.mgep.entity.ConfirmationToken;
 import com.javateam.mgep.entity.Department;
 import com.javateam.mgep.entity.Employee;
 import com.javateam.mgep.entity.dto.EmployeeData;
+import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.exception.EmailAlreadyUsedException;
 import com.javateam.mgep.exception.PasswordNotMatchException;
 import com.javateam.mgep.repositories.AuthorityRepository;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -126,6 +128,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> getListAll() {
         return employeeRepository.findAll();
+    }
+
+    @Override
+    public List<Employee> searchByData(SearchCriteria searchCriteria) {
+        if(searchCriteria.getDataSearch() == null || searchCriteria.getDataSearch().equals("")) {
+            return employeeRepository.findAll();
+        }
+        return employeeRepository.findAllByEmail(searchCriteria.getDataSearch());
     }
 
     @Override

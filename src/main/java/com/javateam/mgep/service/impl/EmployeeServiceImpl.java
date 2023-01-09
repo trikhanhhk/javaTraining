@@ -139,7 +139,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public String importFileEx(MultipartFile file){
+    public List<Employee> importFileEx(MultipartFile file){
         List<Employee> lstEmployee = new ArrayList<>();
         XSSFWorkbook workbook;
         try {
@@ -150,12 +150,32 @@ public class EmployeeServiceImpl implements EmployeeService {
         XSSFSheet worksheet = workbook.getSheet("employee");
         for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
             if (index > 0){
-                Employee employee = new Employee();
+                EmployeeData employee = new EmployeeData();
                 XSSFRow row = worksheet.getRow(index);
                 Integer id = (int) row.getCell(0).getNumericCellValue();
+                employee.setFirstName(row.getCell(1).getStringCellValue());
+                employee.setLastName(row.getCell(2).getStringCellValue());
+                employee.setDateOfBirth(row.getCell(3).getStringCellValue());
+                employee.setPhoneNumber(row.getCell(4).getStringCellValue());
+                employee.setGender(row.getCell(5).getStringCellValue());
+                employee.setAddress(row.getCell(6).getStringCellValue());
+                employee.setEmail(row.getCell(7).getStringCellValue());
+                employee.setPassword(row.getCell(8).getStringCellValue());
+                employee.setRepeatPassword(row.getCell(9).getStringCellValue());
+                Long deptId = (long) row.getCell(10).getNumericCellValue();
+                employee.setDeptId(deptId);
+                try {
+                    lstEmployee.add(addEmployee(employee));
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-
-        return null;
+        try {
+            workbook.close();
+            return lstEmployee;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

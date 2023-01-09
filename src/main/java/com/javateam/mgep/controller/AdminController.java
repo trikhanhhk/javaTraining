@@ -78,8 +78,8 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/admin/import-to-excel", method = RequestMethod.POST)
-    public String importExcelFile(@RequestParam("file") MultipartFile files) throws IOException {
-
+    public String importExcelFile(@RequestParam("file") MultipartFile files){
+        employeeService.importFileEx(files);
         return null;
     }
 

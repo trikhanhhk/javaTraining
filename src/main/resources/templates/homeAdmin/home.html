@@ -76,9 +76,8 @@
                     <div class="col-1"></div>
                     <div class="col-6">
                         <div class="input-group">
-                            <form th:action="@{/templates/homeAdmin/home}" method="get">
-                                <input class="form-control width100" type="text" name="keyword"
-                                       th:value="${keyword}" placeholder="Tìm kiếm theo email"
+                            <form id="formSearch" th:action="@{/admin/searchEmployee}" method="get" th:object="${searchCriteria}">
+                                <input class="form-control width100" type="text" name="dataSearch" placeholder="Tìm kiếm bằng mail"
                                        size="50">
                                 <span class="input-group-btn">
                                        <button type="submit" style="margin-top: 5px" class="btn btn-info">Search</button>
@@ -145,7 +144,27 @@
         }else{
             return;
         }
-    })
+    });
+
+    // $("#formSearch").onsubmit(function (e) {
+    //     let form = $(this);
+    //     let actionUrl = form.attr("action");
+    //     e.preventDefault();
+    //     $.ajax({
+    //         type: "POST",
+    //         url: actionUrl,
+    //         data: form.serialize(),
+    //         success: function (data) {
+    //             console.log(data);
+    //         },
+    //         error: function (data) {
+    //             console.log(data);
+    //         },
+    //     });
+    //
+    // })
+
+
 
 </script>
 <!-- Bootstrap core JS-->

@@ -76,9 +76,15 @@ public class AdminController {
     }
 
     @GetMapping("/admin/searchEmployee")
-    public ResponseEntity<List<Employee>> searchEmployee(@Validated @ModelAttribute("searchCriteria") SearchCriteria search) {
+    public String searchEmployee(@Validated @ModelAttribute("searchCriteria") SearchCriteria search, Model model, HttpSession session) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
+        String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
+        model.addAttribute("fullName", fullName);
+        session.setAttribute("fullName", fullName);
         List<Employee> employeeList = employeeService.searchByData(search);
-        return ResponseEntity.ok(employeeList);
+        model.addAttribute("employeeList", employeeList);
+        return "/homeAdmin/home";
     }
 
     @GetMapping("/{id}")

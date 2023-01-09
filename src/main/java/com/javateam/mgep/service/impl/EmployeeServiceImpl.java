@@ -127,6 +127,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> searchByData(SearchCriteria searchCriteria) {
-        return employeeRepository.findEmployeeByFields(searchCriteria.getDataSearch());
+        if(searchCriteria.getDataSearch() == null || searchCriteria.getDataSearch().equals("")) {
+            return employeeRepository.findAll();
+        }
+        return employeeRepository.findAllByEmail(searchCriteria.getDataSearch());
     }
 }

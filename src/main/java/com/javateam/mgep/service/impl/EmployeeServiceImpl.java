@@ -15,10 +15,15 @@ import com.javateam.mgep.repositories.DepartmentRepository;
 import com.javateam.mgep.repositories.EmployeeRepository;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.MailService;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -131,5 +136,26 @@ public class EmployeeServiceImpl implements EmployeeService {
             return employeeRepository.findAll();
         }
         return employeeRepository.findAllByEmail(searchCriteria.getDataSearch());
+    }
+
+    @Override
+    public String importFileEx(MultipartFile file){
+        List<Employee> lstEmployee = new ArrayList<>();
+        XSSFWorkbook workbook;
+        try {
+             workbook = new XSSFWorkbook(file.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        XSSFSheet worksheet = workbook.getSheet("employee");
+        for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
+            if (index > 0){
+                Employee employee = new Employee();
+                XSSFRow row = worksheet.getRow(index);
+                Integer id = (int) row.getCell(0).getNumericCellValue();
+            }
+        }
+
+        return null;
     }
 }

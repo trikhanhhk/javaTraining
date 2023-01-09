@@ -10,12 +10,14 @@ import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.excel.ExcelGeneratorListEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -73,6 +75,12 @@ public class AdminController {
         List<Employee> listOfStudents = employeeService.getListAll();
         ExcelGeneratorListEmployee generator = new ExcelGeneratorListEmployee(listOfStudents);
         generator.generateExcelFile(response);
+    }
+
+    @RequestMapping(value = "/admin/import-to-excel", method = RequestMethod.POST)
+    public String importExcelFile(@RequestParam("file") MultipartFile files) throws IOException {
+
+        return null;
     }
 
     @GetMapping("/admin/searchEmployee")

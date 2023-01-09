@@ -9,6 +9,7 @@ import com.javateam.mgep.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class WebController {
@@ -36,6 +39,13 @@ public class WebController {
     public String getHome(Model model, HttpSession session) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
+        System.out.println(userDetails.getAuthorities());
+        List<GrantedAuthority> grantList = (List<GrantedAuthority>) userDetails.getAuthorities();
+        for (GrantedAuthority x : grantList) {
+            if (x.getAuthority().equals("ROLE_ADMIN")){
+                model.addAttribute("admin","admin");
+            }
+        }
         String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
         Object employee = session.getAttribute("employee");
         if (employee == null){

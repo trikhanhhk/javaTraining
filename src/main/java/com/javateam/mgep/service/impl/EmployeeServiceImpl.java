@@ -97,6 +97,30 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employee updateEmployeeAdmin(EmployeeData employeeData) {
+        Employee employee = employeeRepository.findByEmail(employeeData.getEmail());
+        if (employee == null){
+            return null;
+        }
+        employee.setFirstName(employeeData.getFirstName());
+        employee.setLastName(employeeData.getLastName());
+        employee.setGender(employeeData.getGender());
+        employee.setDepartment(departmentRepository.findById(employeeData.getDeptId()).get());
+        employee.setUpdateDate(new Date());
+        Date date1;
+        try {
+            date1 =new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        employee.setDateOfBirth(date1);
+        employee.setAddress(employeeData.getAddress());
+        employee.setPhoneNumber(employeeData.getPhoneNumber());
+        employeeRepository.save(employee);
+        return employee;
+    }
+
+    @Override
     public List<Employee> getListAll() {
         return employeeRepository.findAll();
     }

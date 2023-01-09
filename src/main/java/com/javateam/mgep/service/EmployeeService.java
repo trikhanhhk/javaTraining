@@ -11,6 +11,8 @@ import java.util.List;
 public interface EmployeeService {
     public Employee addEmployee(EmployeeData employeeData) throws ParseException;
     public Employee updateEmployee(String address, String phone,String email);
+
+    public Employee updateEmployeeAdmin(EmployeeData employeeData);
     public List<Employee> getListAll();
 
     public List<Employee> searchByData(SearchCriteria searchCriteria);

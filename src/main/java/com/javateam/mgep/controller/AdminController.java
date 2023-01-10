@@ -46,7 +46,7 @@ public class AdminController {
     @Autowired
     ResetPasswordTokenRepository resetPasswordTokenRepository;
 
-    @GetMapping({"/admin/home", "/admin/", "/admin"})
+    @GetMapping({"/adminHome", "/admin"})
     public String homeAdmin(Model model, HttpSession session) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
@@ -55,7 +55,7 @@ public class AdminController {
         session.setAttribute("fullName", fullName);
         List<Employee> employeeList = employeeService.getListAll();
         model.addAttribute("employeeList", employeeList);
-        return "/homeAdmin/home";
+        return "admin/home";
     }
 
     @GetMapping("/admin/export-to-excel")
@@ -94,7 +94,7 @@ public class AdminController {
         session.setAttribute("fullName", fullName);
         List<Employee> employeeList = employeeService.searchByData(search);
         model.addAttribute("employeeList", employeeList);
-        return "/homeAdmin/home";
+        return "admin/home";
     }
 
     @GetMapping("/{id}")
@@ -118,7 +118,7 @@ public class AdminController {
             count++;
         }
         employeeRepository.delete(employee);
-        return "redirect:admin/home";
+        return "redirect:adminHome";
     }
 
     @GetMapping("/admin/update/{id}")
@@ -131,7 +131,7 @@ public class AdminController {
         session.setAttribute("employee", employee);
 
         model.addAttribute("name", fullName);
-        return "/homeAdmin/update";
+        return "/admin/update";
     }
 
     @PostMapping("/admin/submit-update-admin")
@@ -140,18 +140,16 @@ public class AdminController {
         System.out.println(employeeData.getId());
         if (employee == null){
             model.addAttribute("error","Cập nhập thất bại!!!");
-            return "redirect:admin/home/"+ employeeData.getId();
+            return "redirect:adminHome/"+ employeeData.getId();
         }
-
-        return "redirect:/admin/home";
+        return "redirect:/adminHome";
     }
 
     @GetMapping("/admin/send-email")
     public  String sendEmailAdmin(HttpSession session,Model model){
-        System.out.println("hahaa");
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
-        return "/homeAdmin/sendEmail";
+        return "/admin/sendEmail";
     }
 
 }

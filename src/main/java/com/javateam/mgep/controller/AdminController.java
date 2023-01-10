@@ -79,10 +79,10 @@ public class AdminController {
         List<Employee> lstEmpoloyee = employeeService.importFileEx(files);
         if (lstEmpoloyee == null){
             model.addAttribute("error","Không nhập được file");
-            return "redirect:admin/home";
+            return "redirect:/admin/home";
         }
         model.addAttribute("OK","Nhập File Thành công!");
-        return "redirect:admin/home";
+        return "redirect:/admin/home";
     }
 
     @GetMapping("/admin/searchEmployee")

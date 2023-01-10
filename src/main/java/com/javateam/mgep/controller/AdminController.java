@@ -5,15 +5,12 @@ import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.repositories.*;
 import com.javateam.mgep.service.DepartmentService;
 import com.javateam.mgep.entity.Employee;
-import com.javateam.mgep.entity.dto.PasswordResetData;
 import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.excel.ExcelGeneratorListEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -78,9 +74,15 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/admin/import-to-excel", method = RequestMethod.POST)
-    public String importExcelFile(@RequestParam("file") MultipartFile files){
-        employeeService.importFileEx(files);
-        return null;
+    public String importExcelFile(@RequestParam("file") MultipartFile files,Model model){
+        System.out.println("haha");
+        List<Employee> lstEmpoloyee = employeeService.importFileEx(files);
+        if (lstEmpoloyee == null){
+            model.addAttribute("error","Không nhập được file");
+            return "redirect:admin/home";
+        }
+        model.addAttribute("OK","Nhập File Thành công!");
+        return "redirect:admin/home";
     }
 
     @GetMapping("/admin/searchEmployee")
@@ -124,7 +126,6 @@ public class AdminController {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         model.addAttribute("employee", employee);
         String fullName = (String) session.getAttribute("fullName");
-        System.out.println(fullName);
         List<Department> departments = departmentService.getListDept();
         model.addAttribute("departments",departments);
         session.setAttribute("employee", employee);
@@ -143,6 +144,14 @@ public class AdminController {
         }
 
         return "redirect:/admin/home";
+    }
+
+    @GetMapping("/admin/send-email")
+    public  String sendEmailAdmin(HttpSession session,Model model){
+        System.out.println("hahaa");
+        String fullName = (String) session.getAttribute("fullName");
+        model.addAttribute("name", fullName);
+        return "/homeAdmin/sendEmail";
     }
 
 }

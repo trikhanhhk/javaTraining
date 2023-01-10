@@ -147,7 +147,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        XSSFSheet worksheet = workbook.getSheet("employee");
+        XSSFSheet worksheet = workbook.getSheet("NhanVien");
         for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
             if (index > 0){
                 EmployeeData employee = new EmployeeData();
@@ -157,13 +157,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employee.setLastName(row.getCell(2).getStringCellValue());
                 employee.setDateOfBirth(row.getCell(3).getStringCellValue());
                 employee.setPhoneNumber(row.getCell(4).getStringCellValue());
-                employee.setGender(row.getCell(5).getStringCellValue());
-                employee.setAddress(row.getCell(6).getStringCellValue());
-                employee.setEmail(row.getCell(7).getStringCellValue());
+                String nameGender = (row.getCell(5).getStringCellValue());
+                employee.setGender(nameGender.equals("Nam") ? "1" : "0");
+                employee.setEmail(row.getCell(6).getStringCellValue());
+                employee.setAddress(row.getCell(7).getStringCellValue());
                 employee.setPassword(row.getCell(8).getStringCellValue());
                 employee.setRepeatPassword(row.getCell(9).getStringCellValue());
-                Long deptId = (long) row.getCell(10).getNumericCellValue();
-                employee.setDeptId(deptId);
+                String nameDepartment = row.getCell(10).getStringCellValue();
+                Department department = departmentRepository.findByName(nameDepartment);
+                employee.setDeptId(department.getId());
                 try {
                     lstEmployee.add(addEmployee(employee));
                 } catch (ParseException e) {

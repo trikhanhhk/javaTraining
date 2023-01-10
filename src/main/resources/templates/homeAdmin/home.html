@@ -33,7 +33,7 @@
                     href="#!"><i class="fa fa-home" style="font-size: 22px;"></i>&ensp;TRANG
                 CHỦ</a> <a
                 class="list-group-item list-group-item-action list-group-item-light p-3"
-                th:href="@{/templates/homeAdmin/mail}"><i class="fa fa-envelope-o fa-fw" style="font-size: 22px;"></i>&ensp;GỬI
+                th:href="@{/admin/send-email}"><i class="fa fa-envelope-o fa-fw" style="font-size: 22px;"></i>&ensp;GỬI
             EMAIL</a>
         </div>
     </div>
@@ -100,7 +100,7 @@
                             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                  aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
-                                    <form th:action="@{/admin/import-to-excel}" method="POST">
+                                    <form th:action="@{/admin/import-to-excel}" method="POST" enctype="multipart/form-data">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Chọn file cần nhập</h5>
@@ -112,7 +112,7 @@
                                             <div class="modal-body">
                                                 <div class="input-group">
                                                     <div class="custom-file">
-                                                        <input type="file" class="custom-file-input"
+                                                        <input type="file" name="file" class="custom-file-input"
                                                                id="inputGroupFile04" required>
                                                         <label class="custom-file-label" for="inputGroupFile04">Chọn
                                                             file</label>

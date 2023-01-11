@@ -7,6 +7,7 @@ import com.javateam.mgep.service.DepartmentService;
 import com.javateam.mgep.entity.Employee;
 import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.service.EmployeeService;
+import com.javateam.mgep.service.SendMailService;
 import com.javateam.mgep.service.excel.ExcelGeneratorListEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
@@ -45,6 +46,8 @@ public class AdminController {
     ConfirmationTokenRepository confirmationTokenRepository;
     @Autowired
     ResetPasswordTokenRepository resetPasswordTokenRepository;
+    @Autowired
+    SendMailService sendMailService;
 
     @GetMapping({"/adminHome", "/admin"})
     public String homeAdmin(Model model, HttpSession session) {
@@ -149,6 +152,15 @@ public class AdminController {
     public  String sendEmailAdmin(HttpSession session,Model model){
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
+        return "/admin/sendEmail";
+    }
+
+    @PostMapping("/admin/send-email")
+    public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailData emailData) {
+        String fullName = (String) session.getAttribute("fullName");
+        model.addAttribute("name", fullName);
+        model.addAttribute("message", "Đã gửi mail");
+        sendMailService.sendMail(emailData);
         return "/admin/sendEmail";
     }
 

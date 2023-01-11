@@ -1,15 +1,13 @@
 package com.javateam.mgep.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "EmailData")
 public class EmailData {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     private Long id;
 
     @Column(name = "type_send")
@@ -35,12 +33,6 @@ public class EmailData {
 
     @Column(name = "status")
     private String status;
-
-//    @Column (name = "date_start")
-//    private Date dateStart;
-//
-//    @Column (name = "date_end")
-//    private Date dateEnd;
 
     @Column(name = "delete_flg")
     private String deleteFlg;
@@ -123,22 +115,6 @@ public class EmailData {
     public void setStatus(String status) {
         this.status = status;
     }
-
-//    public Date getDateStart() {
-//        return dateStart;
-//    }
-//
-//    public void setDateStart(Date dateStart) {
-//        this.dateStart = dateStart;
-//    }
-//
-//    public Date getDateEnd() {
-//        return dateEnd;
-//    }
-//
-//    public void setDateEnd(Date dateEnd) {
-//        this.dateEnd = dateEnd;
-//    }
 
     public String getDeleteFlg() {
         return deleteFlg;

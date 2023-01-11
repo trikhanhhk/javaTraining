@@ -41,15 +41,16 @@
                                 class="fa fa-user" style="font-size:22px;"></i> &ensp; <b th:text="${fullName}"></b>
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu">
+                            <th:block th:if="${admin} != null">
+                                <li><a th:href="@{/admin}"><button class="thebtn">Home Admin</button></a></li>
+                            </th:block>
                             <li><a th:href="@{/hello/new-password}"><button class="thebtn">Đổi mật khẩu</button></a></li>
                             <li>
                                 <form th:action="@{/logout}" method="post">
                                     <button class="thebtn" type="submit">Đăng xuất</button>
                                 </form>
                             </li>
-                            <th:block th:if="${admin} != null">
-                                <li><a th:href="@{/admin}"><button class="thebtn">Home Admin</button></a></li>
-                            </th:block>
+
                         </ul>
                         &ensp;
                         <i class="fa fa-bell" style="font-size:27px;color: gray"></i>

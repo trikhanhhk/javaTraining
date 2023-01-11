@@ -4,6 +4,6 @@ public class PasswordNotMatchException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public PasswordNotMatchException () {
-        super("Password and Repeat Password don't match !!");
+        super("Mật khẩu và nhập lại mật khẩu không khớp");
     }
 }

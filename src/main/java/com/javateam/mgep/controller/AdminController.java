@@ -98,15 +98,14 @@ public class AdminController {
     }
 
     @GetMapping("/{id}")
-    public String deleteEmployee(@PathVariable("id") String id, Model model) {
-        Optional<Employee> employeeFindById = employeeRepository.findById(Long.parseLong(id));
+    public String deleteEmployee(@PathVariable("id") Long id, Model model) {
+        Optional<Employee> employeeFindById = employeeRepository.findById(id);
         if (employeeFindById.isEmpty()) {
             model.addAttribute("error", "Không tìm thấy nhân viên");
             return "redirect:admin/home";
         }
         Employee employee = employeeFindById.get();
         ConfirmationToken confirmationToken = confirmationTokenRepository.findByUserEntity(employee.getId());
-        System.out.println(confirmationToken);
         if (confirmationToken != null) {
             confirmationTokenRepository.deleteById(confirmationToken.getTokenid());
         }

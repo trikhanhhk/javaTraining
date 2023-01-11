@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/hello")
                 .permitAll() // Tất cả đều được truy cập vào địa chỉ này
                 .and()
-                .rememberMe().tokenRepository(persistentTokenRepository())
+                .rememberMe().tokenRepository(persistentTokenRepository()).tokenValiditySeconds(60*60*2)
                 .and()
                 .logout().logoutSuccessUrl("/login")
                 .permitAll();

@@ -161,7 +161,7 @@ public class AdminController {
         model.addAttribute("name", fullName);
         model.addAttribute("message", "Đã gửi mail");
         sendMailService.sendMail(emailData);
-        return "/admin/send-email";
+        return "/admin/sendEmail";
     }
 
 }

@@ -10,9 +10,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Data
 @Table(name = "EmailData")
-@NoArgsConstructor
 public class EmailData {
     @Id
     private Long id;
@@ -22,9 +20,6 @@ public class EmailData {
 
     @Column(name = "send_to")
     private String sendTo;
-
-    @Column(name = "title")
-    private String title;
 
     @Column(name = "subject")
     private String subject;
@@ -50,4 +45,95 @@ public class EmailData {
     @Column(name = "delete_flg")
     private String deleteFlg;
 
+    public EmailData() {
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTypeSend() {
+        return typeSend;
+    }
+
+    public void setTypeSend(String typeSend) {
+        this.typeSend = typeSend;
+    }
+
+    public String getSendTo() {
+        return sendTo;
+    }
+
+    public void setSendTo(String sendTo) {
+        this.sendTo = sendTo;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getRepeatType() {
+        return repeatType;
+    }
+
+    public void setRepeatType(String repeatType) {
+        this.repeatType = repeatType;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getDateStart() {
+        return dateStart;
+    }
+
+    public void setDateStart(Date dateStart) {
+        this.dateStart = dateStart;
+    }
+
+    public Date getDateEnd() {
+        return dateEnd;
+    }
+
+    public void setDateEnd(Date dateEnd) {
+        this.dateEnd = dateEnd;
+    }
+
+    public String getDeleteFlg() {
+        return deleteFlg;
+    }
+
+    public void setDeleteFlg(String deleteFlg) {
+        this.deleteFlg = deleteFlg;
+    }
 }

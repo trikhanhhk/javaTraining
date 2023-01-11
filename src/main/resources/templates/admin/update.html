@@ -11,8 +11,7 @@
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link th:href="@{../css/styles.css}" rel="stylesheet"/>
-    <link th:href="@{../css/home.css}" rel="stylesheet"/>
+    <link th:href="@{../../css/styles.css}" rel="stylesheet"/>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet"
@@ -32,9 +31,9 @@
             <a
                     class="list-group-item list-group-item-action list-group-item-light p-3"
                     th:href="@{/adminHome}"><i class="fa fa-home"
-                                                style="font-size: 22px;"></i>&ensp;TRANG CHỦ</a> <a
+                                               style="font-size: 22px;"></i>&ensp;TRANG CHỦ</a> <a
                 class="list-group-item list-group-item-action list-group-item-light p-3"
-                th:href="@{/admin/mail}"><i class="fa fa-envelope-o fa-fw"
+                th:href="@{/admin/send-email}"><i class="fa fa-envelope-o fa-fw"
                                             style="font-size: 22px;"></i>&ensp;GỬI EMAIL</a>
         </div>
     </div>
@@ -152,7 +151,7 @@
                                         </div>
                                         <select name="deptId" style="width: 198px;height: 36px;">
                                             <option th:each="dept : ${departments}" th:value="${dept.getId()}" th:text="${dept.getName()}"
-                                            th:selected="${employee.department.id == dept.getId()}"></option>
+                                                    th:selected="${employee.department.id == dept.getId()}"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -194,7 +193,7 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 <!-- Core theme JS-->
-<script src="js/scripts.js"></script>
+<script th:src="@{../../js/scripts.js}"></script>
 </body>
 
 </html>

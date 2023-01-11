@@ -99,7 +99,7 @@ public class AdminController {
         //Import-to-excel successful.
         model.addAttribute("OK","Nhập File Thành công!");
 
-        return "redirect:/admin/home";
+        return "redirect:/adminHome";
     }
 
 

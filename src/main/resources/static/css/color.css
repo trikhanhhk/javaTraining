@@ -1,0 +1,22 @@
+#image{
+    height: 130px;
+}
+.center{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+#navigation-top{
+    background-color: #0dcaf0;
+}
+.dropdown{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.information-user{
+    background-color: #f6f6f6;
+}
+
+

@@ -18,6 +18,8 @@ import java.util.HashMap;
 public class LoginController {
     @Autowired
     ForgotPasswordService forgotPasswordService;
+
+    //Displays screen login.
     @GetMapping("/login")
     public String login(){
         return "login";

@@ -46,18 +46,26 @@ public class AdminController {
     @Autowired
     ResetPasswordTokenRepository resetPasswordTokenRepository;
 
+    //Displays screen Home Admin
     @GetMapping({"/adminHome", "/admin"})
     public String homeAdmin(Model model, HttpSession session) {
+        //Get information login to security.
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
         String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
-        model.addAttribute("fullName", fullName);
-        session.setAttribute("fullName", fullName);
         List<Employee> employeeList = employeeService.getListAll();
+
+        //Set full name user login for session
+        session.setAttribute("fullName", fullName);
+
+        //Save information for model
+        model.addAttribute("fullName", fullName);
         model.addAttribute("employeeList", employeeList);
         return "admin/home";
     }
 
+
+    //Displays screen export-to-excel
     @GetMapping("/admin/export-to-excel")
     public void exportIntoExcelFile(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
@@ -73,30 +81,44 @@ public class AdminController {
         generator.generateExcelFile(response);
     }
 
+
+    //Displays screen import-to-excel
     @RequestMapping(value = "/admin/import-to-excel", method = RequestMethod.POST)
     public String importExcelFile(@RequestParam("file") MultipartFile files,Model model){
-        System.out.println("haha");
-        List<Employee> lstEmpoloyee = employeeService.importFileEx(files);
-        if (lstEmpoloyee == null){
+        List<Employee> lstEmployee = employeeService.importFileEx(files);
+
+        //Import-to-excel false.
+        if (lstEmployee == null){
             model.addAttribute("error","Không nhập được file");
             return "redirect:/admin/home";
         }
+
+        //Import-to-excel successful.
         model.addAttribute("OK","Nhập File Thành công!");
+
         return "redirect:/admin/home";
     }
 
+
+    //Function searchEmployee
     @GetMapping("/admin/searchEmployee")
     public String searchEmployee(@Validated @ModelAttribute("searchCriteria") SearchCriteria search, Model model, HttpSession session) {
+
+        //Get information login to security.
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
-        String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
-        model.addAttribute("fullName", fullName);
-        session.setAttribute("fullName", fullName);
         List<Employee> employeeList = employeeService.searchByData(search);
+
+        String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
+
+        session.setAttribute("fullName", fullName);
+        model.addAttribute("fullName", fullName);
         model.addAttribute("employeeList", employeeList);
         return "admin/home";
     }
 
+
+    //Displays screen delete information employee.
     @GetMapping("/{id}")
     public String deleteEmployee(@PathVariable("id") Long id, Model model) {
         Optional<Employee> employeeFindById = employeeRepository.findById(id);
@@ -120,34 +142,48 @@ public class AdminController {
         return "redirect:adminHome";
     }
 
+
+    //Displays screen update information employee.
     @GetMapping("/admin/update/{id}")
     public String updateAdmin(@PathVariable("id") long id, Model model, HttpSession session) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        model.addAttribute("employee", employee);
-        String fullName = (String) session.getAttribute("fullName");
-        List<Department> departments = departmentService.getListDept();
-        model.addAttribute("departments",departments);
-        session.setAttribute("employee", employee);
 
+        List<Department> departments = departmentService.getListDept();
+
+        //Get information to session saved.
+        String fullName = (String) session.getAttribute("fullName");
+
+        session.setAttribute("employee", employee);
+        model.addAttribute("departments",departments);
+        model.addAttribute("employee", employee);
         model.addAttribute("name", fullName);
+
         return "/admin/update";
     }
 
+
+    //Submit button update information employee.
     @PostMapping("/admin/submit-update-admin")
     public String submitUpdate(Model model,@ModelAttribute("employee") EmployeeData employeeData) {
         Employee employee = employeeService.updateEmployeeAdmin(employeeData);
-        System.out.println(employeeData.getId());
+
         if (employee == null){
             model.addAttribute("error","Cập nhập thất bại!!!");
             return "redirect:adminHome/"+ employeeData.getId();
         }
+
         return "redirect:/adminHome";
     }
 
+
+    //Displays screen send email admin
     @GetMapping("/admin/send-email")
     public  String sendEmailAdmin(HttpSession session,Model model){
+
+        //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
+
         return "/admin/sendEmail";
     }
 

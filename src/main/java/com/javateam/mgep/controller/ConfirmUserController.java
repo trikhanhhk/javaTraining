@@ -23,7 +23,6 @@ public class ConfirmUserController {
             modelAndView.setViewName("accountVerified");
         } else{
             modelAndView.addObject("message","The link is invalid or broken!");
-//            modelAndView.setViewName("error");
         }
 
         return modelAndView;

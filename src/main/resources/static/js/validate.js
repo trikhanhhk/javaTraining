@@ -6,7 +6,7 @@ var dateOfBirth = document.querySelector('#dateOfBirth');
 var email = document.querySelector('#email');
 var password = document.querySelector('#password');
 var repeatPassword = document.querySelector('#repeatPassword');
-var form =  document.getElementById("theForm");
+var form =  document.getElementById("formRegister");
 var textError = 'Không được để rỗng';
 var textErrorEmail = 'Sai định dạng email';
 
@@ -84,7 +84,10 @@ function checkMatches(passwordInput, repeatPassword){
         return false;
     }
 }
-form.addEventListener('submit', function (e) {
+$(form).on('submit', function (e) {
+    let actionUrl = $(this).attr("action");
+    let modal = $('#notification');
+    let self = $(this);
     e.preventDefault();
     let isEmptyError = checkEmptyError([firstName,lastName,phoneNumber,address,dateOfBirth,email,password,repeatPassword]);
     let isCheckLengthFirstName = checkLengthError(firstName,100,2);
@@ -109,7 +112,31 @@ form.addEventListener('submit', function (e) {
         console.log('Lỗi checkpassword');
         return;
     } else{
-        $(this).submit();
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: self.serialize(),
+            success: function (data) {
+                console.log('Đăng ký thành công');
+                $(".modal-body p").text(data.message);
+                $(".modal-title").text("Thành công");
+                if ($('#confirmButton').hasClass("close-button")) {
+                    $('#confirmButton')[0].classList.remove("close-button");
+                }
+                $('#confirmButton')[0].classList.add("btnSuccessLogin");
+                $('#confirmButton').text("OK");
+                modal.modal("show");
+            },
+            error: function (data) {
+                console.log('Lỗi đăng ký');
+                console.log(data);
+                $(".modal-body p").text(data.responseJSON.error);
+                $(".modal-title").text("Lỗi");
+                $('#confirmButton')[0].classList.add("close-button");
+                $('#confirmButton').text("OK");
+                modal.modal("show")
+            },
+        });
     }
 });
 

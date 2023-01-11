@@ -2,19 +2,19 @@ package com.javateam.mgep.controller;
 
 import com.javateam.mgep.entity.Department;
 import com.javateam.mgep.entity.Employee;
+import com.javateam.mgep.entity.ModelData;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.service.DepartmentService;
 import com.javateam.mgep.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,17 +45,21 @@ public class RegisterController {
     }
 
     @PostMapping("/addEmployee")
-    public String doRegister(@ModelAttribute("employee") EmployeeData employee, Model model) throws Exception {
+    @ResponseBody
+    public ResponseEntity<ModelData> doRegister(@ModelAttribute("employee") EmployeeData employee) throws Exception {
+        ModelData modelData = new ModelData();
         try {
             Employee newEmployee = employeeService.addEmployee(employee);
             if(newEmployee != null) {
-                return "login";
+                modelData.setMessage("Tài khoản đã được đăng ký vui lòng kiểm tra email để xác nhận đăng ký");
             } else {
-                return "redirect:register?error=?";
+                modelData.setError("Đã có lỗi xảy ra xin vui lòng thử lại");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(modelData);
             }
+            return ResponseEntity.ok(modelData);
         }catch (RuntimeException exception){
-            model.addAttribute("error", exception.getMessage());
-            return "redirect:register?error=?";
+            modelData.setError(exception.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(modelData);
         }
     }
 }

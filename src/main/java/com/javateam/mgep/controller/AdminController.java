@@ -87,7 +87,7 @@ public class AdminController {
 
     //Displays screen import-to-excel
     @RequestMapping(value = "/admin/import-to-excel", method = RequestMethod.POST)
-    public String importExcelFile(@RequestParam("file") MultipartFile files,Model model){
+    public String importExcelFile(@RequestParam("file") MultipartFile files,Model model) throws Exception {
         List<Employee> lstEmployee = employeeService.importFileEx(files);
 
         //Import-to-excel false.

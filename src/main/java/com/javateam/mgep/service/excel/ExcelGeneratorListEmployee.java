@@ -1,6 +1,8 @@
 package com.javateam.mgep.service.excel;
 
+import com.javateam.mgep.entity.Authoritty;
 import com.javateam.mgep.entity.Employee;
+import com.javateam.mgep.repositories.AuthorityRepository;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,7 +13,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Set;
 
 public class ExcelGeneratorListEmployee {
     private List<Employee> employeeList;
@@ -61,23 +65,23 @@ public class ExcelGeneratorListEmployee {
         XSSFFont font = workbook.createFont();
         font.setFontHeight(14);
         style.setFont(font);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         for (Employee record: employeeList) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
             createCell(row, columnCount++, record.getId(), style);
             createCell(row, columnCount++, record.getFirstName(), style);
             createCell(row, columnCount++, record.getLastName(), style);
-            createCell(row, columnCount++, record.getGender(), style);
-            createCell(row, columnCount++, record.getDateOfBirth().toString(), style);
+            createCell(row, columnCount++, record.getGender() == "1" ? "Nam" : "Nữ", style);
+            createCell(row, columnCount++, simpleDateFormat.format(record.getDateOfBirth()), style);
             createCell(row, columnCount++, record.getPhoneNumber(), style);
             createCell(row, columnCount++, record.getEmail(), style);
             createCell(row, columnCount++, record.getAddress(), style);
             createCell(row, columnCount++, record.getDepartment().getName(), style);
-            String position = "";
-            if(record.getAuthorities().contains("ROLE_MANAGER") || record.getAuthorities().contains("ROLE_ADMIN")) {
-                position = "Manager";
-            } else {
-                position = "Nhân viên";
+            Set<Authoritty> authoritties = record.getAuthorities();
+            String position = "Nhân viên";
+            for (Authoritty a: authoritties) {
+                if (a.getName().equals("ROLE_MANAGER") || a.getName().equals("ROLE_ADMIN")) position = "Manager";
             }
             createCell(row, columnCount++, position, style);
         }

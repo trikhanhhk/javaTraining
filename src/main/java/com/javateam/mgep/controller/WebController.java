@@ -30,24 +30,27 @@ public class WebController {
     @Autowired
     EmployeeService employeeService;
 
-    @GetMapping(value = {"/", "/home"})
-    public String homepage() {
-        return "home";
-    }
 
-    @GetMapping("/hello")
+    //Displays screen home user.
+    @GetMapping(value = {"/", "/home","/hello"})
     public String getHome(Model model, HttpSession session) {
+
+        //Get information user login to security.
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
-        System.out.println(userDetails.getAuthorities());
+
+        //Get information after update.
+        Employee employee = (Employee) session.getAttribute("employee");
+
+        // Get role user login.
         List<GrantedAuthority> grantList = (List<GrantedAuthority>) userDetails.getAuthorities();
         for (GrantedAuthority x : grantList) {
             if (x.getAuthority().equals("ROLE_ADMIN")){
                 model.addAttribute("admin","admin");
             }
         }
+
         String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
-        Object employee = session.getAttribute("employee");
         if (employee == null){
             model.addAttribute("fullName", fullName);
             model.addAttribute("employee", userDetails.getEmployee());
@@ -55,8 +58,9 @@ public class WebController {
             model.addAttribute("fullName", fullName);
             model.addAttribute("employee", employee);
         }
-        Object update = session.getAttribute("flags");
-        Object failedUpdate = session.getAttribute("updateFailed");
+        String update = (String) session.getAttribute("flags");
+        String failedUpdate = (String) session.getAttribute("updateFailed");
+
         if (update != null){
             model.addAttribute("flags",update);
         }
@@ -65,6 +69,8 @@ public class WebController {
         }
         return "home";
     }
+
+    //Displays screen update user.
     @GetMapping("/update")
     public String getUpdateUser(HttpSession session){
         String flags = "update";
@@ -72,11 +78,14 @@ public class WebController {
         return "redirect:hello";
     }
 
+
+    // Submit form update information user.
     @PostMapping("/submit-update")
     public String submitUpdate(@RequestParam("address") String address,
                                 @RequestParam("phoneNumber") String phone,
                                @RequestParam("email") String email, HttpSession session){
         Employee employee = employeeService.updateEmployee(address,phone,email);
+
         if (employee != null){
             session.setAttribute("flags",null);
             session.setAttribute("employee",employee);
@@ -86,23 +95,27 @@ public class WebController {
         return "redirect:update";
     }
 
+    // Cancel update information to screen user.
     @GetMapping("/cancel")
     public String cancelUpdateUser(HttpSession session){
         session.setAttribute("flags", null);
         return "redirect:hello";
     }
 
-
+    //Go to displays screen changePassword user.
     @GetMapping("/hello/new-password")
     public String newPassword() {
         return "password/changePasswordUser";
     }
 
+
+    //displays screen changePassword handle user submit
     @PostMapping("/hello/submit-new-password")
     @ResponseBody
     public ResponseEntity<ModelData> submitNewPassword(@Validated @ModelAttribute("dataPassword") PasswordResetData dataPassword) {
         Employee employee = changePasswordService.changePassword(dataPassword.getOldPassword(),dataPassword.getNewPassword(), dataPassword.getRepeatPassword());
         ModelData modelData = new ModelData();
+
         if (employee != null){
             modelData.setMessage("Đổi mật khẩu thành công");
             return ResponseEntity.ok(modelData);

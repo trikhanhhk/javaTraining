@@ -77,20 +77,17 @@
             <div class="conten">
                 <form th:action="@{/admin/send-email}" method="POST" th:object="${emailData}">
                     <div class="row">
-
-
                         <div class="col-sm-1"></div>
                         <div class="col-sm-2">Gửi tới</div>
-                        <div class="col-sm-5">
+                        <div class="col-sm-4">
                             <select id="typeSend" name="typeSend" style="width: 350px;height: 50px">
-                                <option value="1">Phòng ban</option>
-                                <option value="2">Cá Nhân</option>
                                 <option value="3">Tất cả</option>
+                                <option value="1">Phòng ban</option>
                             </select>
                         </div>
-
-                        <div class="col-sm-5">
-                            <select name="deptId" th:object="${departments}">
+                        <div class="col-sm-1">Chọn phòng ban</div>
+                        <div class="col-sm-4">
+                            <select disabled id="department" name="deptId" th:object="${departments}">
                                 <option disabled="disabled" selected="selected">Choose option</option>
                                 <option th:each="dept : ${departments}"
                                         th:value="${dept.getId()}" th:text="${dept.getName()}"></option>
@@ -119,17 +116,6 @@
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-sm-1">
-                        </div>
-                        <div class="col-sm-2"><input type="checkbox" name="repeat" id="repeat"> Định kì
-                        </div>
-                        <div class="col-sm-1">
-                            <select id="typeRepeat" style="width: 250px;height: 50px">
-                                <option value="1">Hàng ngày</option>
-                                <option value="2">Hàng tuần</option>
-                                <option value="3">Hàng tháng</option>
-                            </select>
-                        </div>
                         <div class="col-sm-3"></div>
                         <div class="col-sm-3" >
                             <button style="width: 100px;height: 50px" type="submit" class="btn btn-info">Gửi</button>
@@ -154,6 +140,17 @@
         crossorigin="anonymous"></script>
 <!-- Core theme JS-->
 <script th:src="@{../js/scripts.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("#typeSend").on("change", function () {
+            if(this.value == "1") {
+                $("#department").prop("disabled", false);
+            }else {
+                $("#department").prop("disabled", true);
+            }
+        })
+    });
+</script>
 </body>
 
 </html>

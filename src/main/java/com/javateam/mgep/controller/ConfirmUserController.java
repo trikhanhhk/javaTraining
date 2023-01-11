@@ -22,7 +22,7 @@ public class ConfirmUserController {
         if(employee != null){
             modelAndView.setViewName("accountVerified");
         } else{
-            modelAndView.addObject("message","The link is invalid or broken!");
+            modelAndView.addObject("message","Đường dẫn đã hết hạn hoặc bị khóa!");
 //            modelAndView.setViewName("error");
         }
 

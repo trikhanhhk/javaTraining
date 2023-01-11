@@ -38,7 +38,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     AuthorityRepository authorityRepository;
     @Autowired
     ConfirmationTokenRepository confirmationTokenRepository;
-
     @Autowired
     MailService mailService;
 
@@ -51,23 +50,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee addEmployee(EmployeeData employeeData) throws ParseException {
         Optional<Employee> findEmployee = employeeRepository.findOneByEmailIgnoreCase(employeeData.getEmail());
-        if(findEmployee.isPresent()) {
+        if(findEmployee.isPresent()) { //check mail đã tồn tại hay chưa
             throw new EmailAlreadyUsedException();
 
         }
         if(!employeeData.getPassword().equals(employeeData.getRepeatPassword())) {
             throw new PasswordNotMatchException();
         }
+        //lưu thông tin nhân viên
         Employee newEmployee = new Employee();
         newEmployee.setFirstName(employeeData.getFirstName());
         newEmployee.setLastName(employeeData.getLastName());
-        Date date1 =new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());
+        Date date1 =new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());  //định dạng ngày tháng
         newEmployee.setDateOfBirth(date1);
         newEmployee.setPhoneNumber(employeeData.getPhoneNumber());
         newEmployee.setEmail(employeeData.getEmail().toLowerCase());
-        Optional<Department> findDept = departmentRepository.findById(employeeData.getDeptId());
+        Optional<Department> findDept = departmentRepository.findById(employeeData.getDeptId()); //lấy phòng ban theo mã đã chọn
         if(findDept.isPresent()) {
-            newEmployee.setDepartment(findDept.get());
+            newEmployee.setDepartment(findDept.get()); //set giá trị phòng ban
         }
         newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
         newEmployee.setGender(employeeData.getGender());
@@ -77,11 +77,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newEmployee.setAuthorities(authorities);
         newEmployee.setCreateDate(new Date());
-        Employee employeeSaved = employeeRepository.save(newEmployee);
-        if(employeeSaved!=null) {
-            ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved);
-            confirmationTokenRepository.save(confirmationToken);
-            mailService.sendActiveMail(employeeSaved, confirmationToken.getConfirmationToken());
+        Employee employeeSaved = employeeRepository.save(newEmployee); //lưu vào db
+        if(employeeSaved!=null) {  //nếu lưu thành công
+            ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved); // tạo ra token mới để xác thực tài khoản
+            confirmationTokenRepository.save(confirmationToken);  // lưu token vào db
+            mailService.sendActiveMail(employeeSaved, confirmationToken.getConfirmationToken()); //gửi mail cho tài khoản
             return newEmployee;
         }
         return null;
@@ -180,4 +180,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new RuntimeException(e);
         }
     }
+
+//    public List<Employee> findByDeptId(String deptId) {
+//        List<Employee> employeeList = employeeRepository.findAll();
+//
+//    }
 }

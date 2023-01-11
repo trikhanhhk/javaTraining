@@ -88,6 +88,14 @@
                                 <option value="3">Tất cả</option>
                             </select>
                         </div>
+
+                        <div class="col-sm-5">
+                            <select name="deptId" th:object="${departments}">
+                                <option disabled="disabled" selected="selected">Choose option</option>
+                                <option th:each="dept : ${departments}"
+                                        th:value="${dept.getId()}" th:text="${dept.getName()}"></option>
+                            </select>
+                        </div>
                     </div>
                     <br>
 
@@ -145,7 +153,7 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 <!-- Core theme JS-->
-<script src="js/scripts.js"></script>
+<script th:src="@{../js/scripts.js}"></script>
 </body>
 
 </html>

@@ -147,20 +147,21 @@ public class AdminController {
         return "redirect:/adminHome";
     }
 
-    @GetMapping("/admin/send-email")
+    @GetMapping("/admin/send-email") //trang gửi mail
     public  String sendEmailAdmin(HttpSession session,Model model){
         String fullName = (String) session.getAttribute("fullName");
+        model.addAttribute("departments", departmentRepository.findAll());
         model.addAttribute("name", fullName);
         return "/admin/sendEmail";
     }
 
-    @PostMapping("/admin/send-email")
+    @PostMapping("/admin/send-email")  //xử lý gửi mail
     public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailData emailData) {
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
         model.addAttribute("message", "Đã gửi mail");
         sendMailService.sendMail(emailData);
-        return "/admin/sendEmail";
+        return "redirect:/admin/sendEmail";
     }
 
 }

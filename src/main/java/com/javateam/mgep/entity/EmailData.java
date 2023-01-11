@@ -1,8 +1,5 @@
 package com.javateam.mgep.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,6 +24,9 @@ public class EmailData {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "dept_id")
+    private String deptId;
+
     @Column(name = "type")
     private String type;
 
@@ -36,14 +36,25 @@ public class EmailData {
     @Column(name = "status")
     private String status;
 
-    @Column (name = "date_start")
-    private Date dateStart;
-
-    @Column (name = "date_end")
-    private Date dateEnd;
+//    @Column (name = "date_start")
+//    private Date dateStart;
+//
+//    @Column (name = "date_end")
+//    private Date dateEnd;
 
     @Column(name = "delete_flg")
     private String deleteFlg;
+
+    @Column(name = "create_date")
+    private Date createDate;
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
     public EmailData() {
     }
@@ -113,21 +124,21 @@ public class EmailData {
         this.status = status;
     }
 
-    public Date getDateStart() {
-        return dateStart;
-    }
-
-    public void setDateStart(Date dateStart) {
-        this.dateStart = dateStart;
-    }
-
-    public Date getDateEnd() {
-        return dateEnd;
-    }
-
-    public void setDateEnd(Date dateEnd) {
-        this.dateEnd = dateEnd;
-    }
+//    public Date getDateStart() {
+//        return dateStart;
+//    }
+//
+//    public void setDateStart(Date dateStart) {
+//        this.dateStart = dateStart;
+//    }
+//
+//    public Date getDateEnd() {
+//        return dateEnd;
+//    }
+//
+//    public void setDateEnd(Date dateEnd) {
+//        this.dateEnd = dateEnd;
+//    }
 
     public String getDeleteFlg() {
         return deleteFlg;
@@ -135,5 +146,13 @@ public class EmailData {
 
     public void setDeleteFlg(String deleteFlg) {
         this.deleteFlg = deleteFlg;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
     }
 }

@@ -95,11 +95,10 @@ public class AdminController {
             model.addAttribute("error","Không nhập được file");
             return "redirect:/admin/home";
         }
-
         //Import-to-excel successful.
         model.addAttribute("OK","Nhập File Thành công!");
 
-        return "redirect:/admin/home";
+        return "redirect:/adminHome";
     }
 
 
@@ -124,24 +123,11 @@ public class AdminController {
     //Displays screen delete information employee.
     @GetMapping("/{id}")
     public String deleteEmployee(@PathVariable("id") Long id, Model model) {
-        Optional<Employee> employeeFindById = employeeRepository.findById(id);
-        if (employeeFindById.isEmpty()) {
+        String result = employeeService.deleteEmployeeById(id);
+        if (result == null){
             model.addAttribute("error", "Không tìm thấy nhân viên");
-            return "redirect:admin/home";
+           return "redirect:admin/home";
         }
-        Employee employee = employeeFindById.get();
-        ConfirmationToken confirmationToken = confirmationTokenRepository.findByUserEntity(employee.getId());
-        if (confirmationToken != null) {
-            confirmationTokenRepository.deleteById(confirmationToken.getTokenid());
-        }
-
-        List<ResetPasswordToken> resetPasswordToken = resetPasswordTokenRepository.findByUserEntity(employee);
-        int count = 0;
-        for (int i = 0; i < resetPasswordToken.size(); i++) {
-            resetPasswordTokenRepository.deleteById(resetPasswordToken.get(i).gettkenId());
-            count++;
-        }
-        employeeRepository.delete(employee);
         return "redirect:adminHome";
     }
 
@@ -155,7 +141,7 @@ public class AdminController {
 
         //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");
-
+        System.out.println(employee.getDateOfBirth());
         session.setAttribute("employee", employee);
         model.addAttribute("departments",departments);
         model.addAttribute("employee", employee);

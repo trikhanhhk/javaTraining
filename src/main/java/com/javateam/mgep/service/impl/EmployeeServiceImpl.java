@@ -1,18 +1,12 @@
 package com.javateam.mgep.service.impl;
 
 import com.javateam.mgep.constants.AuthoritiesConstants;
-import com.javateam.mgep.entity.Authoritty;
-import com.javateam.mgep.entity.ConfirmationToken;
-import com.javateam.mgep.entity.Department;
-import com.javateam.mgep.entity.Employee;
+import com.javateam.mgep.entity.*;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.exception.EmailAlreadyUsedException;
 import com.javateam.mgep.exception.PasswordNotMatchException;
-import com.javateam.mgep.repositories.AuthorityRepository;
-import com.javateam.mgep.repositories.ConfirmationTokenRepository;
-import com.javateam.mgep.repositories.DepartmentRepository;
-import com.javateam.mgep.repositories.EmployeeRepository;
+import com.javateam.mgep.repositories.*;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.MailService;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -32,11 +26,16 @@ import java.util.*;
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
-    @Autowired DepartmentRepository departmentRepository;
+    @Autowired
+    DepartmentRepository departmentRepository;
     @Autowired
     AuthorityRepository authorityRepository;
     @Autowired
     ConfirmationTokenRepository confirmationTokenRepository;
+
+    @Autowired
+    ResetPasswordTokenRepository resetPasswordTokenRepository;
+
     @Autowired
     MailService mailService;
 
@@ -49,23 +48,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee addEmployee(EmployeeData employeeData) throws ParseException {
         Optional<Employee> findEmployee = employeeRepository.findOneByEmailIgnoreCase(employeeData.getEmail());
-        if(findEmployee.isPresent()) { //check mail đã tồn tại hay chưa
+        if (findEmployee.isPresent()) { //check mail đã tồn tại hay chưa
             throw new EmailAlreadyUsedException();
 
         }
-        if(!employeeData.getPassword().equals(employeeData.getRepeatPassword())) {
+        if (!employeeData.getPassword().equals(employeeData.getRepeatPassword())) {
             throw new PasswordNotMatchException();
         }
         //lưu thông tin nhân viên
         Employee newEmployee = new Employee();
         newEmployee.setFirstName(employeeData.getFirstName());
         newEmployee.setLastName(employeeData.getLastName());
-        Date date1 =new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());  //định dạng ngày tháng
+        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());  //định dạng ngày tháng
         newEmployee.setDateOfBirth(date1);
         newEmployee.setPhoneNumber(employeeData.getPhoneNumber());
         newEmployee.setEmail(employeeData.getEmail().toLowerCase());
         Optional<Department> findDept = departmentRepository.findById(employeeData.getDeptId()); //lấy phòng ban theo mã đã chọn
-        if(findDept.isPresent()) {
+        if (findDept.isPresent()) {
             newEmployee.setDepartment(findDept.get()); //set giá trị phòng ban
         }
         newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
@@ -77,7 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         newEmployee.setAuthorities(authorities);
         newEmployee.setCreateDate(new Date());
         Employee employeeSaved = employeeRepository.save(newEmployee); //lưu vào db
-        if(employeeSaved!=null) {  //nếu lưu thành công
+        if (employeeSaved != null) {  //nếu lưu thành công
             ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved); // tạo ra token mới để xác thực tài khoản
             confirmationTokenRepository.save(confirmationToken);  // lưu token vào db
             mailService.sendActiveMail(employeeSaved, confirmationToken.getConfirmationToken()); //gửi mail cho tài khoản
@@ -87,9 +86,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(String address, String phone,String email) {
+    public Employee updateEmployee(String address, String phone, String email) {
         Employee employee = employeeRepository.findByEmail(email);
-        if (employee != null){
+        if (employee != null) {
             employee.setAddress(address);
             employee.setPhoneNumber(phone);
             employeeRepository.save(employee);
@@ -103,7 +102,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee updateEmployeeAdmin(EmployeeData employeeData) {
         Employee employee = employeeRepository.findByEmail(employeeData.getEmail());
-        if (employee == null){
+        if (employee == null) {
             return null;
         }
         employee.setFirstName(employeeData.getFirstName());
@@ -113,7 +112,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateDate(new Date());
         Date date1;
         try {
-            date1 =new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());
+            date1 = new SimpleDateFormat("yyyy-MM-dd").parse(employeeData.getDateOfBirth());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -131,22 +130,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> searchByData(SearchCriteria searchCriteria) {
-        if(searchCriteria.getDataSearch() == null || searchCriteria.getDataSearch().equals("")) {
+        if (searchCriteria.getDataSearch() == null || searchCriteria.getDataSearch().equals("")) {
             return employeeRepository.findAll();
         }
         return employeeRepository.findAllByEmail(searchCriteria.getDataSearch());
     }
 
     @Override
-    public List<Employee> importFileEx(MultipartFile file) throws Exception{
+    //Function Import File Excel
+    public List<Employee> importFileEx(MultipartFile file) throws Exception {
         List<Employee> lstEmployee = new ArrayList<>();
         XSSFWorkbook workbook;
         workbook = new XSSFWorkbook(file.getInputStream());
+        //Read file sheet name NhanVien
         XSSFSheet worksheet = workbook.getSheet("NhanVien");
         for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
-            if (index > 0){
+            if (index > 0) {
                 EmployeeData employee = new EmployeeData();
+                // Get One Row in file excel.
                 XSSFRow row = worksheet.getRow(index);
+
+                // Set information employee for row in file excel.
                 employee.setFirstName(row.getCell(1).getStringCellValue());
                 employee.setLastName(row.getCell(2).getStringCellValue());
                 employee.setDateOfBirth(row.getCell(3).getStringCellValue());
@@ -175,8 +179,26 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-//    public List<Employee> findByDeptId(String deptId) {
-//        List<Employee> employeeList = employeeRepository.findAll();
-//
-//    }
+    @Override
+    public String deleteEmployeeById(Long id) {
+        Optional<Employee> employeeFindById = employeeRepository.findById(id);
+        if (employeeFindById.isEmpty()) {
+            return null;
+        }
+        Employee employee = employeeFindById.get();
+        ConfirmationToken confirmationToken = confirmationTokenRepository.findByUserEntity(employee.getId());
+        if (confirmationToken != null) {
+            confirmationTokenRepository.deleteById(confirmationToken.getTokenid());
+        }
+
+        List<ResetPasswordToken> resetPasswordToken = resetPasswordTokenRepository.findByUserEntity(employee);
+
+        for (int i = 0; i < resetPasswordToken.size(); i++) {
+            resetPasswordTokenRepository.deleteById(resetPasswordToken.get(i).gettkenId());
+        }
+        employeeRepository.delete(employee);
+        return "OK";
+    }
+
+
 }

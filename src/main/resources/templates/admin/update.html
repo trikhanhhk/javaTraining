@@ -12,7 +12,6 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{../../css/styles.css}" rel="stylesheet"/>
-    <link th:href="@{../../css/home.css}" rel="stylesheet"/>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet"
@@ -32,10 +31,10 @@
             <a
                     class="list-group-item list-group-item-action list-group-item-light p-3"
                     th:href="@{/adminHome}"><i class="fa fa-home"
-                                                style="font-size: 22px;"></i>&ensp;TRANG CHỦ</a> <a
+                                               style="font-size: 22px;"></i>&ensp;TRANG CHỦ</a> <a
                 class="list-group-item list-group-item-action list-group-item-light p-3"
-                th:href="@{/admin/mail}"><i class="fa fa-envelope-o fa-fw"
-                                            style="font-size: 22px;"></i>&ensp;GỬI EMAIL</a>
+                th:href="@{/admin/send-email}"><i class="fa fa-envelope-o fa-fw"
+                                                  style="font-size: 22px;"></i>&ensp;GỬI EMAIL</a>
         </div>
     </div>
     <!-- Page content wrapper-->
@@ -88,7 +87,7 @@
                                             <label>Họ:</label>
                                         </div>
                                         <div class="p-2">
-                                            <input type="text"  name="firstName" th:field="*{firstName}">
+                                            <input type="text" name="firstName" th:field="*{firstName}">
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between">
@@ -104,8 +103,8 @@
                                             <label>Ngày Sinh: </label>
                                         </div>
                                         <div class="p-2">
-                                            <input type="text" name="dateOfBirth"
-                                                   th:field="*{dateOfBirth}">
+                                            <input type="date"
+                                                   th:value="${#dates.format(employee.getDateOfBirth(), 'yyyy-dd-MM')}">
                                         </div>
                                     </div>
                                     <div class="d-flex ">
@@ -113,11 +112,11 @@
                                             <label>Giới tính: </label>
                                         </div>
                                         <div class="p-2" style="margin-left: 150px">
-                                            <input th:type="radio" name="gender"  th:value="${employee.gender}"
-                                                   th:checked="${employee.gender.equals('1')}" />Nam
+                                            <input th:type="radio" name="gender" th:value="${employee.gender}"
+                                                   th:checked="${employee.gender.equals('1')}"/>Nam
                                             &ensp;&ensp;
                                             <input th:type="radio" name="gender" th:value="${employee.gender}"
-                                                   th:checked="${employee.gender.equals('0')}" />Nữ
+                                                   th:checked="${employee.gender.equals('0')}"/>Nữ
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between">
@@ -151,8 +150,9 @@
                                             <label>Team: </label>
                                         </div>
                                         <select name="deptId" style="width: 198px;height: 36px;">
-                                            <option th:each="dept : ${departments}" th:value="${dept.getId()}" th:text="${dept.getName()}"
-                                            th:selected="${employee.department.id == dept.getId()}"></option>
+                                            <option th:each="dept : ${departments}" th:value="${dept.getId()}"
+                                                    th:text="${dept.getName()}"
+                                                    th:selected="${employee.department.id == dept.getId()}"></option>
                                         </select>
                                     </div>
                                 </div>

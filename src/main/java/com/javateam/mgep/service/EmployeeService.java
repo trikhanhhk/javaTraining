@@ -19,4 +19,6 @@ public interface EmployeeService {
     public List<Employee> searchByData(SearchCriteria searchCriteria);
 
     public List<Employee> importFileEx(MultipartFile file) throws Exception;
+
+    public String deleteEmployeeById(Long id);
 }

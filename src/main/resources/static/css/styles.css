@@ -10,6 +10,19 @@
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+.thebtn{
+    border: none;
+    background-color: white;
+}
+.thebtn:hover{
+    color: green;
+}
+
+.btnsubmit{
+    padding-left: 300px;
+    padding-top: 45px;
+}
 :root {
     --bs-blue: #0d6efd;
     --bs-indigo: #6610f2;
@@ -11302,7 +11315,7 @@ textarea.form-control-lg {
 }
 
 #sidebar-wrapper .list-group {
-    width: 15rem;
+    width: 16rem;
 }
 
 #page-content-wrapper {

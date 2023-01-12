@@ -144,6 +144,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         workbook = new XSSFWorkbook(file.getInputStream());
         //Read file sheet name NhanVien
         XSSFSheet worksheet = workbook.getSheet("NhanVien");
+        int countAdd = 0;
+        int countUpdate = 0;
         for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
             if (index > 0) {
                 EmployeeData employee = new EmployeeData();
@@ -165,7 +167,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                 Department department = departmentRepository.findByName(nameDepartment);
                 employee.setDeptId(department.getId());
                 try {
-                    lstEmployee.add(addEmployee(employee));
+                    if(employeeRepository.findByEmail(employee.getEmail()) != null) {
+                        this.updateEmployeeAdmin(employee);
+                    } else {
+                        lstEmployee.add(addEmployee(employee));
+                    }
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }

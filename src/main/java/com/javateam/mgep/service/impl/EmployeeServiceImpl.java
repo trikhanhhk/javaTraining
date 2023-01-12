@@ -156,8 +156,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         workbook = new XSSFWorkbook(file.getInputStream());
         //Read file sheet name NhanVien
         XSSFSheet worksheet = workbook.getSheet("NhanVien");
-        int countAdd = 0;
-        int countUpdate = 0;
         for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
             if (index > 0) {
                 EmployeeData employee = new EmployeeData();

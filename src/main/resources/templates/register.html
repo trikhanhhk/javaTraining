@@ -9,15 +9,9 @@
 
     <!-- Title Page-->
     <title>Đăng ký</title>
-
-    <!-- Icons font CSS-->
-    <link th:href="@{css/vendor/mdi-font/css/material-design-iconic-font.min.css}" rel="stylesheet" media="all">
-    <link th:href="@{css/vendor/font-awesome-4.7/css/font-awesome.min.css}" rel="stylesheet" media="all">
-    <!-- Font special for pages-->
-
-    <!-- Vendor CSS-->
-    <link th:href="@{css/vendor/select2/select2.min.css}" rel="stylesheet" media="all">
-    <link th:href="@{css/vendor/datepicker/daterangepicker.css}" rel="stylesheet" media="all">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <!-- Main CSS-->
     <link th:href="@{css/main.css}" rel="stylesheet" media="all">
@@ -26,26 +20,20 @@
 <div class="page-wrapper">
     <div class="wrapper wrapper--w790">
         <div class="card card-5">
-            <div class="card-heading">
-                <h2 class="title">Đăng ký nhân viên mới</h2>
-            </div>
-            <div th:if="${param.error}" class="alert alert-danger">
-                Email đã được sử dụng vui lòng thử lại!!!!
-            </div>
             <div class="card-body">
-                <form id="theForm" method="POST" th:action="@{/addEmployee}" th:object="${employee}">
+                <form id="formRegister" method="POST" th:action="@{/addEmployee}" th:object="${employee}">
                     <div class="form-row m-b-55">
                         <div class="name">Họ và tên * </div>
                         <div class="value">
                             <div class="row row-space">
-                                <div class="col-2">
+                                <div class="col-6">
                                     <div class="input-group-desc">
                                         <input id="firstName" class="input--style-5" th:field="*{firstName}" type="text"
                                                name="firstName" placeholder="Họ">
                                        <small></small>
                                     </div>
                                 </div>
-                                <div class="col-2">
+                                <div class="col-6">
                                     <div class="input-group-desc">
                                         <input id="lastName" class="input--style-5" type="text" th:field="*{lastName}"
                                                name="lastName" placeholder="Tên">
@@ -59,7 +47,7 @@
                         <div class="name">Điện thoại *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="phoneNumber" class="input--style-5" type="text" th:field="*{phoneNumber}" name="phoneNumber">
+                                <input id="phoneNumber" maxlength="10" minlength="10" class="input--style-5" type="text" th:field="*{phoneNumber}" name="phoneNumber">
                                 <small></small>
                             </div>
                         </div>
@@ -68,7 +56,7 @@
                         <div class="name">Địa chỉ *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="address" class="input--style-5" type="text" th:field="*{address}" name="address">
+                                <input id="address" class="input--style-5" maxlength="500" type="text" th:field="*{address}" name="address">
                                 <small></small>
                             </div>
                         </div>
@@ -91,7 +79,7 @@
                         <div class="name">Ngày sinh *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="dateOfBirth" class="input--style-5" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
+                                <input id="dateOfBirth" class="input--style-5" maxlength="10" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
                                 <small></small>
                             </div>
                         </div>
@@ -100,7 +88,7 @@
                         <div class="name">Email *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="email" class="input--style-5" type="email" th:field="*{email}" name="email">
+                                <input id="email" class="input--style-5" maxlength="200" type="email" th:field="*{email}" name="email">
                                 <small></small>
                             </div>
                         </div>
@@ -109,7 +97,7 @@
                         <div class="name">Mật khẩu *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" id="password" type="password" th:field="*{password}"
+                                <input class="input--style-5" maxlength="30" id="password" type="password" th:field="*{password}"
                                        name="password">
                                 <small></small>
                             </div>
@@ -119,7 +107,7 @@
                         <div class="name">Nhập lại mật khẩu *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input  class="input--style-5" id="repeatPassword" type="password" th:field="*{repeatPassword}"
+                                <input  class="input--style-5" maxlength="30" id="repeatPassword" type="password" th:field="*{repeatPassword}"
                                        name="password">
                                 <small></small>
                             </div>
@@ -141,25 +129,35 @@
                         </div>
                     </div>
                     <div>
-                        <button class="btn btn--radius-2 btn--red" type="submit" id="register"  >ĐĂNG KÝ</button>
+                        <button class="btn btn--red" type="submit" id="register" style="width: 100%; text-align: center">ĐĂNG KÝ</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<script th:src="@{https://code.jquery.com/jquery-3.1.1.min.js}"></script>
+
+<div class="modal" tabindex="-1" role="dialog" id="notification">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmButton" type="button" data-dismiss="modal" class="btn btn-primary">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript" th:src="@{/js/validate.js}"></script>
-<!-- Jquery JS-->
-<!-- Vendor JS-->
-<script th:src="@{vendor/select2/select2.min.js}"></script>
-<script th:src="@{vendor/datepicker/moment.min.js}"></script>
-<script th:src="@{vendor/datepicker/daterangepicker.js}"></script>
 
-<!-- Main JS-->
-<script th:src="@{/js/global.js}"></script>
-
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</body>
 
 </html>
 <!-- end document-->

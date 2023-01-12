@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -139,20 +138,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> importFileEx(MultipartFile file){
+    public List<Employee> importFileEx(MultipartFile file) throws Exception{
         List<Employee> lstEmployee = new ArrayList<>();
         XSSFWorkbook workbook;
-        try {
-             workbook = new XSSFWorkbook(file.getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        workbook = new XSSFWorkbook(file.getInputStream());
         XSSFSheet worksheet = workbook.getSheet("NhanVien");
         for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
             if (index > 0){
                 EmployeeData employee = new EmployeeData();
                 XSSFRow row = worksheet.getRow(index);
-                Integer id = (int) row.getCell(0).getNumericCellValue();
                 employee.setFirstName(row.getCell(1).getStringCellValue());
                 employee.setLastName(row.getCell(2).getStringCellValue());
                 employee.setDateOfBirth(row.getCell(3).getStringCellValue());

@@ -18,5 +18,5 @@ public interface EmployeeService {
 
     public List<Employee> searchByData(SearchCriteria searchCriteria);
 
-    public List<Employee> importFileEx(MultipartFile file);
+    public List<Employee> importFileEx(MultipartFile file) throws Exception;
 }

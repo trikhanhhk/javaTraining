@@ -8,18 +8,14 @@
     <meta name="description" content=""/>
     <meta name="author" content=""/>
     <title>Trang chủ</title>
-<!--    &lt;!&ndash; Favicon&ndash;&gt;-->
-<!--    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>-->
-    <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{../css/styles.css}" rel="stylesheet"/>
     <link th:href="@{../css/home.css}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
 </head>
 
 <body>
@@ -100,7 +96,7 @@
                             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                  aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
-                                    <form id="myForm" th:action="@{/admin/import-to-excel}" method="POST" enctype="multipart/form-data">
+                                    <form id="formImport" th:action="@{/admin/import-to-excel}" method="POST" enctype="multipart/form-data">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Chọn file cần nhập</h5>
@@ -123,7 +119,7 @@
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                                     Đóng
                                                 </button>
-                                                <button type="submit" onclick="myFunction()" value="Submit form" class="btn btn-primary">Xác nhận</button>
+                                                <button type="submit" value="Submit form" class="btn btn-primary">Xác nhận</button>
                                             </div>
                                         </div>
                                     </form>
@@ -193,7 +189,9 @@
     });
 
 
-    function myFunction() {
+    $("#formImport").on("submit", function(e) {
+        e.preventDefault();
+        let modal = $('#notification');
         var input = document.getElementById('fileInput');
         if (input.files.length > 0) { // This is VERY unlikely, browser support is near-universal
             for (var i = 0; i <= input.files.length - 1; i++) {
@@ -203,19 +201,32 @@
                 const file = Math.round((fileSize / 1024));// THE SIZE OF THE FILE.
                 if (fileName.trim().endsWith('xlsx') || fileName.trim().endsWith('xls')){
                     if (file >= 4096){
-                        alert(
-                            "File quá lớn, vui lòng chọn file nhỏ hơn 4mb");
+                        $("#notification  .modal-body p").text("Dung lượng file phải nhỏ hơn 4MB");
+                        $("#notification  .modal-title").text("Lỗi");
+                        $('#notification #confirmButton')[0].classList.add("close-button");
+                        $('#notification  #confirmButton').text("OK");
+                        modal.modal("show");
                         return;
                     }else{
                         document.getElementById("myForm").onsubmit;
                     }
+                } else {
+                    $("#notification  .modal-body p").text("Chỉ nhận các file .xlsx, .xls");
+                    $("#notification  .modal-title").text("Lỗi");
+                    $('#notification #confirmButton')[0].classList.add("close-button");
+                    $('#notification #confirmButton').text("OK");
+                    modal.modal("show")
                 }
             }
         }else{
-            alert("Vui lòng chọn 1 file");
+            $("#notification .modal-body p").text("Vui lòng chọn file để import");
+            $("#notification .modal-title").text("Lỗi");
+            $('#notification #confirmButton')[0].classList.add("close-button");
+            $('#notification #confirmButton').text("OK");
+            modal.modal("show")
             return;
         }
-    }
+    });
 
 </script>
 <!-- Bootstrap core JS-->
@@ -235,5 +246,24 @@
 <!-- Core theme JS-->
 <script th:src="@{../js/scripts.js}"></script>
 </body>
+
+<div class="modal" tabindex="-1" role="dialog" id="notification">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmButton" type="button" onclick="$('#notification').modal('hide')" class="btn btn-primary">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 </html>

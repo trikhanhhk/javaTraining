@@ -46,6 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    //Add one employee
     public Employee addEmployee(EmployeeData employeeData) throws ParseException {
         Optional<Employee> findEmployee = employeeRepository.findOneByEmailIgnoreCase(employeeData.getEmail());
         if (findEmployee.isPresent()) { //check mail đã tồn tại hay chưa
@@ -86,6 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    // Update employee display screen user
     public Employee updateEmployee(String address, String phone, String email) {
         Employee employee = employeeRepository.findByEmail(email);
         if (employee != null) {
@@ -100,8 +102,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployeeAdmin(EmployeeData employeeData) {
+    // Update user display screen admin
+    public Employee updateEmployeeAdmin(EmployeeData employeeData, String role) {
         Employee employee = employeeRepository.findByEmail(employeeData.getEmail());
+
+        Authoritty authoritty = new Authoritty(role);
+        Set<Authoritty> authoritySet = new HashSet<>();
+        authoritySet.add(authoritty);
+
         if (employee == null) {
             return null;
         }
@@ -119,11 +127,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setDateOfBirth(date1);
         employee.setAddress(employeeData.getAddress());
         employee.setPhoneNumber(employeeData.getPhoneNumber());
+        employee.setAuthorities(authoritySet);
+
         employeeRepository.save(employee);
         return employee;
     }
 
     @Override
+    //Find By All Employee
     public List<Employee> getListAll() {
         return employeeRepository.findAll();
     }
@@ -186,6 +197,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    //Delete employee by id
     public String deleteEmployeeById(Long id) {
         Optional<Employee> employeeFindById = employeeRepository.findById(id);
         if (employeeFindById.isEmpty()) {

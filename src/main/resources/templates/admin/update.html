@@ -82,78 +82,88 @@
                             <div class="row" style="width: 700px;">
                                 <input th:value="${id}" name="id" type="hidden">
                                 <div class="col-8">
-                                    <div class="d-flex justify-content-between">
-                                        <div class="p-2">
-                                            <label>Họ:</label>
-                                        </div>
-                                        <div class="p-2">
-                                            <input type="text" name="firstName" th:field="*{firstName}">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="p-2">
-                                            <label>Tên:</label>
-                                        </div>
-                                        <div class="p-2">
-                                            <input type="text" name="lastName" th:field="*{lastName}">
+                                    <div class="form-group row">
+                                        <label for="inputFirstName" class="col-sm-3 col-form-label">Họ (*)</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="firstName" th:field="*{firstName}" class="form-control"
+                                                  minlength="3" maxlength="100" id="inputFirstName" placeholder="Họ">
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="p-2">
-                                            <label>Ngày Sinh: </label>
-                                        </div>
-                                        <div class="p-2">
-                                            <input type="date"
-                                                   th:value="${#dates.format(employee.getDateOfBirth(), 'yyyy-dd-MM')}">
+                                    <div class="form-group row">
+                                        <label for="inputLastName" class="col-sm-3 col-form-label">Tên (*)</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="lastName" th:field="*{lastName}"
+                                                   minlength="3" maxlength="100" class="form-control" id="inputLastName" placeholder="Tên">
                                         </div>
                                     </div>
-                                    <div class="d-flex ">
-                                        <div class="p-2">
-                                            <label>Giới tính: </label>
-                                        </div>
-                                        <div class="p-2" style="margin-left: 150px">
-                                            <input th:type="radio" name="gender" th:value="${employee.gender}"
-                                                   th:checked="${employee.gender.equals('1')}"/>Nam
-                                            &ensp;&ensp;
-                                            <input th:type="radio" name="gender" th:value="${employee.gender}"
-                                                   th:checked="${employee.gender.equals('0')}"/>Nữ
+
+                                    <div class="form-group row">
+                                        <label for="inputDateOfBirth" class="col-sm-3 col-form-label">Ngày sinh</label>
+                                        <div class="col-sm-9">
+                                            <input type="date" name="dateOfBirth" th:value="${#dates.format(employee.getDateOfBirth(), 'yyyy-dd-MM')}" class="form-control"
+                                                   id="inputDateOfBirth" placeholder="Ngày sinh"  min="1800-01-01">
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="p-2">
-                                            <label>Email: </label>
-                                        </div>
-                                        <div class="p-2">
-                                            <input type="email" readonly name="email" th:field="*{email}">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="p-2">
-                                            <label>Điện thoại: </label>
-                                        </div>
-                                        <div class="p-2">
-                                            <input class="flags" type="text" name="phoneNumber"
-                                                   th:field="*{phoneNumber}">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="p-2">
-                                            <label>Địa chỉ: </label>
-                                        </div>
-                                        <div class="p-2">
-                                            <input class="flags" type="text" name="address"
-                                                   th:field="*{address}">
+
+                                    <div class="form-group row ">
+                                        <label for="inputDateOfBirth" class="col-sm-3 col-form-label">Giới tính</label>
+                                        <div class="col-sm-9">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="gender" id="inlineNam"
+                                                       th:value="${employee.gender}" th:checked="${employee.gender.equals('1')}">
+                                                <label class="form-check-label" for="inlineNam">Nam</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="gender" id="inlineNu"
+                                                       th:value="${employee.gender}" th:checked="${employee.gender.equals('0')}" >
+                                                <label class="form-check-label" for="inlineNu">Nữ</label>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="p-2">
-                                            <label>Team: </label>
+
+                                    <div class="form-group row">
+                                        <label for="inputEmail" class="col-sm-3 col-form-label">Email *</label>
+                                        <div class="col-sm-9">
+                                            <input type="email" name="email" th:field="*{email}" class="form-control"
+                                                   id="inputEmail" placeholder="Email">
                                         </div>
-                                        <select name="deptId" style="width: 198px;height: 36px;">
-                                            <option th:each="dept : ${departments}" th:value="${dept.getId()}"
-                                                    th:text="${dept.getName()}"
-                                                    th:selected="${employee.department.id == dept.getId()}"></option>
-                                        </select>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="inputPhone" class="col-sm-3 col-form-label">Điện thoại *</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="phoneNumber" th:field="*{phoneNumber}" class="form-control"
+                                                minlength="10" maxlength="10"   id="inputPhone" placeholder="Số điện thoại">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="inputAddress" class="col-sm-3 col-form-label">Địa chỉ *</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="address" th:field="*{address}" class="form-control"
+                                                   id="inputAddress" placeholder="Địa chỉ" maxlength="100" minlength="3">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="inputAddress" class="col-sm-3 col-form-label">Team *</label>
+                                        <div class="col-sm-9">
+                                            <select name="deptId" class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                                                <option th:each="dept : ${departments}" th:value="${dept.getId()}"
+                                                        th:text="${dept.getName()}"
+                                                        th:selected="${employee.department.id == dept.getId()}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="inlineRole" class="col-sm-3 col-form-label">Quyền *</label>
+                                        <div class="col-sm-9">
+                                            <select name="role" class="custom-select mr-sm-2" id="inlineRole">
+                                                <option th:each="author : ${authorityList}" th:value="${author.getName()}"
+                                                th:text="${author.getName()}" th:selected="${role.equals(author.getName())}"></option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-2">

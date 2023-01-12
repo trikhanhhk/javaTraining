@@ -9,7 +9,9 @@ import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.SendMailService;
 import com.javateam.mgep.service.excel.ExcelGeneratorListEmployee;
+import com.javateam.mgep.service.impl.AuthorityServiceIpml;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,26 +30,31 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class AdminController {
+    @Autowired
+    SendMailService sendMailService;
     @Autowired
     EmployeeService employeeService;
     @Autowired
     DepartmentService departmentService;
     @Autowired
-    DepartmentRepository departmentRepository;
+    AuthorityServiceIpml authorityService;
     @Autowired
     EmployeeRepository employeeRepository;
 
     @Autowired
     AuthorityRepository authorityRepository;
     @Autowired
+    DepartmentRepository departmentRepository;
+
+    @Autowired
     ConfirmationTokenRepository confirmationTokenRepository;
     @Autowired
     ResetPasswordTokenRepository resetPasswordTokenRepository;
-    @Autowired
-    SendMailService sendMailService;
+
 
     //Displays screen Home Admin
     @GetMapping({"/adminHome", "/admin"})
@@ -57,6 +64,12 @@ public class AdminController {
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
         String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
         List<Employee> employeeList = employeeService.getListAll();
+
+        //Get authenticate permissions
+        List<GrantedAuthority> grantList = (List<GrantedAuthority>) userDetails.getAuthorities();
+        for (GrantedAuthority x : grantList) {
+            session.setAttribute("role", x.getAuthority());
+        }
 
         //Set full name user login for session
         session.setAttribute("fullName", fullName);
@@ -139,9 +152,9 @@ public class AdminController {
     @GetMapping("/{id}")
     public String deleteEmployee(@PathVariable("id") Long id, Model model) {
         String result = employeeService.deleteEmployeeById(id);
-        if (result == null){
+        if (result == null) {
             model.addAttribute("error", "Không tìm thấy nhân viên");
-           return "redirect:admin/home";
+            return "redirect:admin/home";
         }
         return "redirect:adminHome";
     }
@@ -153,14 +166,23 @@ public class AdminController {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
         List<Department> departments = departmentService.getListDept();
+        List<Authoritty> authorityList = authorityService.findByAllAuthoritty();
 
+        Set<Authoritty> authorittySet = employee.getAuthorities();
+        String role = null;
+        for (Authoritty authoritty : authorittySet) {
+            role = authoritty.getName();
+        }
         //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");
         System.out.println(employee.getDateOfBirth());
+
+        model.addAttribute("role", role);
         session.setAttribute("employee", employee);
-        model.addAttribute("departments",departments);
-        model.addAttribute("employee", employee);
         model.addAttribute("name", fullName);
+        model.addAttribute("employee", employee);
+        model.addAttribute("departments", departments);
+        model.addAttribute("authorityList",authorityList);
 
         return "/admin/update";
     }
@@ -168,12 +190,12 @@ public class AdminController {
 
     //Submit button update information employee.
     @PostMapping("/admin/submit-update-admin")
-    public String submitUpdate(Model model,@ModelAttribute("employee") EmployeeData employeeData) {
-        Employee employee = employeeService.updateEmployeeAdmin(employeeData);
+    public String submitUpdate(Model model, @ModelAttribute("employee") EmployeeData employeeData, @RequestParam("role") String role) {
+        Employee employee = employeeService.updateEmployeeAdmin(employeeData,role);
 
-        if (employee == null){
-            model.addAttribute("error","Cập nhập thất bại!!!");
-            return "redirect:adminHome/"+ employeeData.getId();
+        if (employee == null) {
+            model.addAttribute("error", "Cập nhập thất bại!!!");
+            return "redirect:adminHome/" + employeeData.getId();
         }
 
         return "redirect:/adminHome";
@@ -182,7 +204,7 @@ public class AdminController {
 
     //Displays screen send email admin
     @GetMapping("/admin/send-email")
-    public  String sendEmailAdmin(HttpSession session,Model model){
+    public String sendEmailAdmin(HttpSession session, Model model) {
 
         //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");

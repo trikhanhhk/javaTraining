@@ -25,7 +25,7 @@
         <div style="height: 75px;">LOGO</div>
         <div class="list-group list-group-flush">
             <a
-                    class="list-group-item list-group-item-action list-group-item-light p-3"
+                    class="list-group-item list-group-item-action list-group-item-light p-3 active"
                     th:href="@{/adminHome}"><i class="fa fa-home" style="font-size: 22px;"></i>&ensp;TRANG
                 CHỦ</a> <a
                 class="list-group-item list-group-item-action list-group-item-light p-3"
@@ -87,7 +87,6 @@
                     </div>
                     <div class="col-5" style="padding-left: 315px;padding-top: 44px">
                         <div class="input-group">
-
                             <button type="button" class="btn btn-primary" data-toggle="modal"
                                     data-target="#exampleModal">
                                 Nhập File
@@ -141,20 +140,24 @@
                             <tr>
                                 <td>STT</td>
                                 <td>Họ và tên</td>
+                                <td>Ngày sinh</td>
                                 <td>Số điện thoại</td>
                                 <td>Giới tính</td>
                                 <td>Email</td>
                                 <td>Địa Chỉ</td>
+                                <td>Team</td>
                                 <td>Trạng Thái</td>
                                 <td>Thao tác</td>
                             </tr>
                             <tr th:each="employee, state : ${employeeList}">
                                 <td th:text="${state.index + 1}"></td>
                                 <td th:text="${employee.firstName + ' ' + employee.lastName}"></td>
+                                <td th:text="${#dates.format(employee.getDateOfBirth(), 'dd-MM-yyyy')}"></td>
                                 <td th:text="${employee.phoneNumber}"></td>
                                 <td th:text="${employee.getGender().equals('1') ? 'Nam' : 'Nữ'}"></td>
                                 <td th:text="${employee.email}"></td>
                                 <td th:text="${employee.address}"></td>
+                                <td th:text="${employee.department.getName()}"></td>
                                 <td th:text="${employee.status == '1' ? 'Hoạt động' : 'Chưa kích hoạt'}"></td>
                                 <td>
                                     <a th:href="@{/admin/update/{id}(id=${employee.id})}">
@@ -199,7 +202,7 @@
                 var fileName = input.files.item(i).name;      // THE NAME OF THE FILE.
                 var fileSize = input.files.item(i).size;
                 const file = Math.round((fileSize / 1024));// THE SIZE OF THE FILE.
-                if (fileName.trim().endsWith('xlsx') || fileName.trim().endsWith('xls')){
+                if (fileName.trim().endsWith('.xlsx') || fileName.trim().endsWith('.xls')){
                     if (file >= 4096){
                         $("#notification  .modal-body p").text("Dung lượng file phải nhỏ hơn 4MB");
                         $("#notification  .modal-title").text("Lỗi");

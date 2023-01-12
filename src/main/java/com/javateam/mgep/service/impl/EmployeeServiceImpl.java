@@ -105,10 +105,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     // Update user display screen admin
     public Employee updateEmployeeAdmin(EmployeeData employeeData, String role) {
         Employee employee = employeeRepository.findByEmail(employeeData.getEmail());
-
-        Authoritty authoritty = new Authoritty(role);
-        Set<Authoritty> authoritySet = new HashSet<>();
-        authoritySet.add(authoritty);
+        if(role != null) {
+            Authoritty authoritty = new Authoritty(role);
+            Set<Authoritty> authoritySet = new HashSet<>();
+            authoritySet.add(authoritty);
+            employee.setAuthorities(authoritySet);
+        }
 
         if (employee == null) {
             return null;
@@ -127,7 +129,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setDateOfBirth(date1);
         employee.setAddress(employeeData.getAddress());
         employee.setPhoneNumber(employeeData.getPhoneNumber());
-        employee.setAuthorities(authoritySet);
 
         employeeRepository.save(employee);
         return employee;
@@ -179,7 +180,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employee.setDeptId(department.getId());
                 try {
                     if(employeeRepository.findByEmail(employee.getEmail()) != null) {
-                        this.updateEmployeeAdmin(employee);
+                        this.updateEmployeeAdmin(employee, null);
                     } else {
                         lstEmployee.add(addEmployee(employee));
                     }

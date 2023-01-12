@@ -3,7 +3,6 @@ package com.javateam.mgep.controller;
 import com.javateam.mgep.entity.*;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.repositories.*;
-import com.javateam.mgep.service.AuthorityService;
 import com.javateam.mgep.service.DepartmentService;
 import com.javateam.mgep.entity.Employee;
 import com.javateam.mgep.entity.dto.SearchCriteria;
@@ -45,6 +44,7 @@ public class AdminController {
     AuthorityServiceIpml authorityService;
     @Autowired
     EmployeeRepository employeeRepository;
+
     @Autowired
     AuthorityRepository authorityRepository;
     @Autowired
@@ -100,18 +100,33 @@ public class AdminController {
 
     //Displays screen import-to-excel
     @RequestMapping(value = "/admin/import-to-excel", method = RequestMethod.POST)
-    public String importExcelFile(@RequestParam("file") MultipartFile files, Model model) throws Exception {
-        List<Employee> lstEmployee = employeeService.importFileEx(files);
+    public String importExcelFile(@RequestParam("file") MultipartFile files,Model model, HttpSession session) {
+        try {
+            List<Employee> lstEmployee = employeeService.importFileEx(files);
 
-        //Import-to-excel false.
-        if (lstEmployee == null) {
-            model.addAttribute("error", "Không nhập được file");
-            return "redirect:/admin/home";
+            //Import-to-excel false.
+            if (lstEmployee == null) {
+                model.addAttribute("error", "Không nhập được file");
+                return "redirect:/admin/home";
+            }
+            //Import-to-excel successful.
+            model.addAttribute("message", "Thành công!");
+            SecurityContext securityContext = SecurityContextHolder.getContext();
+            CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
+            String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
+            List<Employee> employeeList = employeeService.getListAll();
+
+            //Set full name user login for session
+            session.setAttribute("fullName", fullName);
+
+            //Save information for model
+            model.addAttribute("fullName", fullName);
+            model.addAttribute("employeeList", employeeList);
+        } catch (Exception e) {
+            model.addAttribute("error", "Đã có lỗi xảy ra trong quá trình import, vui lòng kiểm tra lại định dạng file theo đúng chuẩn mẫu");
         }
-        //Import-to-excel successful.
-        model.addAttribute("OK", "Nhập File Thành công!");
 
-        return "redirect:/adminHome";
+        return "admin/home";
     }
 
 
@@ -149,6 +164,7 @@ public class AdminController {
     @GetMapping("/admin/update/{id}")
     public String updateAdmin(@PathVariable("id") long id, Model model, HttpSession session) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+
         List<Department> departments = departmentService.getListDept();
         List<Authoritty> authorityList = authorityService.findByAllAuthoritty();
 

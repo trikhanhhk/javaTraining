@@ -20,6 +20,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @EntityGraph(attributePaths = {"authorities", "department"})
     Optional<Employee> findOneByEmailIgnoreCase(String email);
 
-//    @Query("SELECT e FROM Employee e WHERE e.firstName like '%?1%' or e.lastName like '%?1%'")
+    @Query("select distinct employee from Employee employee where employee.email like %:search% or employee.lastName like %:search% or employee.firstName like %:search% or employee.address like %:search%")
     List<Employee> findAllByEmail(String search);
 }

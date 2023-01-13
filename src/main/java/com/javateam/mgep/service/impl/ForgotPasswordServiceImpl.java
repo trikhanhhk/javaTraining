@@ -16,21 +16,20 @@ import java.util.Optional;
 @Service
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     @Autowired
-    ResetPasswordTokenRepository resetPasswordTokenRepository;
-
+    MailService mailService;
     @Autowired
     EmployeeRepository employeeRepository;
     @Autowired
-    MailService mailService;
-
-    @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    ResetPasswordTokenRepository resetPasswordTokenRepository;
 
     public ForgotPasswordServiceImpl(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
+    //Function send email forgot Password.
     public String sendEmailForgotPassword(String email) throws RuntimeException {
         Optional<Employee> employeeExist = employeeRepository.findOneByEmailIgnoreCase(email);
         if(employeeExist.isPresent()) {
@@ -44,6 +43,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     @Override
+    //Reset Password by Token.
     public Employee resetPasswordByToken(String newPassword, String repeatPassword, String token) throws RuntimeException{
         ResetPasswordToken resetToken = resetPasswordTokenRepository.findByResetPasswordToken(token);
         if(resetToken != null) {

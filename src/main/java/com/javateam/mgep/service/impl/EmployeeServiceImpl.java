@@ -25,19 +25,17 @@ import java.util.*;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
-    EmployeeRepository employeeRepository;
+    MailService mailService;
     @Autowired
-    DepartmentRepository departmentRepository;
+    EmployeeRepository employeeRepository;
     @Autowired
     AuthorityRepository authorityRepository;
     @Autowired
+    DepartmentRepository departmentRepository;
+    @Autowired
     ConfirmationTokenRepository confirmationTokenRepository;
-
     @Autowired
     ResetPasswordTokenRepository resetPasswordTokenRepository;
-
-    @Autowired
-    MailService mailService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -97,7 +95,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             System.out.println("update thành công!");
             return employee;
         }
-        System.out.println("update thất bại");
         return null;
     }
 
@@ -105,13 +102,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     // Update user display screen admin
     public Employee updateEmployeeAdmin(EmployeeData employeeData, String role) {
         Employee employee = employeeRepository.findByEmail(employeeData.getEmail());
-        if(role != null) {
+        if (role != null) {
             Authoritty authoritty = new Authoritty(role);
             Set<Authoritty> authoritySet = new HashSet<>();
             authoritySet.add(authoritty);
             employee.setAuthorities(authoritySet);
         }
-
         if (employee == null) {
             return null;
         }
@@ -141,6 +137,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    //Search information
     public List<Employee> searchByData(SearchCriteria searchCriteria) {
         if (searchCriteria.getDataSearch() == null || searchCriteria.getDataSearch().equals("")) {
             return employeeRepository.findAll();
@@ -176,8 +173,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 String nameDepartment = row.getCell(10).getStringCellValue();
                 Department department = departmentRepository.findByName(nameDepartment);
                 employee.setDeptId(department.getId());
+
+                //Check import duplicate email.
                 try {
-                    if(employeeRepository.findByEmail(employee.getEmail()) != null) {
+                    if (employeeRepository.findByEmail(employee.getEmail()) != null) {
                         this.updateEmployeeAdmin(employee, null);
                     } else {
                         lstEmployee.add(addEmployee(employee));

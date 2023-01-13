@@ -219,7 +219,7 @@ public class AdminController {
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
         model.addAttribute("message", "Đã gửi mail");
-        sendMailService.sendMail(emailData);
+        sendMailService.handleSendMail(emailData);
         return "/admin/sendEmail";
     }
 

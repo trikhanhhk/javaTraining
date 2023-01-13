@@ -1,6 +1,7 @@
 package com.javateam.mgep.entity;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.util.Date;
 
 @Entity
@@ -10,43 +11,44 @@ public class EmailData {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "type_send")
-    private String typeSend;
-
     @Column(name = "send_to")
-    private String sendTo;
+    private String sendTo;  //gửi đến ai
 
     @Column(name = "subject")
-    private String subject;
+    private String subject;  //Tiêu đề mail
 
     @Column(name = "content")
-    private String content;
+    private String content;  // Nội dung mail
 
     @Column(name = "dept_id")
-    private String deptId;
+    private String deptId;  //Mã phòng ban cần gửi
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "repeat")
+    private String repeat;  //có định kỳ không value = 1 là định kỳ, khác là không định kỳ
+
+    @Column(name = "type_send")  // gửi cho phòng ban hay cho tất cả
+    private String typeSend;
 
     @Column(name = "repeat_type")
-    private String repeatType;
+    private String repeatType;  //định kỳ theo ngày: 1, tuần: 2, Tháng: 3
 
     @Column(name = "status")
-    private String status;
+    private String status;   //trạng thái
 
     @Column(name = "delete_flg")
     private String deleteFlg;
 
+    @Column(name = "start_date")
+    private Date startDate;   //ngày bắt đầu gửi
+
+    @Column(name = "end_date")
+    private Date endDate;  //ngày kết thúc gửi
+
+    @Column(name = "time_send")
+    private String timeSend;
+
     @Column(name = "create_date")
     private Date createDate;
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
 
     public EmailData() {
     }
@@ -92,14 +94,6 @@ public class EmailData {
         this.content = content;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getRepeatType() {
         return repeatType;
     }
@@ -130,5 +124,45 @@ public class EmailData {
 
     public void setDeptId(String deptId) {
         this.deptId = deptId;
+    }
+
+    public void setRepeat(String repeat) {
+        this.repeat = repeat;
+    }
+
+    public String getRepeat() {
+        return repeat;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getTimeSend() {
+        return timeSend;
+    }
+
+    public void setTimeSend(String timeSend) {
+        this.timeSend = timeSend;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableJpaRepositories("com.javateam.mgep.repositories")
+@EnableScheduling
 public class MgepApplication {
 
 	public static void main(String[] args) {

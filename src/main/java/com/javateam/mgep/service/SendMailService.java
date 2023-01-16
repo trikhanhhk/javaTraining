@@ -1,9 +1,10 @@
 package com.javateam.mgep.service;
 
 import com.javateam.mgep.entity.EmailData;
+import com.javateam.mgep.entity.dto.EmailDataForm;
 
 public interface SendMailService {
-    public void sendMail(EmailData emailData);
+    public void handleSendMail(EmailDataForm emailDataForm);
 
     public EmailData saveEmailData(EmailData emailData);
 

@@ -29,7 +29,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -106,11 +105,11 @@ public class AdminController {
 
             //Import-to-excel false.
             if (lstEmployee == null) {
-                model.addAttribute("error", "Không nhập được file");
+                model.addAttribute("error", "Lỗi file! File của bạn đang rỗng!");
                 return "redirect:/admin/home";
             }
             //Import-to-excel successful.
-            model.addAttribute("message", "Thành công!");
+            model.addAttribute("message", "Import File thành công!");
             SecurityContext securityContext = SecurityContextHolder.getContext();
             CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
             String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
@@ -124,9 +123,10 @@ public class AdminController {
             model.addAttribute("employeeList", employeeList);
         } catch (Exception e) {
             model.addAttribute("error", "Đã có lỗi xảy ra trong quá trình import, vui lòng kiểm tra lại định dạng file theo đúng chuẩn mẫu");
+            e.printStackTrace();
         }
 
-        return "admin/home";
+        return "redirect:/adminHome";
     }
 
 

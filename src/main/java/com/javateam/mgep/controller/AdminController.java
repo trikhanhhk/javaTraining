@@ -69,6 +69,19 @@ public class AdminController {
         for (GrantedAuthority x : grantList) {
             session.setAttribute("role", x.getAuthority());
         }
+        String errorEmail = (String) session.getAttribute("errorEmail");
+        String errorNull = (String) session.getAttribute("error");
+        String message = (String) session.getAttribute("message");
+        if (errorNull != null){
+            model.addAttribute("error", errorNull);
+        }
+        if (errorEmail != null) {
+            System.out.println(errorEmail);
+            model.addAttribute("error", errorEmail);
+        } else if (message != null) {
+            System.out.println(message);
+            model.addAttribute("message", message);
+        }
 
         //Set full name user login for session
         session.setAttribute("fullName", fullName);
@@ -99,17 +112,21 @@ public class AdminController {
 
     //Displays screen import-to-excel
     @RequestMapping(value = "/admin/import-to-excel", method = RequestMethod.POST)
-    public String importExcelFile(@RequestParam("file") MultipartFile files,Model model, HttpSession session) {
+    public String importExcelFile(@RequestParam("file") MultipartFile files, Model model, HttpSession session) {
         try {
             List<Employee> lstEmployee = employeeService.importFileEx(files);
-
+            session.removeAttribute("error");
             //Import-to-excel false.
             if (lstEmployee == null) {
-                model.addAttribute("error", "Lỗi file! File của bạn đang rỗng!");
-                return "redirect:/admin/home";
+                String error = "Lỗi file! File của bạn đang rỗng!";
+                session.setAttribute("error",error);
+                return "redirect:/adminHome";
             }
             //Import-to-excel successful.
-            model.addAttribute("message", "Import File thành công!");
+            session.removeAttribute("errorEmail");
+            String message = "Import File thành công!";
+            session.setAttribute("message", message);
+//            model.addAttribute("message", "Import File thành công!");
             SecurityContext securityContext = SecurityContextHolder.getContext();
             CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
             String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
@@ -122,7 +139,9 @@ public class AdminController {
             model.addAttribute("fullName", fullName);
             model.addAttribute("employeeList", employeeList);
         } catch (Exception e) {
-            model.addAttribute("error", "Đã có lỗi xảy ra trong quá trình import, vui lòng kiểm tra lại định dạng file theo đúng chuẩn mẫu");
+            String errorEmail = "Đã có lỗi xảy ra trong quá trình import, vui lòng kiểm tra lại định dạng file theo đúng chuẩn mẫu";
+//            model.addAttribute("error", "Đã có lỗi xảy ra trong quá trình import, vui lòng kiểm tra lại định dạng file theo đúng chuẩn mẫu");
+            session.setAttribute("errorEmail", errorEmail);
             e.printStackTrace();
         }
 
@@ -182,7 +201,7 @@ public class AdminController {
         model.addAttribute("name", fullName);
         model.addAttribute("employee", employee);
         model.addAttribute("departments", departments);
-        model.addAttribute("authorityList",authorityList);
+        model.addAttribute("authorityList", authorityList);
 
         return "/admin/update";
     }
@@ -191,7 +210,7 @@ public class AdminController {
     //Submit button update information employee.
     @PostMapping("/admin/submit-update-admin")
     public String submitUpdate(Model model, @ModelAttribute("employee") EmployeeData employeeData, @RequestParam("role") String role) {
-        Employee employee = employeeService.updateEmployeeAdmin(employeeData,role);
+        Employee employee = employeeService.updateEmployeeAdmin(employeeData, role);
 
         if (employee == null) {
             model.addAttribute("error", "Cập nhập thất bại!!!");

@@ -136,7 +136,7 @@
                                             </div>
                                             <div class="p-2">
                                                 <input class="flags" type="text" name="phoneNumber"
-                                                       th:value="${employee.getPhoneNumber()}">
+                                                       th:value="${employee.getPhoneNumber()}" maxlength="10" minlength="10">
                                             </div>
                                         </th:block>
                                     </div>
@@ -155,7 +155,7 @@
                                             </div>
                                             <div class="p-2">
                                                 <input class="flags" type="text" name="address"
-                                                       th:value="${employee.getAddress()}">
+                                                       th:value="${employee.getAddress()}" maxlength="100" minlength="3">
                                             </div>
                                         </th:block>
                                     </div>

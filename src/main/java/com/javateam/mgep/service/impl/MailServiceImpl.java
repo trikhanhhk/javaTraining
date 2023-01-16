@@ -48,7 +48,7 @@ public class MailServiceImpl implements MailService {
         // Prepare message using a Spring helper
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
-            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name());
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, "UTF-8");
             message.setTo(to);
             message.setFrom(MailConstaints.FROM);
             message.setSubject(subject);

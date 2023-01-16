@@ -5,13 +5,11 @@ import com.javateam.mgep.entity.*;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.exception.EmailAlreadyUsedException;
-import com.javateam.mgep.exception.PasswordNotMatchException;
 import com.javateam.mgep.repositories.*;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.MailService;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -69,9 +67,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (findDept.isPresent()) {
             newEmployee.setDepartment(findDept.get()); //set giá trị phòng ban
         }
-        if (employeeData.getPassword() == null){
+        if (employeeData.getPassword() == null) {
             newEmployee.setPasswordHash(passwordEncoder.encode("Jvb@123456"));
-        }else {
+        } else {
             newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
         }
         newEmployee.setGender(employeeData.getGender());
@@ -156,42 +154,52 @@ public class EmployeeServiceImpl implements EmployeeService {
     //Function Import File Excel
     public List<Employee> importFileEx(MultipartFile file) throws Exception {
         List<Employee> lstEmployee = new ArrayList<>();
-        XSSFWorkbook workbook;
-        workbook = new XSSFWorkbook(file.getInputStream());
-        //Read file sheet name NhanVien
-//        for (int i = 0; i < workbook.getNumberOfSheets();i++){
-//            System.out.println("Sheet " + i + " has data: " + isSheetEmpty(workbook.getSheetAt(i).getWorkbook()));
-//        }
-        System.out.println("haha");
-        XSSFSheet worksheet = workbook.getSheet("NhanVien");
-        for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
-            if (index > 0) {
-                EmployeeData employee = new EmployeeData();
-                // Get One Row in file excel.
-                XSSFRow row = worksheet.getRow(index);
-                // Set information employee for row in file excel.
-                employee.setFirstName(row.getCell(1).getStringCellValue());
-                employee.setLastName(row.getCell(2).getStringCellValue());
-                employee.setDateOfBirth(row.getCell(3).getStringCellValue());
-                employee.setPhoneNumber(row.getCell(4).getStringCellValue());
-                String nameGender = (row.getCell(5).getStringCellValue());
-                employee.setGender("Nam".equals(nameGender) ? "1" : "0");
-                employee.setEmail(row.getCell(6).getStringCellValue());
-                employee.setAddress(row.getCell(7).getStringCellValue());
-                String nameDepartment = row.getCell(8).getStringCellValue();
-                Department department = departmentRepository.findByName(nameDepartment);
-                employee.setDeptId(department.getId());
+        List<EmployeeData> employeeDataList = new ArrayList<>();
 
-                //Check import duplicate email.
-                try {
-                    if (employeeRepository.findByEmail(employee.getEmail()) != null) {
-                        this.updateEmployeeAdmin(employee, null);
-                    } else {
-                        lstEmployee.add(addEmployee(employee));
+        XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+        //Read file sheet name NhanVien
+        XSSFSheet worksheet = workbook.getSheet("NhanVien");
+        try {
+            if (worksheet == null) {
+                return null;
+            } else {
+                for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
+
+                    if (index > 0) {
+                        EmployeeData employeeData = new EmployeeData();
+                        // Get One Row in file excel.
+                        XSSFRow row = worksheet.getRow(index);
+                        // Set information employee for row in file excel.
+                        employeeData.setFirstName(row.getCell(1).getStringCellValue());
+                        employeeData.setLastName(row.getCell(2).getStringCellValue());
+                        employeeData.setDateOfBirth(row.getCell(3).getStringCellValue());
+                        employeeData.setPhoneNumber(row.getCell(4).getStringCellValue());
+                        String nameGender = (row.getCell(5).getStringCellValue());
+                        employeeData.setGender("Nam".equals(nameGender) ? "1" : "0");
+                        employeeData.setEmail(row.getCell(6).getStringCellValue());
+                        employeeData.setAddress(row.getCell(7).getStringCellValue());
+                        String nameDepartment = row.getCell(8).getStringCellValue();
+                        Department department = departmentRepository.findByName(nameDepartment);
+                        employeeData.setDeptId(department.getId());
+
+                        //addEmployeeData => list Employee Data.
+                        employeeDataList.add(employeeData);
                     }
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
                 }
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        for (EmployeeData employeeData : employeeDataList) {
+            try {
+                if (employeeRepository.findByEmail(employeeData.getEmail()) != null) {
+                    this.updateEmployeeAdmin(employeeData, null);
+                } else {
+                    lstEmployee.add(addEmployee(employeeData));
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         }
         try {
@@ -202,20 +210,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    boolean isSheetEmpty(XSSFWorkbook sheet){
-        Iterator rows = sheet.sheetIterator();
-        while (rows.hasNext()) {
-            HSSFRow row = (HSSFRow) rows.next();
-            Iterator cells = row.cellIterator();
-            while (cells.hasNext()) {
-                HSSFCell cell = (HSSFCell) cells.next();
-                if(!cell.getStringCellValue().isEmpty()){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    boolean isSheetEmpty(XSSFWorkbook sheet) {
+//        Iterator rows = sheet.iterator();
+//        while (rows.hasNext()) {
+//            XSSFRow row = (XSSFRow ) rows.next();
+//            Iterator cells = row.cellIterator();
+//            while (cells.hasNext()) {
+//                XSSFCell cell = (XSSFCell) cells.next();
+//                if(!cell.getStringCellValue().isEmpty()){
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     //Delete employee by id

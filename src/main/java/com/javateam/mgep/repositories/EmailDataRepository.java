@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface EmailDataRepository extends JpaRepository<EmailData, Long> {
-    @Query("select distinct emailData from EmailData emailData where emailData.repeat = '1' and emailData.endDate < current_date or emailData.endDate = current_date")
+    //Lấy ra những email có ngày gửi trùng với ngày hôm nay và là mail định kỳ và là mail chưa được gửi.
+    @Query("select distinct emailData from EmailData emailData where emailData.repeat = '1' and emailData.status ='0'")
     List<EmailData> findEmailDataByRepeat();
 }

@@ -3,18 +3,19 @@ package com.javateam.mgep.service.impl;
 import com.javateam.mgep.entity.Department;
 import com.javateam.mgep.entity.EmailData;
 import com.javateam.mgep.entity.Employee;
+import com.javateam.mgep.entity.dto.EmailDataForm;
 import com.javateam.mgep.repositories.DepartmentRepository;
 import com.javateam.mgep.repositories.EmailDataRepository;
 import com.javateam.mgep.repositories.EmployeeRepository;
 import com.javateam.mgep.repositories.SendMailRepository;
 import com.javateam.mgep.service.MailService;
-import com.javateam.mgep.service.SendEmailJobs;
 import com.javateam.mgep.service.SendMailService;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 import java.util.stream.Collectors;
@@ -33,32 +34,86 @@ public class SendMailServiceIpml implements SendMailService {
     MailService mailService;
 
     @Override
-    public void handleSendMail(EmailData emailData) {
+    public void handleSendMail(EmailDataForm emailDataForm) {
+        EmailData emailData = new EmailData(emailDataForm);
         String repeat = emailData.getRepeat();
         String typeSend = emailData.getTypeSend();  //loại mail gửi (phòng ban, tất cả, )
         if("1".equals(repeat)) {  //Gửi định kỳ ngày tuần, tháng
+            try{
+                emailData.setStartDate(new SimpleDateFormat("yyyy-MM-dd").parse(emailDataForm.getStartDate()));
+                emailData.setEndDate(new SimpleDateFormat("yyyy-MM-dd").parse(emailDataForm.getEndDate()));  //ngày kết thúc gửi
+            } catch (ParseException parseException) {
+                throw new RuntimeException(parseException);
+            }
             if ("1".equals(emailData.getRepeatType())) {
                 List<Date> dates = new ArrayList<Date>();
                 long interval = 24*1000 * 60 * 60; // 1 hour in millis
-                long endTime =emailData.getEndDate().getTime() ; // create your endtime here, possibly using Calendar or Date
+                long endTime =emailData.getEndDate().getTime() ;
                 long curTime = emailData.getStartDate().getTime();
                 while (curTime <= endTime) {
-                    emailData.setDateSend(new Date(curTime));
-                    emailDataRepository.save(emailData);
+                    Date dateSend = new Date(curTime);
+                    dateSend.setHours(Integer.parseInt(emailData.getTimeSend().split(":")[0]));
+                    dateSend.setMinutes(Integer.parseInt(emailData.getTimeSend().split(":")[1]));
+                    emailData.setDateSend(dateSend);
+                    emailData.setDateSendTime(new Date(curTime));
+                    emailData.setCreateDate(new Date());
+                    EmailData emailDataSave = new EmailData(emailData);
+                    String sendTo = "";
+                    if ("3".equals(typeSend)) { //gửi cho tất cả
+                        sendTo = getSendToAll(emailData);
+                    } else if (typeSend.equals("1")) { //gửi theo phòng ban
+                        sendTo = getSendToGroup(emailData);
+                    }
+                    emailDataSave.setSendTo(sendTo);
+                    emailDataSave.setStatus("0");
+                    emailDataRepository.save(emailDataSave);
                     curTime += interval;
                 }
             } else if ("2".equals(emailData.getRepeatType())) {
-//                Date startDateWeek = e.getStartDate();
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTime(startDateWeek);
-//                if (e.getTimeSend().getHours() == current.getHours() && e.getTimeSend().getMinutes() == current.getMinutes()) {
-//                    while (true) {
-////                            Date dateSend = new Date(e.getStartDate().plusDays(7).toString());
-////                            if(dateSend.equals())
-//                    }
-//                }
+                long interval = 7*24*1000 * 60 * 60; // 1 hour in millis
+                long endTime =emailData.getEndDate().getTime();
+                long curTime = emailData.getStartDate().getTime();
+                while (curTime <= endTime) {
+                    Date dateSend = new Date(curTime);
+                    dateSend.setHours(Integer.parseInt(emailData.getTimeSend().split(":")[0]));
+                    dateSend.setMinutes(Integer.parseInt(emailData.getTimeSend().split(":")[1]));
+                    emailData.setDateSend(dateSend);
+                    emailData.setDateSendTime(new Date(curTime));
+                    EmailData emailDataSave = new EmailData(emailData);
+                    emailData.setCreateDate(new Date());
+                    String sendTo = "";
+                    if ("3".equals(typeSend)) { //gửi cho tất cả
+                        sendTo = getSendToAll(emailData);
+                    } else if (typeSend.equals("1")) { //gửi theo phòng ban
+                        sendTo = getSendToGroup(emailData);
+                    }
+                    emailDataSave.setSendTo(sendTo);
+                    emailDataSave.setStatus("0");
+                    emailDataRepository.save(emailDataSave);
+                    curTime += interval;
+                }
             } else if ("3".equals(emailData.getRepeatType())) {
-
+                Date curTime = emailData.getStartDate();
+                Date endTime = emailData.getEndDate();
+                while (curTime.compareTo(endTime) > 0) {
+                    Date dateSend = curTime;
+                    dateSend.setHours(Integer.parseInt(emailData.getTimeSend().split(":")[0]));
+                    dateSend.setMinutes(Integer.parseInt(emailData.getTimeSend().split(":")[1]));
+                    emailData.setDateSend(dateSend);
+                    emailData.setDateSendTime(curTime);
+                    EmailData emailDataSave = new EmailData(emailData);
+                    emailData.setCreateDate(new Date());
+                    String sendTo = "";
+                    if ("3".equals(typeSend)) { //gửi cho tất cả
+                        sendTo = getSendToAll(emailData);
+                    } else if (typeSend.equals("1")) { //gửi theo phòng ban
+                        sendTo = getSendToGroup(emailData);
+                    }
+                    emailDataSave.setSendTo(sendTo);
+                    emailDataSave.setStatus("0");
+                    emailDataRepository.save(emailDataSave);
+                    curTime = getNextMonth(curTime);
+                }
             }
         } else {  // Gửi mail 1 lần, không định kỳ
             if ("3".equals(typeSend)) { //gửi cho tất cả
@@ -70,6 +125,7 @@ public class SendMailServiceIpml implements SendMailService {
 
     }
 
+    //lấy ra ngày ngày của tháng sau
     public Date getNextMonth(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -84,7 +140,8 @@ public class SendMailServiceIpml implements SendMailService {
         return calendar.getTime();
     }
 
-    public void sendEmailToGroup(EmailData emailData) {
+    public String getSendToGroup(EmailData emailData) {
+        String sendTo = "";
         String deptId = emailData.getDeptId();
         List<Employee> employeesDept = employeeRepository.findAll(); //list nhân viên
         Optional<Department> department = departmentRepository.findById(Long.parseLong(deptId));  //List phòng ban
@@ -92,19 +149,17 @@ public class SendMailServiceIpml implements SendMailService {
             List<Employee> result = employeesDept.stream()
                     .filter(employee -> department.get().equals(employee.getDepartment()))
                     .collect(Collectors.toList());  //lấy ra nhân viên thuộc phòng ban đã chọn
-            String sendTo = "";
             for (int i = 0; i < result.size(); i++) {  //lấy ra danh sách gửi
                 sendTo += result.get(i).getEmail();
                 if (i < result.size() - 1) {
                     sendTo += ",";
                 }
             }
-            emailData.setSendTo(sendTo);  //update danh sách gửi
-            this.send(emailData); //gửi mail
         }
+        return sendTo;
     }
 
-    public void sendEmailToAll(EmailData emailData) {
+    public String getSendToAll(EmailData emailData) {
         List<Employee> employees = employeeRepository.findAll();
         String sendTo = "";
         for (int i = 0; i < employees.size(); i++) {
@@ -113,31 +168,25 @@ public class SendMailServiceIpml implements SendMailService {
                 sendTo += ",";
             }
         }
+        return sendTo;
+    }
+    public void sendEmailToGroup(EmailData emailData) {
+        String sendTo = getSendToGroup(emailData);
+        emailData.setSendTo(sendTo);  //update danh sách gửi
+        this.send(emailData); //gửi mail
+        emailData.setStatus("1");
+        emailDataRepository.save(emailData);
+
+    }
+
+    //Gửi cho tất cả
+    public void sendEmailToAll(EmailData emailData) {
+        String sendTo = getSendToAll(emailData);
         emailData.setSendTo(sendTo);
+        emailData.setStatus("1");
+        emailDataRepository.save(emailData);
         this.send(emailData);
     }
-
-    //1 phut kiểm tra 1 lần để gửi mail định kỳ
-    @Scheduled(fixedRate = 1000*60)
-    public void scheduleTaskWithFixedRate() {
-        List<EmailData> emailDataList = emailDataRepository.findEmailDataByRepeat();
-        Date current = new Date();
-        if(emailDataList!=null) {
-            for (EmailData e : emailDataList) {
-                Date startDate = e.getStartDate();
-                if("1".equals(e.getRepeatType())) {
-                    this.send(e);
-                } else if("2".equals(e.getRepeatType())) {
-                    Date startDateWeek = e.getStartDate();
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(startDateWeek);
-                } else if("3".equals(e.getRepeatType())) {
-
-                }
-            }
-        }
-    }
-
 
 
     public void send(EmailData emailData) {

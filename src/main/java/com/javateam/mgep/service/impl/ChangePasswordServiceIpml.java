@@ -19,7 +19,7 @@ public class ChangePasswordServiceIpml implements ChangePasswordService {
     EmployeeRepository employeeRepository;
 
     @Override
-    public Employee changePassword(String oldPassword, String beforeNewPassword, String afterNewPassword) {
+    public String changePassword(String oldPassword, String beforeNewPassword, String afterNewPassword) {
         //Get information user to security;
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
@@ -28,17 +28,17 @@ public class ChangePasswordServiceIpml implements ChangePasswordService {
 
         //Check password -> oldPassword with password user import.
         if (!encoder.matches(oldPassword,userDetails.getEmployee().getPasswordHash())){
-            return null;
+            return "Mật khẩu cũ không đúng";
         }
         //Check new password is it the same?
         if (!beforeNewPassword.equals(afterNewPassword)){
-            return null;
+            return "Mật khẩu lặp lại không đúng";
         }
 
         // Set new password and save.
         String passwordNew = encoder.encode(beforeNewPassword);
         employee.setPasswordHash(passwordNew);
         employeeRepository.save(employee);
-        return employee;
+        return "Đổi mật khẩu thành công";
     }
 }

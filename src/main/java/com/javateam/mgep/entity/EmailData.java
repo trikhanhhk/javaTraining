@@ -45,10 +45,13 @@ public class EmailData {
     private Date endDate;  //ngày kết thúc gửi
 
     @Column(name = "time_send")
-    private String timeSend;
+    private Time timeSend;  //Giờ gửi
 
     @Column(name = "create_date")
     private Date createDate;
+
+    @Column(name = "date_send")
+    private Date dateSend;
 
     public EmailData() {
     }
@@ -150,11 +153,11 @@ public class EmailData {
         this.endDate = endDate;
     }
 
-    public String getTimeSend() {
+    public Time getTimeSend() {
         return timeSend;
     }
 
-    public void setTimeSend(String timeSend) {
+    public void setTimeSend(Time timeSend) {
         this.timeSend = timeSend;
     }
 
@@ -164,5 +167,13 @@ public class EmailData {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public Date getDateSend() {
+        return dateSend;
+    }
+
+    public void setDateSend(Date dateSend) {
+        this.dateSend = dateSend;
     }
 }

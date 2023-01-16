@@ -34,14 +34,14 @@ public class ExcelGeneratorListEmployee {
         font.setBold(true);
         font.setFontHeight(16);
         style.setFont(font);
-        createCell(row, 0, "ID", style);
+        createCell(row, 0, "STT", style);
         createCell(row, 1, "Họ", style);
         createCell(row, 2, "Tên", style);
         createCell(row, 3, "Giới tính", style);
         createCell(row, 4, "Ngày sinh", style);
         createCell(row, 5, "Số điện thoại", style);
         createCell(row, 6, "Email", style);
-        createCell(row, 7, "Quê quán", style);
+        createCell(row, 7, "Địa chỉ", style);
         createCell(row, 8, "Phòng ban", style);
         createCell(row, 9, "Chức vụ", style);
     }
@@ -69,10 +69,10 @@ public class ExcelGeneratorListEmployee {
         for (Employee record: employeeList) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
-            createCell(row, columnCount++, record.getId(), style);
+            createCell(row, columnCount++, rowCount, style);
             createCell(row, columnCount++, record.getFirstName(), style);
             createCell(row, columnCount++, record.getLastName(), style);
-            createCell(row, columnCount++, record.getGender() == "1" ? "Nam" : "Nữ", style);
+            createCell(row, columnCount++, record.getGender().equals("1") ? "Nam" : "Nữ", style);
             createCell(row, columnCount++, simpleDateFormat.format(record.getDateOfBirth()), style);
             createCell(row, columnCount++, record.getPhoneNumber(), style);
             createCell(row, columnCount++, record.getEmail(), style);
@@ -80,8 +80,8 @@ public class ExcelGeneratorListEmployee {
             createCell(row, columnCount++, record.getDepartment().getName(), style);
             Set<Authoritty> authoritties = record.getAuthorities();
             String position = "Nhân viên";
-            for (Authoritty a: authoritties) {
-                if (a.getName().equals("ROLE_MANAGER") || a.getName().equals("ROLE_ADMIN")) position = "Manager";
+            for (Authoritty authoritty: authoritties) {
+                if (authoritty.getName().equals("ROLE_MANAGER") || authoritty.getName().equals("ROLE_ADMIN")) position = "Manager";
             }
             createCell(row, columnCount++, position, style);
         }

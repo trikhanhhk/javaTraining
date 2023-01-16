@@ -42,6 +42,7 @@ public class WebController {
         //Get information after update.
         Employee employee = (Employee) session.getAttribute("employee");
 
+        model.addAttribute("message", null);
         // Get role user login.
         List<GrantedAuthority> grantList = (List<GrantedAuthority>) userDetails.getAuthorities();
         for (GrantedAuthority x : grantList) {
@@ -59,10 +60,14 @@ public class WebController {
             model.addAttribute("employee", employee);
         }
         String update = (String) session.getAttribute("flags");
+        String message = (String) session.getAttribute("message");
         String failedUpdate = (String) session.getAttribute("updateFailed");
 
         if (update != null){
             model.addAttribute("flags",update);
+        }
+        if (message != null) {
+        	model.addAttribute("message", message);
         }
         if (failedUpdate != null){
             model.addAttribute("failedUpdate",failedUpdate );
@@ -83,12 +88,13 @@ public class WebController {
     @PostMapping("/submit-update")
     public String submitUpdate(@RequestParam("address") String address,
                                 @RequestParam("phoneNumber") String phone,
-                               @RequestParam("email") String email, HttpSession session){
+                               @RequestParam("email") String email, HttpSession session, Model model){
         Employee employee = employeeService.updateEmployee(address,phone,email);
 
         if (employee != null){
             session.setAttribute("flags",null);
             session.setAttribute("employee",employee);
+            session.setAttribute("message","Cập nhật thành công");
             return "redirect:/hello";
         }
         session.setAttribute("flags","updateFailed");
@@ -104,24 +110,33 @@ public class WebController {
 
     //Go to displays screen changePassword user.
     @GetMapping("/hello/new-password")
-    public String newPassword() {
+    public String newPassword(Model model , HttpSession session) {
+        String success = (String) session.getAttribute("success");
+        String failed = (String) session.getAttribute("failed");
+        if (success != null) {
+            model.addAttribute("success", success);
+            session.setAttribute("success", null);
+        }
+        if (failed != null) {
+            model.addAttribute("failed", failed);
+            session.setAttribute("failed", null);
+        }
+
         return "password/changePasswordUser";
     }
 
 
     //displays screen changePassword handle user submit
     @PostMapping("/hello/submit-new-password")
-    @ResponseBody
-    public ResponseEntity<ModelData> submitNewPassword(@Validated @ModelAttribute("dataPassword") PasswordResetData dataPassword) {
-        Employee employee = changePasswordService.changePassword(dataPassword.getOldPassword(),dataPassword.getNewPassword(), dataPassword.getRepeatPassword());
-        ModelData modelData = new ModelData();
+    public String submitNewPassword(@Validated @ModelAttribute("dataPassword") PasswordResetData dataPassword, HttpSession session) {
+        String employee = changePasswordService.changePassword(dataPassword.getOldPassword(),dataPassword.getNewPassword(), dataPassword.getRepeatPassword());
 
-        if (employee != null){
-            modelData.setMessage("Đổi mật khẩu thành công");
-            return ResponseEntity.ok(modelData);
+        if (employee.equalsIgnoreCase("Đổi mật khẩu thành công")){
+            session.setAttribute("success", employee);
+            return "redirect:/hello/new-password";
         }else {
-            modelData.setError("Đổi mật thất bại");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(modelData);
+        	session.setAttribute("failed", employee);
+            return "redirect:/hello/new-password";
         }
     }
 

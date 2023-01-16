@@ -175,30 +175,32 @@ public class AdminController {
         }
         //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");
+        String message = (String) session.getAttribute("message");
         System.out.println(employee.getDateOfBirth());
-
+        model.addAttribute("message", message);
         model.addAttribute("role", role);
         session.setAttribute("employee", employee);
         model.addAttribute("name", fullName);
         model.addAttribute("employee", employee);
         model.addAttribute("departments", departments);
         model.addAttribute("authorityList",authorityList);
-
+        session.setAttribute("message", null);
         return "/admin/update";
     }
 
 
     //Submit button update information employee.
     @PostMapping("/admin/submit-update-admin")
-    public String submitUpdate(Model model, @ModelAttribute("employee") EmployeeData employeeData, @RequestParam("role") String role) {
+    public String submitUpdate(Model model, @ModelAttribute("employee") EmployeeData employeeData, @RequestParam("role") String role, HttpSession session) {
         Employee employee = employeeService.updateEmployeeAdmin(employeeData,role);
 
         if (employee == null) {
-            model.addAttribute("error", "Cập nhập thất bại!!!");
+            model.addAttribute("error", "Cập nhật thất bại!!!");
             return "redirect:adminHome/" + employeeData.getId();
         }
 
-        return "redirect:/adminHome";
+        session.setAttribute("message", "Cập nhật thành công");
+        return "redirect:update/" + employeeData.getId();
     }
 
 
@@ -218,7 +220,7 @@ public class AdminController {
     public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailData emailData) {
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
-        model.addAttribute("message", "Đã gửi mail");
+        model.addAttribute("message", "Đã gửi email thành công");
         sendMailService.sendMail(emailData);
         return "/admin/sendEmail";
     }

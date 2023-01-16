@@ -68,7 +68,7 @@ function checkPasswordError(input){
     if(regexPassword.test(input.value)){
         showSuccess(input)
     }else{
-        showError(input,'Mật khẩu không hợp lệ')
+        showError(input,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một chữ cái in hoa và một số')
     }
     return isPasswordError;
 }

@@ -22,20 +22,24 @@
         <div class="card card-5">
             <div class="card-body">
                 <form id="formRegister" method="POST" th:action="@{/addEmployee}" th:object="${employee}">
+                	<div style="text-align:center;" >
+                			<h1 >ĐĂNG KÍ</h1>
+                			</br>
+                	</div>
                     <div class="form-row m-b-55">
                         <div class="name">Họ và tên * </div>
                         <div class="value">
                             <div class="row row-space">
                                 <div class="col-6">
                                     <div class="input-group-desc">
-                                        <input id="firstName" class="input--style-5" th:field="*{firstName}" type="text"
+                                        <input id="firstName" class="input--style-5" th:field="*{firstName}" type="text" required
                                                name="firstName" placeholder="Họ">
                                        <small></small>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group-desc">
-                                        <input id="lastName" class="input--style-5" type="text" th:field="*{lastName}"
+                                        <input id="lastName" class="input--style-5" type="text" th:field="*{lastName}" required
                                                name="lastName" placeholder="Tên">
                                         <small></small>
                                     </div>
@@ -47,7 +51,7 @@
                         <div class="name">Điện thoại *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="phoneNumber" maxlength="10" minlength="10" class="input--style-5" type="text" th:field="*{phoneNumber}" name="phoneNumber">
+                                <input id="phoneNumber" required maxlength="10" minlength="10" class="input--style-5" type="text" th:field="*{phoneNumber}" name="phoneNumber">
                                 <small></small>
                             </div>
                         </div>
@@ -56,7 +60,7 @@
                         <div class="name">Địa chỉ *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="address" class="input--style-5" maxlength="500" type="text" th:field="*{address}" name="address">
+                                <input id="address" required class="input--style-5" maxlength="500" type="text" th:field="*{address}" name="address">
                                 <small></small>
                             </div>
                         </div>
@@ -65,7 +69,7 @@
                         <div class="name">Giới tính *</div>
                         <div class="p-t-15">
                             <label class="radio-container m-r-55" for="male">Nam
-                                <input type="radio" th:selected="true" id="male" th:field="*{gender}" name="gender"
+                                <input type="radio"  id="male" th:field="*{gender}" name="gender"
                                        th:value="1">
                                 <span class="checkmark"></span>
                             </label>
@@ -79,7 +83,7 @@
                         <div class="name">Ngày sinh *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="dateOfBirth" class="input--style-5" maxlength="10" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
+                                <input id="dateOfBirth" required class="input--style-5" maxlength="10" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
                                 <small></small>
                             </div>
                         </div>
@@ -88,7 +92,7 @@
                         <div class="name">Email *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="email" class="input--style-5" maxlength="200" type="email" th:field="*{email}" name="email">
+                                <input id="email" required class="input--style-5" maxlength="200" type="email" th:field="*{email}" name="email">
                                 <small></small>
                             </div>
                         </div>
@@ -119,7 +123,6 @@
                             <div class="input-group">
                                 <div class="rs-select2 js-select-simple select--no-search">
                                     <select name="deptId" th:object="${departments}" style="width: 495px;height: 50px">
-                                        <option  disabled="disabled" selected="selected">Choose option</option>
                                         <option th:each="dept : ${departments}"
                                                 th:value="${dept.getId()}" th:text="${dept.getName()}"></option>
                                     </select>
@@ -155,7 +158,8 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" th:src="@{/js/validate.js}"></script>
+<script type="text/javascript" th:src="@{/js/validate.js}">
+</script>
 
 </body>
 

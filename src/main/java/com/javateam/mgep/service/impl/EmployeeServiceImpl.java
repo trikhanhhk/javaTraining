@@ -9,6 +9,9 @@ import com.javateam.mgep.exception.PasswordNotMatchException;
 import com.javateam.mgep.repositories.*;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.MailService;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -51,9 +54,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmailAlreadyUsedException();
 
         }
-        if (!employeeData.getPassword().equals(employeeData.getRepeatPassword())) {
-            throw new PasswordNotMatchException();
-        }
+//        if (!employeeData.getPassword().equals(employeeData.getRepeatPassword())) {
+//            throw new PasswordNotMatchException();
+//        }
         //lưu thông tin nhân viên
         Employee newEmployee = new Employee();
         newEmployee.setFirstName(employeeData.getFirstName());
@@ -66,7 +69,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (findDept.isPresent()) {
             newEmployee.setDepartment(findDept.get()); //set giá trị phòng ban
         }
-        newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
+        if (employeeData.getPassword() == null){
+            newEmployee.setPasswordHash(passwordEncoder.encode("Jvb@123456"));
+        }else {
+            newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
+        }
         newEmployee.setGender(employeeData.getGender());
         newEmployee.setAddress(employeeData.getAddress()); //Bổ dung thêm địa chỉ khi user đăng kí tài khoản.
         newEmployee.setStatus("0");
@@ -152,25 +159,26 @@ public class EmployeeServiceImpl implements EmployeeService {
         XSSFWorkbook workbook;
         workbook = new XSSFWorkbook(file.getInputStream());
         //Read file sheet name NhanVien
+//        for (int i = 0; i < workbook.getNumberOfSheets();i++){
+//            System.out.println("Sheet " + i + " has data: " + isSheetEmpty(workbook.getSheetAt(i).getWorkbook()));
+//        }
+        System.out.println("haha");
         XSSFSheet worksheet = workbook.getSheet("NhanVien");
         for (int index = 0; index < worksheet.getPhysicalNumberOfRows(); index++) {
             if (index > 0) {
                 EmployeeData employee = new EmployeeData();
                 // Get One Row in file excel.
                 XSSFRow row = worksheet.getRow(index);
-
                 // Set information employee for row in file excel.
                 employee.setFirstName(row.getCell(1).getStringCellValue());
                 employee.setLastName(row.getCell(2).getStringCellValue());
                 employee.setDateOfBirth(row.getCell(3).getStringCellValue());
                 employee.setPhoneNumber(row.getCell(4).getStringCellValue());
                 String nameGender = (row.getCell(5).getStringCellValue());
-                employee.setGender(nameGender.equals("Nam") ? "1" : "0");
+                employee.setGender("Nam".equals(nameGender) ? "1" : "0");
                 employee.setEmail(row.getCell(6).getStringCellValue());
                 employee.setAddress(row.getCell(7).getStringCellValue());
-                employee.setPassword(row.getCell(8).getStringCellValue());
-                employee.setRepeatPassword(row.getCell(9).getStringCellValue());
-                String nameDepartment = row.getCell(10).getStringCellValue();
+                String nameDepartment = row.getCell(8).getStringCellValue();
                 Department department = departmentRepository.findByName(nameDepartment);
                 employee.setDeptId(department.getId());
 
@@ -192,6 +200,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    boolean isSheetEmpty(XSSFWorkbook sheet){
+        Iterator rows = sheet.sheetIterator();
+        while (rows.hasNext()) {
+            HSSFRow row = (HSSFRow) rows.next();
+            Iterator cells = row.cellIterator();
+            while (cells.hasNext()) {
+                HSSFCell cell = (HSSFCell) cells.next();
+                if(!cell.getStringCellValue().isEmpty()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

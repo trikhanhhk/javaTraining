@@ -1,6 +1,7 @@
 package com.javateam.mgep.controller;
 
 import com.javateam.mgep.entity.*;
+import com.javateam.mgep.entity.dto.EmailDataForm;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.repositories.*;
 import com.javateam.mgep.service.DepartmentService;
@@ -234,11 +235,11 @@ public class AdminController {
     }
 
     @PostMapping("/admin/send-email")  //xử lý gửi mail
-    public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailData emailData) {
+    public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailDataForm emailDataForm) {
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
         model.addAttribute("message", "Đã gửi mail");
-        sendMailService.sendMail(emailData);
+        sendMailService.handleSendMail(emailDataForm);
         return "/admin/sendEmail";
     }
 

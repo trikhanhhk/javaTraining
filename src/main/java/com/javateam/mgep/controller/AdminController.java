@@ -117,6 +117,7 @@ public class AdminController {
         try {
             List<Employee> lstEmployee = employeeService.importFileEx(files);
             session.removeAttribute("error");
+            session.removeAttribute("message");
             //Import-to-excel false.
             if (lstEmployee == null) {
                 String error = "Lỗi file! File của bạn đang rỗng!";

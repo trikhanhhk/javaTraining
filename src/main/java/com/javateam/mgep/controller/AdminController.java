@@ -11,6 +11,7 @@ import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.SendMailService;
 import com.javateam.mgep.service.excel.ExcelGeneratorListEmployee;
 import com.javateam.mgep.service.impl.AuthorityServiceIpml;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -252,7 +253,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/send-email")  //xử lý gửi mail
-    public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailDataForm emailDataForm) {
+    public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailDataForm emailDataForm) throws SchedulerException {
         session.removeAttribute("error");
         session.removeAttribute("message");
         session.removeAttribute("errorEmail");

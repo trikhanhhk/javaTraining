@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,9 @@ public class RegisterController {
         List<Department> departments = departmentService.getListDept();
         model.addAttribute("departments", departments);
         model.addAttribute("radio","true");
+        LocalDate now = LocalDate.now();
+        LocalDate before = now.minusDays(1);
+        model.addAttribute("now", before);
         return "register";
     }
 

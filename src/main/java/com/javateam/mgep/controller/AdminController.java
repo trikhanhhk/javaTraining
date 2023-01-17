@@ -29,6 +29,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -194,6 +195,9 @@ public class AdminController {
         for (Authoritty authoritty : authorittySet) {
             role = authoritty.getName();
         }
+        LocalDate now = LocalDate.now();
+        LocalDate before = now.minusDays(1);
+        model.addAttribute("now", before);
         //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");
         String message = (String) session.getAttribute("messageUpdate");

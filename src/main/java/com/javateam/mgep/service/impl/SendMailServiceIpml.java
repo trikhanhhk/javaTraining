@@ -154,7 +154,7 @@ public class SendMailServiceIpml implements SendMailService {
         Optional<Department> department = departmentRepository.findById(Long.parseLong(deptId));  //List phòng ban
         if (department.isPresent()) {
             List<Employee> result = employeesDept.stream()
-                    .filter(employee -> department.get().equals(employee.getDepartment()))
+                    .filter(employee -> deptId.equals(employee.getDepartment().getId().toString()))
                     .collect(Collectors.toList());  //lấy ra nhân viên thuộc phòng ban đã chọn
             for (int i = 0; i < result.size(); i++) {  //lấy ra danh sách gửi
                 sendTo += result.get(i).getEmail();

@@ -204,7 +204,7 @@ public class AdminController {
         }
         //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");
-        String message = (String) session.getAttribute("message");
+        String message = (String) session.getAttribute("messageUpdate");
         System.out.println(employee.getDateOfBirth());
         model.addAttribute("message", message);
         model.addAttribute("role", role);
@@ -232,7 +232,7 @@ public class AdminController {
             return "redirect:adminHome/" + employeeData.getId();
         }
 
-        session.setAttribute("message", "Cập nhật thành công");
+        session.setAttribute("messageUpdate", "Cập nhật thành công");
         return "redirect:update/" + employeeData.getId();
     }
 

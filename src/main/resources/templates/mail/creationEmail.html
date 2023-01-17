@@ -6,7 +6,7 @@
     <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
   </head>
   <body>
-    <p th:text="#{email.activation.greeting(${user.login})}"></p>
+    <p th:text="#{email.activation.greeting(${user.getLastName()})}"></p>
     <p th:text="#{email.creation.text1}"></p>
     <p>
       <a th:with="url=(@{|${baseUrl}/account/reset/finish?key=${user.resetKey}|})" th:href="${url}" th:text="${url}"></a>

@@ -49,7 +49,7 @@ public class RegisterController {
     public ResponseEntity<ModelData> doRegister(@ModelAttribute("employee") EmployeeData employee) throws Exception {
         ModelData modelData = new ModelData();
         try {
-            Employee newEmployee = employeeService.addEmployee(employee);
+            Employee newEmployee = employeeService.addEmployee(employee, false);
             if(newEmployee != null) {
                 modelData.setMessage("Tài khoản đã được đăng ký vui lòng kiểm tra email để xác nhận đăng ký");
             } else {

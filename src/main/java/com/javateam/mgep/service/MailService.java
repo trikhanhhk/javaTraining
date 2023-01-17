@@ -10,4 +10,7 @@ public interface MailService {
     public void sendActiveMail(Employee employee, String keyActive);
     @Async
     public void sendPasswordResetMail(Employee employee, String keyAtive);
+
+    @Async
+    public void sendPasswordNewAcount(Employee employee, String password);
 }

@@ -2,6 +2,7 @@ package com.javateam.mgep.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -22,6 +23,7 @@ public class Employee {
     private String lastName;
 
     @Column(name = "date_of_birth")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
 
     @Column(name = "phone_number", length = 10)

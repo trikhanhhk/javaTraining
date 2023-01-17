@@ -100,7 +100,7 @@
                                     <div class="form-group row">
                                         <label for="inputDateOfBirth" class="col-sm-3 col-form-label">Ngày sinh</label>
                                         <div class="col-sm-9">
-                                            <input type="date" name="dateOfBirth" th:value="${#dates.format(employee.getDateOfBirth(), 'yyyy-dd-MM')}" class="form-control" required
+                                            <input type="date" name="dateOfBirth" th:field="${employee.dateOfBirth}" class="form-control" required
                                                    id="inputDateOfBirth" placeholder="Ngày sinh"  min="1800-01-01">
 
                                         </div>

@@ -191,6 +191,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+        //Save employeeData -> employee and call function addEmployee save database.
         for (EmployeeData employeeData : employeeDataList) {
             try {
                 if (employeeRepository.findByEmail(employeeData.getEmail()) != null) {

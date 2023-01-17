@@ -61,6 +61,7 @@ public class ExcelGeneratorListEmployee {
     }
     private void write() {
         int rowCount = 1;
+        int rowCol = 0;
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setFontHeight(14);
@@ -68,8 +69,9 @@ public class ExcelGeneratorListEmployee {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         for (Employee record: employeeList) {
             Row row = sheet.createRow(rowCount++);
+            rowCol++;
             int columnCount = 0;
-            createCell(row, columnCount++, rowCount, style);
+            createCell(row, columnCount++, rowCol, style);
             createCell(row, columnCount++, record.getFirstName(), style);
             createCell(row, columnCount++, record.getLastName(), style);
             createCell(row, columnCount++, record.getGender().equals("1") ? "Nam" : "Nữ", style);

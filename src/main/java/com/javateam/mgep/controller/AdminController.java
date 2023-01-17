@@ -73,7 +73,7 @@ public class AdminController {
         String errorEmail = (String) session.getAttribute("errorEmail");
         String errorNull = (String) session.getAttribute("error");
         String message = (String) session.getAttribute("message");
-        if (errorNull != null){
+        if (errorNull != null) {
             model.addAttribute("error", errorNull);
         }
         if (errorEmail != null) {
@@ -118,17 +118,18 @@ public class AdminController {
             List<Employee> lstEmployee = employeeService.importFileEx(files);
             session.removeAttribute("error");
             session.removeAttribute("message");
+            session.removeAttribute("errorEmail");
+
             //Import-to-excel false.
             if (lstEmployee == null) {
                 String error = "Lỗi file! File của bạn đang rỗng!";
-                session.setAttribute("error",error);
+                session.setAttribute("error", error);
                 return "redirect:/adminHome";
             }
+
             //Import-to-excel successful.
-            session.removeAttribute("errorEmail");
             String message = "Import File thành công!";
             session.setAttribute("message", message);
-//            model.addAttribute("message", "Import File thành công!");
             SecurityContext securityContext = SecurityContextHolder.getContext();
             CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
             String fullName = userDetails.getEmployee().getFirstName() + " " + userDetails.getEmployee().getLastName();
@@ -142,7 +143,6 @@ public class AdminController {
             model.addAttribute("employeeList", employeeList);
         } catch (Exception e) {
             String errorEmail = "Đã có lỗi xảy ra trong quá trình import, vui lòng kiểm tra lại định dạng file theo đúng chuẩn mẫu";
-//            model.addAttribute("error", "Đã có lỗi xảy ra trong quá trình import, vui lòng kiểm tra lại định dạng file theo đúng chuẩn mẫu");
             session.setAttribute("errorEmail", errorEmail);
             e.printStackTrace();
         }

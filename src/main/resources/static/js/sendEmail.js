@@ -50,7 +50,7 @@ function doSubmit(form) {
         url: actionUrl,
         data: form.serialize(),
         success: function (data) {
-            $("#message-success").text("Đã gửi mail");
+            $("#message-success").text("Đã gửi Email thành công");
             $("#message-success").css("display", "block");
         },
         error: function (data) {

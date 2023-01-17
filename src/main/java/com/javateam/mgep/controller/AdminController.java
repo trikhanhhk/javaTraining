@@ -258,7 +258,7 @@ public class AdminController {
         session.removeAttribute("errorEmail");
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
-        model.addAttribute("message", "Đã gửi mail");
+        model.addAttribute("message", "Đã gửi email thành công");
         sendMailService.handleSendMail(emailDataForm);
         return "/admin/sendEmail";
     }

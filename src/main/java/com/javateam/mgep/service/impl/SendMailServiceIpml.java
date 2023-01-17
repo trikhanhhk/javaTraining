@@ -40,7 +40,7 @@ public class SendMailServiceIpml implements SendMailService {
     @Override
     public void handleSendMail(EmailDataForm emailDataForm) throws SchedulerException {
         EmailData emailData = new EmailData(emailDataForm);
-        String repeat = emailData.getRepeat();
+        String repeat = emailData.getRepeat();  //Định kỳ hay không định kỳ
         String typeSend = emailData.getTypeSend();  //loại mail gửi (phòng ban, tất cả, )
         if ("1".equals(repeat)) {  //Gửi định kỳ ngày tuần, tháng
             try {
@@ -51,7 +51,7 @@ public class SendMailServiceIpml implements SendMailService {
             }
             if ("1".equals(emailData.getRepeatType())) {  //gửi dịnh kỳ hằng ngày
                 List<Date> dates = new ArrayList<Date>();
-                long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
+                long interval = 24 * 1000 * 60 * 60; // thời gian của 1 ngày
                 long endTime = emailData.getEndDate().getTime();
                 long curTime = emailData.getStartDate().getTime();
                 while (curTime <= endTime) {
@@ -72,10 +72,10 @@ public class SendMailServiceIpml implements SendMailService {
                     emailDataSave.setStatus("0");
                     EmailData email = emailDataRepository.save(emailDataSave);
                     scheduleTaskWithFixedRate(email);
-                    curTime += interval;
+                    curTime += interval;  // Cộng thêm 1 ngày
                 }
             } else if ("2".equals(emailData.getRepeatType())) { //định kỳ hàng tuần
-                long interval = 7 * 24 * 1000 * 60 * 60; // 1 hour in millis
+                long interval = 7 * 24 * 1000 * 60 * 60; // Thời gian 7 ngày
                 long endTime = emailData.getEndDate().getTime();
                 long curTime = emailData.getStartDate().getTime();
                 while (curTime <= endTime) {
@@ -96,7 +96,7 @@ public class SendMailServiceIpml implements SendMailService {
                     emailDataSave.setStatus("0");
                     EmailData email = emailDataRepository.save(emailDataSave);
                     scheduleTaskWithFixedRate(email);
-                    curTime += interval;
+                    curTime += interval;  //Công thêm 7 ngày
                 }
             } else if ("3".equals(emailData.getRepeatType())) { //định kỳ hàng tháng
                 Date curTime = emailData.getStartDate();
@@ -166,6 +166,7 @@ public class SendMailServiceIpml implements SendMailService {
         return sendTo;
     }
 
+    //lấy danh sách gửi mail tới tất cả
     public String getSendToAll(EmailData emailData) {
         List<Employee> employees = employeeRepository.findAll();
         String sendTo = "";
@@ -178,6 +179,7 @@ public class SendMailServiceIpml implements SendMailService {
         return sendTo;
     }
 
+    //gửi mail theo group
     public void sendEmailToGroup(EmailData emailData) {
         String sendTo = getSendToGroup(emailData);
         emailData.setSendTo(sendTo);  //update danh sách gửi
@@ -196,6 +198,7 @@ public class SendMailServiceIpml implements SendMailService {
         this.send(emailData);
     }
 
+    //Taọ lich gửi mail
     public void scheduleTaskWithFixedRate(EmailData e) throws SchedulerException {
         JobDetail jobDetail = buildJobDetail(e);
         Trigger trigger = buildJobTrigger(jobDetail, e.getDateSend());
@@ -205,7 +208,7 @@ public class SendMailServiceIpml implements SendMailService {
     private JobDetail buildJobDetail(EmailData emailData) {
         JobDataMap jobDataMap = new JobDataMap();
 
-        jobDataMap.put("idEmailData", emailData.getId());
+        jobDataMap.put("idEmailData", emailData.getId());  //Truyền ID mail để gửi
 
         return JobBuilder.newJob(EmailJob.class)
                 .withIdentity(UUID.randomUUID().toString(), "email-jobs")
@@ -220,29 +223,13 @@ public class SendMailServiceIpml implements SendMailService {
                 .forJob(jobDetail)
                 .withIdentity(jobDetail.getKey().getName(), "email-triggers")
                 .withDescription("Send Email Trigger")
-                .startAt(startAt)
+                .startAt(startAt)  //thời gian gửi
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
                 .build();
     }
 
 
     public void send(EmailData emailData) {
-        mailService.sendMail(emailData.getSendTo().split(","), emailData.getSubject(), emailData.getContent(), false, false);
-    }
-
-    @Override
-    public EmailData saveEmailData(EmailData emailData) {
-        emailData.setCreateDate(new Date());
-        return sendMailRepository.save(emailData); //Lưu lại thông tin email vào db
-    }
-
-    @Override
-    public EmailData updateEmailData(EmailData emailData) {
-        return null;
-    }
-
-    @Override
-    public void deleteEmailData(Long id) {
-
+        mailService.sendMail(emailData.getSendTo().split(","), emailData.getSubject(), emailData.getContent(), false, false); //gọi sang service gửi mail
     }
 }

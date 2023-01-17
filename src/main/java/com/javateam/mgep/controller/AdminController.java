@@ -260,7 +260,7 @@ public class AdminController {
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
         model.addAttribute("message", "Đã gửi email thành công");
-        sendMailService.handleSendMail(emailDataForm);
+        sendMailService.handleSendMail(emailDataForm);  //Gọi sang service gửi mail
         return "/admin/sendEmail";
     }
 

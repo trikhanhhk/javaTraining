@@ -68,7 +68,7 @@ function checkPasswordError(input){
     if(regexPassword.test(input.value)){
         showSuccess(input)
     }else{
-        showError(input,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một chữ cái in hoa và một số')
+        showError(input,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một số')
     }
     return isPasswordError;
 }
@@ -80,14 +80,12 @@ function checkMatches(passwordInput, repeatPassword){
         showSuccess(passwordInput)
     }
 	else{
-        showError(passwordInput,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một chữ cái in hoa và một số')
+        showError(passwordInput,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một số')
     }
     if (passwordInput.value !== repeatPassword.value){
         showError(repeatPassword,'Mật khẩu đang không trùng khớp!!!!')
         return true
     }else {
-        console.log(passwordInput.value);
-        console.log(repeatPassword.value);
         return false;
     }
 }

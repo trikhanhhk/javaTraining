@@ -51,7 +51,7 @@
                         <div class="name">Điện thoại *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="phoneNumber" maxlength="10" minlength="10" class="input--style-5" type="text" th:field="*{phoneNumber}" name="phoneNumber">
+                                <input id="phoneNumber" class="input--style-5" type="text" th:field="*{phoneNumber}" name="phoneNumber">
                                 <small></small>
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                         <div class="name">Ngày sinh *</div>
                         <div class="value">
                             <div class="input-group">
-                                <input id="dateOfBirth" class="input--style-5" maxlength="10" type="date" th:field="*{dateOfBirth}" name="dateOfBirth">
+                                <input id="dateOfBirth" class="input--style-5" maxlength="10" type="date" th:field="*{dateOfBirth}" name="dateOfBirth" min="1800-01-01" th:attr="max=${now}">
                                 <small></small>
                             </div>
                         </div>

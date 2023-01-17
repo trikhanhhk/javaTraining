@@ -8,6 +8,7 @@ import com.javateam.mgep.repositories.DepartmentRepository;
 import com.javateam.mgep.repositories.EmailDataRepository;
 import com.javateam.mgep.repositories.EmployeeRepository;
 import com.javateam.mgep.repositories.SendMailRepository;
+import com.javateam.mgep.service.EmailJob;
 import com.javateam.mgep.service.MailService;
 import com.javateam.mgep.service.SendMailService;
 import org.quartz.*;
@@ -33,22 +34,25 @@ public class SendMailServiceIpml implements SendMailService {
     @Autowired
     MailService mailService;
 
+    @Autowired
+    private Scheduler scheduler;
+
     @Override
-    public void handleSendMail(EmailDataForm emailDataForm) {
+    public void handleSendMail(EmailDataForm emailDataForm) throws SchedulerException {
         EmailData emailData = new EmailData(emailDataForm);
         String repeat = emailData.getRepeat();
         String typeSend = emailData.getTypeSend();  //loại mail gửi (phòng ban, tất cả, )
-        if("1".equals(repeat)) {  //Gửi định kỳ ngày tuần, tháng
-            try{
+        if ("1".equals(repeat)) {  //Gửi định kỳ ngày tuần, tháng
+            try {
                 emailData.setStartDate(new SimpleDateFormat("yyyy-MM-dd").parse(emailDataForm.getStartDate()));
                 emailData.setEndDate(new SimpleDateFormat("yyyy-MM-dd").parse(emailDataForm.getEndDate()));  //ngày kết thúc gửi
             } catch (ParseException parseException) {
                 throw new RuntimeException(parseException);
             }
-            if ("1".equals(emailData.getRepeatType())) {
+            if ("1".equals(emailData.getRepeatType())) {  //gửi dịnh kỳ hằng ngày
                 List<Date> dates = new ArrayList<Date>();
-                long interval = 24*1000 * 60 * 60; // 1 hour in millis
-                long endTime =emailData.getEndDate().getTime() ;
+                long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
+                long endTime = emailData.getEndDate().getTime();
                 long curTime = emailData.getStartDate().getTime();
                 while (curTime <= endTime) {
                     Date dateSend = new Date(curTime);
@@ -66,12 +70,13 @@ public class SendMailServiceIpml implements SendMailService {
                     }
                     emailDataSave.setSendTo(sendTo);
                     emailDataSave.setStatus("0");
-                    emailDataRepository.save(emailDataSave);
+                    EmailData email = emailDataRepository.save(emailDataSave);
+                    scheduleTaskWithFixedRate(email);
                     curTime += interval;
                 }
-            } else if ("2".equals(emailData.getRepeatType())) {
-                long interval = 7*24*1000 * 60 * 60; // 1 hour in millis
-                long endTime =emailData.getEndDate().getTime();
+            } else if ("2".equals(emailData.getRepeatType())) { //định kỳ hàng tuần
+                long interval = 7 * 24 * 1000 * 60 * 60; // 1 hour in millis
+                long endTime = emailData.getEndDate().getTime();
                 long curTime = emailData.getStartDate().getTime();
                 while (curTime <= endTime) {
                     Date dateSend = new Date(curTime);
@@ -89,10 +94,11 @@ public class SendMailServiceIpml implements SendMailService {
                     }
                     emailDataSave.setSendTo(sendTo);
                     emailDataSave.setStatus("0");
-                    emailDataRepository.save(emailDataSave);
+                    EmailData email = emailDataRepository.save(emailDataSave);
+                    scheduleTaskWithFixedRate(email);
                     curTime += interval;
                 }
-            } else if ("3".equals(emailData.getRepeatType())) {
+            } else if ("3".equals(emailData.getRepeatType())) { //định kỳ hàng tháng
                 Date curTime = emailData.getStartDate();
                 Date endTime = emailData.getEndDate();
                 while (curTime.compareTo(endTime) > 0) {
@@ -111,7 +117,8 @@ public class SendMailServiceIpml implements SendMailService {
                     }
                     emailDataSave.setSendTo(sendTo);
                     emailDataSave.setStatus("0");
-                    emailDataRepository.save(emailDataSave);
+                    EmailData email = emailDataRepository.save(emailDataSave);
+                    scheduleTaskWithFixedRate(email);
                     curTime = getNextMonth(curTime);
                 }
             }
@@ -170,6 +177,7 @@ public class SendMailServiceIpml implements SendMailService {
         }
         return sendTo;
     }
+
     public void sendEmailToGroup(EmailData emailData) {
         String sendTo = getSendToGroup(emailData);
         emailData.setSendTo(sendTo);  //update danh sách gửi
@@ -186,6 +194,35 @@ public class SendMailServiceIpml implements SendMailService {
         emailData.setStatus("1");
         emailDataRepository.save(emailData);
         this.send(emailData);
+    }
+
+    public void scheduleTaskWithFixedRate(EmailData e) throws SchedulerException {
+        JobDetail jobDetail = buildJobDetail(e);
+        Trigger trigger = buildJobTrigger(jobDetail, e.getDateSend());
+        scheduler.scheduleJob(jobDetail, trigger);
+    }
+
+    private JobDetail buildJobDetail(EmailData emailData) {
+        JobDataMap jobDataMap = new JobDataMap();
+
+        jobDataMap.put("idEmailData", emailData.getId());
+
+        return JobBuilder.newJob(EmailJob.class)
+                .withIdentity(UUID.randomUUID().toString(), "email-jobs")
+                .withDescription("Send Email Job")
+                .usingJobData(jobDataMap)
+                .storeDurably()
+                .build();
+    }
+
+    private Trigger buildJobTrigger(JobDetail jobDetail, Date startAt) {
+        return TriggerBuilder.newTrigger()
+                .forJob(jobDetail)
+                .withIdentity(jobDetail.getKey().getName(), "email-triggers")
+                .withDescription("Send Email Trigger")
+                .startAt(startAt)
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
+                .build();
     }
 
 

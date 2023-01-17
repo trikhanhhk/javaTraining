@@ -190,9 +190,6 @@ public class AdminController {
     //Displays screen update information employee.
     @GetMapping("/admin/update/{id}")
     public String updateAdmin(@PathVariable("id") long id, Model model, HttpSession session) {
-        session.removeAttribute("error");
-        session.removeAttribute("message");
-        session.removeAttribute("errorEmail");
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
         List<Department> departments = departmentService.getListDept();
@@ -214,6 +211,10 @@ public class AdminController {
         model.addAttribute("employee", employee);
         model.addAttribute("departments", departments);
 
+        session.removeAttribute("error");
+        session.removeAttribute("message");
+        session.removeAttribute("errorEmail");
+        session.removeAttribute("messageUpdate");
         model.addAttribute("authorityList",authorityList);
         session.setAttribute("message", null);
         return "/admin/update";

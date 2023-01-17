@@ -14,7 +14,7 @@ $(".deleteEmployee").on("click", function () {
 $("#formImport").on("submit", function(e) {
     // e.preventDefault();
     let modal = $('#notification');
-    var input = document.getElementById('fileInput');
+    var input = document.getElementById('customFile');
     if (input.files.length > 0) { // This is VERY unlikely, browser support is near-universal
         for (var i = 0; i <= input.files.length - 1; i++) {
 
@@ -35,8 +35,8 @@ $("#formImport").on("submit", function(e) {
                 }
             } else {
                 e.preventDefault();
-                $("#notification  .modal-body p").text("Chỉ nhận các file .xlsx, .xls");
-                $("#notification  .modal-title").text("Lỗi");
+                $("#notification  .modal-body p").text("Chỉ nhận các file excel .xlsx hoặc .xls");
+                $("#notification  .modal-title").text("Lỗi File");
                 $('#notification #confirmButton')[0].classList.add("close-button");
                 $('#notification #confirmButton').text("OK");
                 modal.modal("show")

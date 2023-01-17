@@ -154,7 +154,9 @@ public class AdminController {
     //Function searchEmployee
     @GetMapping("/admin/searchEmployee")
     public String searchEmployee(@Validated @ModelAttribute("searchCriteria") SearchCriteria search, Model model, HttpSession session) {
-
+        session.removeAttribute("error");
+        session.removeAttribute("message");
+        session.removeAttribute("errorEmail");
         //Get information login to security.
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
@@ -171,11 +173,14 @@ public class AdminController {
 
     //Displays screen delete information employee.
     @GetMapping("/{id}")
-    public String deleteEmployee(@PathVariable("id") Long id, Model model) {
+    public String deleteEmployee(@PathVariable("id") Long id, Model model,HttpSession session) {
+        session.removeAttribute("error");
+        session.removeAttribute("message");
+        session.removeAttribute("errorEmail");
         String result = employeeService.deleteEmployeeById(id);
         if (result == null) {
             model.addAttribute("error", "Không tìm thấy nhân viên");
-            return "redirect:admin/home";
+            return "redirect:adminHome";
         }
         return "redirect:adminHome";
     }
@@ -184,6 +189,9 @@ public class AdminController {
     //Displays screen update information employee.
     @GetMapping("/admin/update/{id}")
     public String updateAdmin(@PathVariable("id") long id, Model model, HttpSession session) {
+        session.removeAttribute("error");
+        session.removeAttribute("message");
+        session.removeAttribute("errorEmail");
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
         List<Department> departments = departmentService.getListDept();
@@ -214,6 +222,9 @@ public class AdminController {
     //Submit button update information employee.
     @PostMapping("/admin/submit-update-admin")
     public String submitUpdate(Model model, @ModelAttribute("employee") EmployeeData employeeData, @RequestParam("role") String role, HttpSession session) {
+        session.removeAttribute("error");
+        session.removeAttribute("message");
+        session.removeAttribute("errorEmail");
         Employee employee = employeeService.updateEmployeeAdmin(employeeData,role);
 
         if (employee == null) {
@@ -229,7 +240,9 @@ public class AdminController {
     //Displays screen send email admin
     @GetMapping("/admin/send-email")
     public String sendEmailAdmin(HttpSession session, Model model) {
-
+        session.removeAttribute("error");
+        session.removeAttribute("message");
+        session.removeAttribute("errorEmail");
         //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("departments", departmentRepository.findAll());
@@ -240,6 +253,9 @@ public class AdminController {
 
     @PostMapping("/admin/send-email")  //xử lý gửi mail
     public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailDataForm emailDataForm) {
+        session.removeAttribute("error");
+        session.removeAttribute("message");
+        session.removeAttribute("errorEmail");
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
         model.addAttribute("message", "Đã gửi mail");

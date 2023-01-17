@@ -242,8 +242,8 @@ public class AdminController {
     public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailDataForm emailDataForm) {
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
-        model.addAttribute("message", "Đã gửi mail");
-        sendMailService.handleSendMail(emailDataForm);
+        model.addAttribute("message", "Đã gửi email thành công");
+        sendMailService.sendMail(emailData);
         return "/admin/sendEmail";
     }
 

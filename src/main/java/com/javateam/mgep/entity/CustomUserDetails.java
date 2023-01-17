@@ -12,47 +12,55 @@ import java.util.List;
 
 @Data
 public class CustomUserDetails implements UserDetails {
-    Employee employee;
+	Employee employee;
 
-    List<GrantedAuthority> authorities;
+	List<GrantedAuthority> authorities;
 
-    public CustomUserDetails(Employee employee, List<GrantedAuthority> authorities) {
-        this.employee = employee;
-        this.authorities = authorities;
-    }
+	public Employee getEmployee() {
+		return employee;
+	}
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
 
-    @Override
-    public String getPassword() {
-        return employee.getPasswordHash();
-    }
+	public CustomUserDetails(Employee employee, List<GrantedAuthority> authorities) {
+		this.employee = employee;
+		this.authorities = authorities;
+	}
 
-    @Override
-    public String getUsername() {
-        return employee.getEmail();
-    }
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return authorities;
+	}
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	@Override
+	public String getPassword() {
+		return employee.getPasswordHash();
+	}
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	@Override
+	public String getUsername() {
+		return employee.getEmail();
+	}
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isEnabled() {
-        return employee.getStatus().equals("1") ? true : false;
-    }
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return employee.getStatus().equals("1") ? true : false;
+	}
 }

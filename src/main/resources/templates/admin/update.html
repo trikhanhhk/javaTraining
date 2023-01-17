@@ -68,7 +68,9 @@
         </nav>
         <!-- Page content-->
         <div class="container-fluid">
-            <h2 class="mt-4" style="text-align: center;">Cập nhập thông tin</h2>
+                                        <div th:if="${message}" class="alert alert-success" th:text="${message}">
+            </div>
+            <h2 class="mt-4" style="text-align: center;">Cập nhật thông tin</h2>
             <br>
             <br>
             <div class="conten">
@@ -83,14 +85,14 @@
                                     <div class="form-group row">
                                         <label for="inputFirstName" class="col-sm-3 col-form-label">Họ (*)</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="firstName" th:field="*{firstName}" class="form-control"
+                                            <input type="text" name="firstName" th:field="*{firstName}" class="form-control" required
                                                   minlength="3" maxlength="100" id="inputFirstName" placeholder="Họ">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="inputLastName" class="col-sm-3 col-form-label">Tên (*)</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="lastName" th:field="*{lastName}"
+                                            <input type="text" name="lastName" th:field="*{lastName}" required
                                                    minlength="3" maxlength="100" class="form-control" id="inputLastName" placeholder="Tên">
                                         </div>
                                     </div>
@@ -98,8 +100,9 @@
                                     <div class="form-group row">
                                         <label for="inputDateOfBirth" class="col-sm-3 col-form-label">Ngày sinh</label>
                                         <div class="col-sm-9">
-                                            <input type="date" name="dateOfBirth" th:value="${#dates.format(employee.getDateOfBirth(), 'dd-MM-yyyy')}" class="form-control"
-                                                   id="inputDateOfBirth" placeholder="Ngày sinh"  min="1800-01-01" maxlength="10" required>
+                                            <input type="date" name="dateOfBirth" th:value="${#dates.format(employee.getDateOfBirth(), 'yyyy-dd-MM')}" class="form-control" required
+                                                   id="inputDateOfBirth" placeholder="Ngày sinh"  min="1800-01-01">
+
                                         </div>
                                     </div>
 
@@ -122,24 +125,24 @@
                                     <div class="form-group row">
                                         <label for="inputEmail" class="col-sm-3 col-form-label">Email *</label>
                                         <div class="col-sm-9">
-                                            <input type="email" name="email" th:field="*{email}" class="form-control"
-                                                   id="inputEmail" placeholder="Email" required maxlength="100">
+                                            <input type="email" name="email" th:field="*{email}" class="form-control" required
+                                                   id="inputEmail" placeholder="Email">
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label for="inputPhone" class="col-sm-3 col-form-label">Điện thoại *</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="phoneNumber" th:field="*{phoneNumber}" class="form-control"
-                                                minlength="10" maxlength="10" required  id="inputPhone" placeholder="Số điện thoại">
+                                            <input type="text" name="phoneNumber" th:field="*{phoneNumber}" class="form-control" required
+                                                minlength="10" maxlength="10"   id="inputPhone" placeholder="Số điện thoại">
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label for="inputAddress" class="col-sm-3 col-form-label">Địa chỉ *</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="address" th:field="*{address}" class="form-control"
-                                                   id="inputAddress" required placeholder="Địa chỉ" maxlength="100" minlength="3">
+                                            <input type="text" name="address" th:field="*{address}" class="form-control" required
+                                                   id="inputAddress" placeholder="Địa chỉ" maxlength="100" minlength="3">
                                         </div>
                                     </div>
 
@@ -173,7 +176,7 @@
                                     <br>
                                     <div>
                                         <button type="submit" style="width: 250px; height: 50px;"
-                                                class="btn btn-success">Cập Nhập
+                                                class="btn btn-success">Cập Nhật
                                         </button>
                                     </div>
                                 </div>

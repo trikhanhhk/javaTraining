@@ -16,7 +16,7 @@ public class EmployeeData {
 
     private String phoneNumber;
 
-    private String gender;
+    private String gender = "1";
 
     private String address;
 

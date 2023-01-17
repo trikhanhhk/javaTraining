@@ -46,15 +46,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     //Add one employee
-    public Employee addEmployee(EmployeeData employeeData) throws ParseException {
+    public Employee addEmployee(EmployeeData employeeData, boolean importExFlg) throws ParseException {
         Optional<Employee> findEmployee = employeeRepository.findOneByEmailIgnoreCase(employeeData.getEmail());
         if (findEmployee.isPresent()) { //check mail đã tồn tại hay chưa
             throw new EmailAlreadyUsedException();
 
         }
-//        if (!employeeData.getPassword().equals(employeeData.getRepeatPassword())) {
-//            throw new PasswordNotMatchException();
-//        }
         //lưu thông tin nhân viên
         Employee newEmployee = new Employee();
         newEmployee.setFirstName(employeeData.getFirstName());
@@ -67,26 +64,63 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (findDept.isPresent()) {
             newEmployee.setDepartment(findDept.get()); //set giá trị phòng ban
         }
-        if (employeeData.getPassword() == null) {
-            newEmployee.setPasswordHash(passwordEncoder.encode("Jvb@123456"));
+        String passRandom = this.getPasswordRandom(8);
+        if (importExFlg) {
+            newEmployee.setPasswordHash(passwordEncoder.encode(passRandom));
         } else {
             newEmployee.setPasswordHash(passwordEncoder.encode(employeeData.getPassword()));
         }
         newEmployee.setGender(employeeData.getGender());
         newEmployee.setAddress(employeeData.getAddress()); //Bổ dung thêm địa chỉ khi user đăng kí tài khoản.
-        newEmployee.setStatus("0");
+        if (importExFlg) {
+            newEmployee.setStatus("1");
+        } else {
+            newEmployee.setStatus("0");
+        }
         Set<Authoritty> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newEmployee.setAuthorities(authorities);
         newEmployee.setCreateDate(new Date());
         Employee employeeSaved = employeeRepository.save(newEmployee); //lưu vào db
         if (employeeSaved != null) {  //nếu lưu thành công
-            ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved); // tạo ra token mới để xác thực tài khoản
-            confirmationTokenRepository.save(confirmationToken);  // lưu token vào db
-            mailService.sendActiveMail(employeeSaved, confirmationToken.getConfirmationToken()); //gửi mail cho tài khoản
+            if(importExFlg) {
+                mailService.sendPasswordNewAcount(employeeSaved, passRandom);
+            } else {
+                ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved); // tạo ra token mới để xác thực tài khoản
+                confirmationTokenRepository.save(confirmationToken);  // lưu token vào db
+                mailService.sendActiveMail(employeeSaved, confirmationToken.getConfirmationToken()); //gửi mail cho tài khoản
+            }
             return newEmployee;
         }
         return null;
+    }
+
+    // Tạo password ngẫu nhiên
+    static String getPasswordRandom(int n)
+    {
+
+        // choose a Character random from this String
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int)(AlphaNumericString.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+
+        return sb.toString();
     }
 
     @Override
@@ -197,7 +231,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 if (employeeRepository.findByEmail(employeeData.getEmail()) != null) {
                     this.updateEmployeeAdmin(employeeData, null);
                 } else {
-                    lstEmployee.add(addEmployee(employeeData));
+                    lstEmployee.add(addEmployee(employeeData, true));
                 }
             } catch (ParseException e) {
                 throw new RuntimeException(e);

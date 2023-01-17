@@ -10,7 +10,7 @@ import java.text.ParseException;
 import java.util.List;
 
 public interface EmployeeService {
-    public Employee addEmployee(EmployeeData employeeData) throws ParseException;
+    public Employee addEmployee(EmployeeData employeeData, boolean importExFlg) throws ParseException;
     public Employee updateEmployee(String address, String phone,String email);
 
     public Employee updateEmployeeAdmin(EmployeeData employeeData,String role);

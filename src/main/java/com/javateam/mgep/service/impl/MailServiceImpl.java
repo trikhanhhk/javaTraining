@@ -29,6 +29,8 @@ public class MailServiceImpl implements MailService {
 
     private static final String KEY_ACTIVE = "keyActive";
 
+    private static final String PASSWORD_NEW_ACCOUNT = "password";
+
     private final JavaMailSender javaMailSender;
     private final MessageSource messageSource;
     private final SpringTemplateEngine templateEngine;
@@ -77,6 +79,23 @@ public class MailServiceImpl implements MailService {
         sendMail(to, subject, content, false, true);
     }
 
+    @Async
+    public void sendMailPasswordNewAcount(Employee employee, String pasword, String template, String titleKey) {
+        if (employee.getEmail() == null) {
+            log.debug("Email doesn't exist for user '{}'", employee.getEmail());
+            return;
+        }
+        Locale locale = new Locale("vi", "VN");
+        Context context = new Context(locale);
+        context.setVariable(USER, employee);
+        context.setVariable(PASSWORD_NEW_ACCOUNT, pasword);
+        context.setVariable(BASE_URL, MailConstaints.BASE_URL);
+        String content = templateEngine.process(template, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        String[] to = {employee.getEmail()};
+        sendMail(to, subject, content, false, true);
+    }
+
     @Override
     @Async
     public void sendActiveMail(Employee employee, String keyActive) {
@@ -89,5 +108,10 @@ public class MailServiceImpl implements MailService {
     public void sendPasswordResetMail(Employee employee, String keyActive) {
         log.debug("Sending activation email to '{}'", employee.getEmail());
         sendMailFromTemplate(employee, keyActive,"mail/passwordResetEmail", "email.reset.title");
+    }
+
+    @Override
+    public void sendPasswordNewAcount(Employee employee, String password) {
+        sendMailPasswordNewAcount(employee, password, "mail/passwordNewAccount", "email.password.title");
     }
 }

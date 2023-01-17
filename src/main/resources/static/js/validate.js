@@ -74,13 +74,20 @@ function checkPasswordError(input){
 }
 
 function checkMatches(passwordInput, repeatPassword){
+	const regexPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/i;
+	let isPasswordError = !regexPassword.test(passwordInput.value);
+	if(regexPassword.test(passwordInput.value)){
+        showSuccess(passwordInput)
+    }
+	else{
+        showError(passwordInput,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một chữ cái in hoa và một số')
+    }
     if (passwordInput.value !== repeatPassword.value){
         showError(repeatPassword,'Mật khẩu đang không trùng khớp!!!!')
         return true
     }else {
         console.log(passwordInput.value);
         console.log(repeatPassword.value);
-        showSuccess(passwordInput);
         return false;
     }
 }

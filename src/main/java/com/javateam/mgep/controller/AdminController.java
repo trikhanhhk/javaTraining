@@ -74,6 +74,9 @@ public class AdminController {
         String errorEmail = (String) session.getAttribute("errorEmail");
         String errorNull = (String) session.getAttribute("error");
         String message = (String) session.getAttribute("message");
+        session.removeAttribute("error");
+        session.removeAttribute("message");
+        session.removeAttribute("errorEmail");
         if (errorNull != null) {
             model.addAttribute("error", errorNull);
         }
@@ -117,9 +120,6 @@ public class AdminController {
     public String importExcelFile(@RequestParam("file") MultipartFile files, Model model, HttpSession session) {
         try {
             List<Employee> lstEmployee = employeeService.importFileEx(files);
-            session.removeAttribute("error");
-            session.removeAttribute("message");
-            session.removeAttribute("errorEmail");
 
             //Import-to-excel false.
             if (lstEmployee == null) {
@@ -155,9 +155,6 @@ public class AdminController {
     //Function searchEmployee
     @GetMapping("/admin/searchEmployee")
     public String searchEmployee(@Validated @ModelAttribute("searchCriteria") SearchCriteria search, Model model, HttpSession session) {
-        session.removeAttribute("error");
-        session.removeAttribute("message");
-        session.removeAttribute("errorEmail");
         //Get information login to security.
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication().getPrincipal();
@@ -175,9 +172,6 @@ public class AdminController {
     //Displays screen delete information employee.
     @GetMapping("/{id}")
     public String deleteEmployee(@PathVariable("id") Long id, Model model,HttpSession session) {
-        session.removeAttribute("error");
-        session.removeAttribute("message");
-        session.removeAttribute("errorEmail");
         String result = employeeService.deleteEmployeeById(id);
         if (result == null) {
             model.addAttribute("error", "Không tìm thấy nhân viên");
@@ -210,10 +204,6 @@ public class AdminController {
         model.addAttribute("name", fullName);
         model.addAttribute("employee", employee);
         model.addAttribute("departments", departments);
-
-        session.removeAttribute("error");
-        session.removeAttribute("message");
-        session.removeAttribute("errorEmail");
         session.removeAttribute("messageUpdate");
         model.addAttribute("authorityList",authorityList);
         session.setAttribute("message", null);
@@ -224,9 +214,6 @@ public class AdminController {
     //Submit button update information employee.
     @PostMapping("/admin/submit-update-admin")
     public String submitUpdate(Model model, @ModelAttribute("employee") EmployeeData employeeData, @RequestParam("role") String role, HttpSession session) {
-        session.removeAttribute("error");
-        session.removeAttribute("message");
-        session.removeAttribute("errorEmail");
         Employee employee = employeeService.updateEmployeeAdmin(employeeData,role);
 
         if (employee == null) {
@@ -242,9 +229,6 @@ public class AdminController {
     //Displays screen send email admin
     @GetMapping("/admin/send-email")
     public String sendEmailAdmin(HttpSession session, Model model) {
-        session.removeAttribute("error");
-        session.removeAttribute("message");
-        session.removeAttribute("errorEmail");
         //Get information to session saved.
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("departments", departmentRepository.findAll());
@@ -255,9 +239,6 @@ public class AdminController {
 
     @PostMapping("/admin/send-email")  //xử lý gửi mail
     public String sendEmailAdmin(HttpSession session, Model model, @Validated @ModelAttribute("emailData") EmailDataForm emailDataForm) throws SchedulerException {
-        session.removeAttribute("error");
-        session.removeAttribute("message");
-        session.removeAttribute("errorEmail");
         String fullName = (String) session.getAttribute("fullName");
         model.addAttribute("name", fullName);
         model.addAttribute("message", "Đã gửi email thành công");

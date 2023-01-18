@@ -63,24 +63,24 @@ function checkLengthError(input,max,min){
 }
 
 function checkPasswordError(input){
-    const regexPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/i;
+    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
     let isPasswordError = !regexPassword.test(input.value);
     if(regexPassword.test(input.value)){
         showSuccess(input)
     }else{
-        showError(input,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một số')
+        showError(input,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một số và một chữ in hoa và một kí tự đặc biệt')
     }
     return isPasswordError;
 }
 
 function checkMatches(passwordInput, repeatPassword){
-	const regexPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/i;
+	const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
 	let isPasswordError = !regexPassword.test(passwordInput.value);
 	if(regexPassword.test(passwordInput.value)){
         showSuccess(passwordInput)
     }
 	else{
-        showError(passwordInput,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một số')
+        showError(passwordInput,'Mật khẩu cần tối thiểu 8 kí tự bao gồm ít nhất một số và một chữ in hoa và một kí tự đặc biệt')
     }
     if (passwordInput.value !== repeatPassword.value){
         showError(repeatPassword,'Mật khẩu đang không trùng khớp!!!!')

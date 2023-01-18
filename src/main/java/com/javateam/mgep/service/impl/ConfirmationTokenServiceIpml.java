@@ -22,6 +22,7 @@ public class ConfirmationTokenServiceIpml implements ConfirmationTokenService {
             Employee employee = employeeRepository.findOneByEmailIgnoreCase(token.getUserEntity().getEmail()).get();
             employee.setStatus("1");
             employeeRepository.save(employee);
+            confirmationTokenRepository.delete(token); //Sau khi kích hoạt thì xóa token
             return employee;
         } else {
             return null;

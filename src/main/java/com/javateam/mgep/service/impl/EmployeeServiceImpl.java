@@ -1,18 +1,22 @@
 package com.javateam.mgep.service.impl;
 
 import com.javateam.mgep.constants.AuthoritiesConstants;
+import com.javateam.mgep.constants.CommonConstants;
 import com.javateam.mgep.entity.*;
 import com.javateam.mgep.entity.dto.EmployeeData;
 import com.javateam.mgep.entity.dto.SearchCriteria;
 import com.javateam.mgep.exception.EmailAlreadyUsedException;
 import com.javateam.mgep.repositories.*;
+import com.javateam.mgep.service.EmailJob;
 import com.javateam.mgep.service.EmployeeService;
 import com.javateam.mgep.service.MailService;
+import com.javateam.mgep.service.TimeJob;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     ResetPasswordTokenRepository resetPasswordTokenRepository;
 
+    @Autowired
+    Scheduler scheduler;
+
     private final PasswordEncoder passwordEncoder;
 
     public EmployeeServiceImpl(PasswordEncoder passwordEncoder) {
@@ -46,7 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     //Add one employee
-    public Employee addEmployee(EmployeeData employeeData, boolean importExFlg) throws ParseException {
+    public Employee addEmployee(EmployeeData employeeData, boolean importExFlg) throws ParseException, SchedulerException {
         Optional<Employee> findEmployee = employeeRepository.findOneByEmailIgnoreCase(employeeData.getEmail());
         if (findEmployee.isPresent()) { //check mail đã tồn tại hay chưa
             throw new EmailAlreadyUsedException();
@@ -89,6 +96,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 ConfirmationToken confirmationToken = new ConfirmationToken(employeeSaved); // tạo ra token mới để xác thực tài khoản
                 confirmationTokenRepository.save(confirmationToken);  // lưu token vào db
                 mailService.sendActiveMail(employeeSaved, confirmationToken.getConfirmationToken()); //gửi mail cho tài khoản
+                scheduleTaskWithFixedRate(employeeSaved, new Date(employeeSaved.getCreateDate().getTime() + 30*24*1000*60*60)); // Sau 30 ngày nếu không xác nhận mail tài khoản sẽ bị xóa
             }
             return newEmployee;
         }
@@ -245,21 +253,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-//    boolean isSheetEmpty(XSSFWorkbook sheet) {
-//        Iterator rows = sheet.iterator();
-//        while (rows.hasNext()) {
-//            XSSFRow row = (XSSFRow ) rows.next();
-//            Iterator cells = row.cellIterator();
-//            while (cells.hasNext()) {
-//                XSSFCell cell = (XSSFCell) cells.next();
-//                if(!cell.getStringCellValue().isEmpty()){
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
-
     @Override
     //Delete employee by id
     public String deleteEmployeeById(Long id) {
@@ -282,5 +275,32 @@ public class EmployeeServiceImpl implements EmployeeService {
         return "OK";
     }
 
+    public void scheduleTaskWithFixedRate(Employee e, Date satrtAt) throws SchedulerException {
+        JobDetail jobDetail = buildJobDetail(e);
+        Trigger trigger = buildJobTrigger(jobDetail, satrtAt);
+        scheduler.scheduleJob(jobDetail, trigger);
+    }
 
+    private JobDetail buildJobDetail(Employee e) {
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(CommonConstants.JOB_NAME, CommonConstants.JOB_ACCOUNT_IS_ACTIVE);
+        jobDataMap.put(CommonConstants.ID_DATA_JOB, e.getId());  //Truyền ID job để gửi
+
+        return JobBuilder.newJob(TimeJob.class)
+                .withIdentity(UUID.randomUUID().toString(), "employee-jobs")
+                .withDescription("Check account active")
+                .usingJobData(jobDataMap)
+                .storeDurably()
+                .build();
+    }
+
+    private Trigger buildJobTrigger(JobDetail jobDetail, Date startAt) {
+        return TriggerBuilder.newTrigger()
+                .forJob(jobDetail)
+                .withIdentity(jobDetail.getKey().getName(), "employee-triggers")
+                .withDescription("Check account active")
+                .startAt(startAt)  //thời gian gửi
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
+                .build();
+    }
 }

@@ -36,7 +36,7 @@ $(document).ready(function () {
                 error: function (data) {
                     console.log('An error occurred.');
                     console.log(data);
-                    $(".modal-body p").text(data.err);
+                    $(".modal-body p").text(data.responseJSON.error);
                     $(".modal-title").text("Lỗi");
                     $('#confirmButton')[0].classList.add("close-button");
                     $('#confirmButton').text("OK");
